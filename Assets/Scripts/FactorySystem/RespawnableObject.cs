@@ -9,31 +9,28 @@ namespace Factories
         public GameObject BodyObject { get; private set; }
         public bool IsActive { get => _isActive; private set => _isActive = value; }
 
-
         private void OnEnable() => BodyObject = gameObject;
 
-        private void OnBecameInvisible()
-        {
-            gameObject.SetActive(false);
-            IsActive = false;
-        }
+        private void OnBecameInvisible() => Deactivate();
 
         public void Activate()
         {
-            IsActive = true;
+            _isActive = true;
             gameObject.SetActive(true);
         }
 
         private void Deactivate()
         {
-            
-            //if (_hasChildObjects)
-            //{
-            //    for (int i = 0; i < transform.childCount; i++)
-            //    {
-            //        transform.GetChild(i).gameObject.SetActive(true);
-            //    }
-            //}
+            _isActive = false;
+            gameObject.SetActive(false);
+
+            if (_hasChildObjects)
+            {
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    transform.GetChild(i).gameObject.SetActive(true);
+                }
+            }
         }
     }
 }

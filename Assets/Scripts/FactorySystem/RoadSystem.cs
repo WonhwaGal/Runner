@@ -19,7 +19,7 @@ namespace Factories
         {
             _timers = timers;
             _firstPos = firstRoadSpan.position;
-            _roadCreateSpeed = 50 / Constants.gameMultiplier;
+            _roadCreateSpeed = 60 / Constants.gameMultiplier;
             CreateRoadFactory();
             SetRoadTimer();
         }

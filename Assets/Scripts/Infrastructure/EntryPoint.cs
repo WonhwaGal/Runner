@@ -8,7 +8,7 @@ namespace Infrastructure
     public class EntryPoint : MonoBehaviour
     {
         [SerializeField] private Transform _firstRoadSpan;
-        //[SerializeField] private CameraFollow _cameraFollow;
+        [SerializeField] private CameraFollow _cameraFollow;
 
         private IInput _inputType;
 
@@ -26,7 +26,7 @@ namespace Infrastructure
             _mainFactory = new MainFactory(_timerController.Timers, _firstRoadSpan);
 
             // assign settings Action of choosing the player to the PlayerController.CreatePlayer();
-            //_playerController.OnChoosingPlayer += _cameraFollow.SetTarget;
+            _playerController.OnChoosingPlayer += _cameraFollow.SetTarget;
 
         }
         private void Update()
@@ -40,7 +40,7 @@ namespace Infrastructure
         {
             _timerController.Timers.Clear();
             _mainFactory.Dispose();
-            //_playerController.OnChoosingPlayer -= _cameraFollow.SetTarget;
+            _playerController.OnChoosingPlayer -= _cameraFollow.SetTarget;
         }
     }
 }

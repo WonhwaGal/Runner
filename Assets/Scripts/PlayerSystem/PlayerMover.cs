@@ -17,9 +17,8 @@ namespace PlayerSystem
         private Transform _transform;
 
         private bool _canMove = false;
-        private Transform _cameraT;
+
         public float SpeedMultiplier { get => _speedMultiplier; set => _speedMultiplier = value; }
-        public Transform CameraT { get => _cameraT; set => _cameraT = value; }
 
         public void AssignInput(IInput input)
         {
@@ -27,11 +26,13 @@ namespace PlayerSystem
             _transform = gameObject.transform;
             _canMove = true;
         }
+
         private void Update()
         {
+
             if (!_canMove)
                 return;
-            
+
             _xInputVector = _xSpeedCorrector * _speedMultiplier * _input.GetXAxisValue();
 
             if (_transform.position.x < Constants.leftBorder && _xInputVector.x < 0 ||
@@ -45,6 +46,7 @@ namespace PlayerSystem
         {
             if (!_canMove)
                 return;
+
             _rigidbody.velocity = _movementVector;        // should i go to fixed update for that
         }
     }

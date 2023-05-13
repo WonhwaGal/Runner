@@ -16,8 +16,9 @@ GameObject:
   - component: {fileID: 948195275380945423}
   - component: {fileID: 7035214731972611359}
   - component: {fileID: 1196006639654314661}
+  - component: {fileID: -5780062208464984950}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Jumper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -99,7 +100,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.03139186, z: 1}
+  m_Size: {x: 0.8, y: 0.03139186, z: 0.8}
   m_Center: {x: 0, y: -0.4843044, z: 0}
 --- !u!54 &948195275380945420
 Rigidbody:
@@ -115,7 +116,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 32
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &948195275380945423
 MonoBehaviour:
@@ -143,6 +144,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _collider: {fileID: 1196006639654314661}
+  _playerJumper: {fileID: -5780062208464984950}
 --- !u!136 &1196006639654314661
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -154,6 +156,19 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.8
-  m_Height: 1.2
+  m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-5780062208464984950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948195275380945422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 407ec30be3a5cf048b282778aa0d5648, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rigidbody: {fileID: 948195275380945420}

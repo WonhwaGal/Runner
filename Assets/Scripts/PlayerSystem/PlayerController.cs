@@ -8,10 +8,11 @@ namespace PlayerSystem
     {
         public Action<Transform> OnChoosingPlayer;
 
-        private string playerPrefabPath = "Player";
+        private string playerPrefabPath = "Jumper";
 
         private IInput _inputType;
-        private PlayerMover _playerMover; 
+        private PlayerJumper _playerJumper;
+
         public PlayerController(IInput inputType)
         {
             _inputType = inputType;
@@ -22,9 +23,10 @@ namespace PlayerSystem
             PlayerMover player = GameObject.Instantiate(Resources.Load<PlayerMover>(playerPrefabPath));
             player.AssignInput(_inputType);
 
-            _playerMover = player;
+            _playerJumper = player.GetComponent<PlayerJumper>();
+            _playerJumper.AssignInput(_inputType);
+
             OnChoosingPlayer?.Invoke(player.transform);
-            //Camera.main.transform.parent = player.transform;
         }
     }
 }

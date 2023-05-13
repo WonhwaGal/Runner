@@ -75,6 +75,7 @@ GameObject:
   - component: {fileID: 9102345968109992439}
   - component: {fileID: 9102345968109992438}
   - component: {fileID: 3753462288681291647}
+  - component: {fileID: -1623234242238549474}
   m_Layer: 0
   m_Name: Road_2
   m_TagString: Untagged
@@ -180,6 +181,19 @@ MonoBehaviour:
   - {fileID: 7482582061780190280}
   - {fileID: 5902153550049680147}
   - {fileID: 6076561030654528661}
+--- !u!65 &-1623234242238549474
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9102345968109992437}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10, y: 2.220446e-16, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &9116782974233310085
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ namespace Infrastructure
     public class EntryPoint : MonoBehaviour
     {
         [SerializeField] private Transform _firstRoadSpan;
+        //[SerializeField] private CameraFollow _cameraFollow;
 
         private IInput _inputType;
 
@@ -23,15 +24,15 @@ namespace Infrastructure
             _settingsController = new();
             _timerController = new TimerController();
             _mainFactory = new MainFactory(_timerController.Timers, _firstRoadSpan);
+
             // assign settings Action of choosing the player to the PlayerController.CreatePlayer();
+            //_playerController.OnChoosingPlayer += _cameraFollow.SetTarget;
 
         }
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Space))   // TO DELETE
-            {
                 _playerController.CreatePlayer();
-            }
 
             _timerController.Record(Time.deltaTime);
         }
@@ -39,6 +40,7 @@ namespace Infrastructure
         {
             _timerController.Timers.Clear();
             _mainFactory.Dispose();
+            //_playerController.OnChoosingPlayer -= _cameraFollow.SetTarget;
         }
     }
 }

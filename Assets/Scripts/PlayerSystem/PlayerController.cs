@@ -1,15 +1,17 @@
 using Infrastructure;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace PlayerSystem
 {
     internal class PlayerController
     {
+        public Action<Transform> OnChoosingPlayer;
+
         private string playerPrefabPath = "Player";
 
         private IInput _inputType;
+        private PlayerMover _playerMover; 
         public PlayerController(IInput inputType)
         {
             _inputType = inputType;
@@ -17,10 +19,12 @@ namespace PlayerSystem
 
         public void CreatePlayer()
         {
-            PlayerMover player = Object.Instantiate(Resources.Load<PlayerMover>(playerPrefabPath));
+            PlayerMover player = GameObject.Instantiate(Resources.Load<PlayerMover>(playerPrefabPath));
             player.AssignInput(_inputType);
 
-            Camera.main.transform.parent = player.transform;
+            _playerMover = player;
+            OnChoosingPlayer?.Invoke(player.transform);
+            //Camera.main.transform.parent = player.transform;
         }
     }
 }

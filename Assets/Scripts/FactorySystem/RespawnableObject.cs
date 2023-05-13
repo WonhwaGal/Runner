@@ -4,28 +4,32 @@ namespace Factories
 {
     internal class RespawnableObject : MonoBehaviour
     {
-        private bool isActive;
+        private bool _isActive;
+        protected bool _hasChildObjects;
         public GameObject BodyObject { get; private set; }
-        public bool IsActive { get => isActive; private set => isActive = value; }
-        private void OnEnable() => BodyObject = gameObject;
+        public bool IsActive { get => _isActive; private set => _isActive = value; }
 
-        private void OnBecameVisible() => Activate();   // Questionable!
+        private void OnEnable() => BodyObject = gameObject;
 
         private void OnBecameInvisible() => Deactivate();
 
         public void Activate()
         {
-            IsActive = true;
+            _isActive = true;
             gameObject.SetActive(true);
         }
 
         private void Deactivate()
         {
+            _isActive = false;
             gameObject.SetActive(false);
-            IsActive = false;
-            for (int i = 0; i < transform.childCount; i++)
+
+            if (_hasChildObjects)
             {
-                transform.GetChild(i).gameObject.SetActive(true);
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    transform.GetChild(i).gameObject.SetActive(true);
+                }
             }
         }
     }

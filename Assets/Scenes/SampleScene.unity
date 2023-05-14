@@ -474,6 +474,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _firstRoadSpan: {fileID: 671959665}
   _cameraFollow: {fileID: 963194229}
+  _playerTypes: {fileID: 11400000, guid: a81e415c52bd25c4d9b207d14eba6db6, type: 2}
 --- !u!4 &1909632890
 Transform:
   m_ObjectHideFlags: 0

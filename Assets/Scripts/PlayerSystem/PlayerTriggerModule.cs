@@ -8,13 +8,13 @@ public class PlayerTriggerModule : MonoBehaviour
     [SerializeField] private CapsuleCollider _collider;
     [SerializeField] private PlayerJumper _playerJumper;
 
-    private bool _jumpingPlayer;
+    private bool _isJumping;
     private void Awake()
     {
         _collider.enabled = true;
         _collider.isTrigger = true;
         if (_playerJumper != null)
-            _jumpingPlayer = true;
+            _isJumping = true;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -23,9 +23,9 @@ public class PlayerTriggerModule : MonoBehaviour
         {
             collectable.ExecuteAction();
         }
-        else if (_jumpingPlayer && other.GetComponent<RoadSpan>())
+        else if (_isJumping && other.GetComponent<RoadSpan>())
         {
-            _playerJumper.IsJumping = false;
+            _playerJumper.FinishJump();
         }
     }
 }

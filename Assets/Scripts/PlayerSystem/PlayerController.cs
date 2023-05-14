@@ -1,4 +1,5 @@
 using Infrastructure;
+using SettingsSystem;
 using System;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace PlayerSystem
 
         private IInput _inputType;
         private PlayerJumper _playerJumper;
+        private PlayerConfig _config;
 
         public PlayerController(IInput inputType)
         {
@@ -25,6 +27,21 @@ namespace PlayerSystem
 
             _playerJumper = player.GetComponent<PlayerJumper>();
             _playerJumper.AssignInput(_inputType);
+
+            OnChoosingPlayer?.Invoke(player.transform);
+        }
+
+        public void CreatePlayer(PlayerConfig config)
+        {
+            Debug.Log("came to player");
+            PlayerMover player = GameObject.Instantiate(config.PlayerMover);
+            player.AssignInput(_inputType);
+
+            if (config.CanJump)
+            {
+                _playerJumper = player.GetComponent<PlayerJumper>();
+                _playerJumper.AssignInput(_inputType);
+            }
 
             OnChoosingPlayer?.Invoke(player.transform);
         }

@@ -13,6 +13,7 @@ namespace PlayerSystem
 
         private bool _isJumping = false;
         private Vector3 _jumpVector = Constants.jumpVector;
+        private float _jumpSpan = 0.1f;
         private const float _jumpMultiplier = 16;
 
         public bool IsJumping { get => _isJumping; set => _isJumping = value; }
@@ -26,22 +27,25 @@ namespace PlayerSystem
         private void Update()
         {
             if (_canJump && _input.GetYAxisValue() > 0)
-                Jump();
+                StartJump();
+
+            if (IsJumping && _jumpSpan > 0)
+                _jumpSpan -= Time.deltaTime;
         }
 
         private void FixedUpdate()
         {
+            if (IsJumping && _jumpSpan > 0)
+                _rigidbody.velocity = _jumpVector;
             if (IsJumping)
                 _rigidbody.AddForce(Physics.gravity * _jumpMultiplier);
         }
 
-        public void Jump()
+        private void StartJump() => IsJumping = true;
+        public void FinishJump()
         {
-            if (!IsJumping)
-            {
-                IsJumping = true;
-                _rigidbody.AddForce(_jumpVector, ForceMode.Impulse);
-            }
+            IsJumping = false;
+            _jumpSpan = Constants.jumpSpan;
         }
     }
 }

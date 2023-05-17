@@ -12,9 +12,7 @@ public class CoinSetSystem
     {
         _coinFactory = new SingleFactory<CoinSetView>("CoinSetPrefabs");
         _coinFactory.AddPrefabNameToList("CoinSet1");
-        _coinFactory.AddPrefabNameToList("CoinSet2");
-        _coinFactory.AddPrefabNameToList("CoinSet3");
-        _coinFactory.AddPrefabNameToList("CoinSet4");
+
         _coinFactory.CreateListOfObjects();
     }
 

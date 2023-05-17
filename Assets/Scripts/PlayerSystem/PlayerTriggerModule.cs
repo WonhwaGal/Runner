@@ -1,31 +1,48 @@
 using Collectables;
-using Factories;
-using PlayerSystem;
 using UnityEngine;
+using System;
 
-public class PlayerTriggerModule : MonoBehaviour
+namespace PlayerSystem
 {
-    [SerializeField] private CapsuleCollider _collider;
-    [SerializeField] private PlayerJumper _playerJumper;
-
-    private bool _isJumping;
-    private void Awake()
+    internal class PlayerTriggerModule : MonoBehaviour
     {
-        _collider.enabled = true;
-        _collider.isTrigger = true;
-        if (_playerJumper != null)
-            _isJumping = true;
+        private CapsuleCollider _collider;
+        private PlayerRBJumper _playerJumper;
+        private TriggerHandler _triggerHandler;
+        public void Init(CapsuleCollider collider, TriggerHandler triggerHandler)
+        {
+            _collider = collider;
+            _triggerHandler = triggerHandler;
+            _collider.enabled = true;
+            _collider.isTrigger = true;
+        }
+
+        public void Init(CapsuleCollider collider, PlayerRBJumper playerJumper)
+        {
+            _collider = collider;
+            _collider.enabled = true;
+            _collider.isTrigger = true;
+            _playerJumper = playerJumper;
+        }
+
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.TryGetComponent(out ICollectable collectable))
+            {
+                _triggerHandler.SortOutCollectable(collectable);
+                collectable.ExecuteAction();
+            }
+        }
     }
 
-    private void OnTriggerEnter(Collider other)
+    internal class TriggerHandler
     {
-        if (other.TryGetComponent(out ICollectable collectable))
+        public Action<int> OnTriggeredByCoin;
+        public void SortOutCollectable(ICollectable collectable)
         {
-            collectable.ExecuteAction();
-        }
-        else if (_isJumping && other.GetComponent<RoadSpan>())
-        {
-            _playerJumper.FinishJump();
+            if (collectable.Type == CollectableType.Coin)
+                OnTriggeredByCoin?.Invoke(collectable.Value);
         }
     }
 }

@@ -6,13 +6,11 @@ namespace Factories
 {
     internal class MainFactory
     {
-        private List<Timer> _timers;
         private RoadSystem _roadSystem;
         private CoinSetSystem _coinSetSystem;
-        public MainFactory(List<Timer> timers, Transform firstRoadSpan)
+        public MainFactory(Transform firstRoadSpan)
         {
-            _timers = timers;
-            _roadSystem = new RoadSystem(_timers, firstRoadSpan);
+            _roadSystem = new RoadSystem(firstRoadSpan);
             _coinSetSystem = new CoinSetSystem();
             _roadSystem.OnBuildingRoadSpan += _coinSetSystem.PutCoinsOnRoad;
         }

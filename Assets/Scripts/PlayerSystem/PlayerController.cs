@@ -1,49 +1,24 @@
 using Infrastructure;
-using SettingsSystem;
-using System;
 using UnityEngine;
 
 namespace PlayerSystem
 {
-    internal class PlayerController
+    [RequireComponent(typeof(Rigidbody), typeof(PlayerTriggerModule), typeof(BaseMover))]
+    internal class PlayerController : MonoBehaviour
     {
-        public Action<Transform> OnChoosingPlayer;
+        [SerializeField] private Rigidbody _rigidBody;
+        [SerializeField] private BaseMover _mover;
+        //[SerializeField] private PlayerRBJumper _jumper;
+        [SerializeField] private PlayerTriggerModule _trigger;
+        [SerializeField] private CapsuleCollider _collider;
+        public bool CanJump { get; private set; }
 
-        private string playerPrefabPath = "Jumper";
-
-        private IInput _inputType;
-        private PlayerJumper _playerJumper;
-        private PlayerConfig _config;
-
-        public PlayerController(IInput inputType)
+        public void Initialize(IInput input, bool canJump, TriggerHandler handler)
         {
-            _inputType = inputType;
+            CanJump = canJump;
+            _mover.Init(input, canJump);
+            _trigger.Init(_collider, handler);
         }
 
-        public void CreatePlayer()
-        {
-            PlayerMover player = GameObject.Instantiate(Resources.Load<PlayerMover>(playerPrefabPath));
-            player.AssignInput(_inputType);
-
-            _playerJumper = player.GetComponent<PlayerJumper>();
-            _playerJumper.AssignInput(_inputType);
-
-            OnChoosingPlayer?.Invoke(player.transform);
-        }
-
-        public void CreatePlayer(PlayerConfig config)
-        {
-            Debug.Log("came to player");
-            PlayerMover player = GameObject.Instantiate(config.PlayerMover);
-            player.AssignInput(_inputType);
-
-            if (config.CanJump)
-            {
-                _playerJumper = player.GetComponent<PlayerJumper>();
-                _playerJumper.AssignInput(_inputType);
-            }
-
-            OnChoosingPlayer?.Invoke(player.transform);
-        }
     }
 }

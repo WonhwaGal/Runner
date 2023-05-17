@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace PlayerSystem
 {
-    internal class PlayerMover : MonoBehaviour
+    internal class PlayerRBMover : MonoBehaviour
     {
-        [SerializeField] private Rigidbody _rigidbody;
+        private Rigidbody _rigidbody;
 
         private IInput _input;
         private Vector3 _xInputVector;
@@ -16,20 +16,20 @@ namespace PlayerSystem
         private const float _xSpeedCorrector = 2.0f;
         private Transform _transform;
 
-        private bool _canMove = false;
+        private bool _canMove;
 
         public float SpeedMultiplier { get => _speedMultiplier; set => _speedMultiplier = value; }
 
-        public void AssignInput(IInput input)
+        public void Init(IInput input, Rigidbody rigidbody)
         {
             _input = input;
+            _rigidbody = rigidbody;
             _transform = gameObject.transform;
             _canMove = true;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-
             if (!_canMove)
                 return;
 
@@ -40,14 +40,7 @@ namespace PlayerSystem
                 _xInputVector = Vector3.zero;
 
             _movementVector = Vector3.forward * _speedMultiplier + _xInputVector;
-        }
-
-        private void FixedUpdate()
-        {
-            if (!_canMove)
-                return;
-
-            _rigidbody.velocity = _movementVector;        // should i go to fixed update for that
+            _rigidbody.velocity = _movementVector;
         }
     }
 }

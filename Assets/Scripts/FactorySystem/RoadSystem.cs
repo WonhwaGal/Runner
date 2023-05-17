@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using Tools;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Factories
 {
     internal class RoadSystem
     {
-        private List<Timer> _timers;
         private GenericFactory<RoadSpan> _roadFactory;
         private Vector3 _firstPos;
         private readonly float _roadCreateSpeed;
@@ -15,13 +15,13 @@ namespace Factories
 
         public event Action<List<Transform>> OnBuildingRoadSpan;
 
-        public RoadSystem(List<Timer> timers, Transform firstRoadSpan)
+        public RoadSystem(Transform firstRoadSpan)
         {
-            _timers = timers;
             _firstPos = firstRoadSpan.position;
-            _roadCreateSpeed = 60 / Constants.gameMultiplier;
+            _roadCreateSpeed = 50 / Constants.gameMultiplier;
             CreateRoadFactory();
-            SetRoadTimer();
+
+            SetRoadRespawn();
         }
 
         private void CreateRoadFactory()
@@ -33,10 +33,10 @@ namespace Factories
             _roadFactory.CreateListOfObjects();
         }
 
-        private void SetRoadTimer()
+        private void SetRoadRespawn()
         {
-            Timer _roadTimer = new Timer(PutRoadAhead, _roadCreateSpeed, true, true);
-            _timers.Add(_roadTimer);
+            Sequence sequence = DOTween.Sequence();
+            sequence.AppendInterval(_roadCreateSpeed).AppendCallback(PutRoadAhead).SetLoops(-1);
         }
 
         private void PutRoadAhead()

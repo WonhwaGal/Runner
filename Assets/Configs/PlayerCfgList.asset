@@ -13,11 +13,7 @@ MonoBehaviour:
   m_Name: PlayerCfgList
   m_EditorClassIdentifier: 
   Players:
-  - PlayerMover: {fileID: 1649789619906989609, guid: c7191d1911d11d54a9c9678b01ef2d33, type: 3}
-    CanJump: 0
-    Name: Runner
-    Image: {fileID: 21300000, guid: c8a69ecdf54ac8e4b873466605de27ff, type: 3}
-  - PlayerMover: {fileID: 948195275380945423, guid: 611211caa3fd8fb49b7a3c2a0d9475b7, type: 3}
+  - Name: DTPlayer
+    Player: {fileID: 6086633647762046291, guid: 54319359c8d135a4787023237632501b, type: 3}
     CanJump: 1
-    Name: Jumper
-    Image: {fileID: 21300000, guid: cdb88fdb0cf46b244a667edaff21c7df, type: 3}
+    Image: {fileID: 21300000, guid: 3494dc956dfd7174abc07060940a2848, type: 3}

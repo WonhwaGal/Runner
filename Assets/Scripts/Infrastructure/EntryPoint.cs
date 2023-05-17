@@ -10,44 +10,58 @@ namespace Infrastructure
     {
         [SerializeField] private Transform _firstRoadSpan;
         [SerializeField] private CameraFollow _cameraFollow;
+        [SerializeField] private UIView _uiView;
         [SerializeField] private PlayerCfgList _playerTypes;
 
         private IInput _inputType;
-        private TimerController _timerController;
 
-        private PlayerController _playerController;
+        private PlayerControlSystem _playerController;
         private SettingsController _settingsController;
         private MainFactory _mainFactory;
         
         private void Start()
         {
-            _inputType = new KeyboardInput();
-            _timerController = new TimerController();
-
-            _settingsController = new SettingsController(_playerTypes);
-            _playerController = new PlayerController(_inputType);
-            _mainFactory = new MainFactory(_timerController.Timers, _firstRoadSpan);
-
-            // assign settings Action of choosing the player to the PlayerController.CreatePlayer();
-            _playerController.OnChoosingPlayer += _cameraFollow.SetTarget;
-            _settingsController.OnChangingPlayer += _playerController.CreatePlayer;
-
+            CreateMainSystems();
+            AssignConnections();
         }
+
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.J))   // TO DELETE
-                _settingsController.CurrentPlayer = _playerTypes.Players[1];
-            if (Input.GetKeyDown(KeyCode.R))
-                _settingsController.CurrentPlayer = _playerTypes.Players[0];
+            _inputType.GetXValue();
+            _inputType.GetYValue();
 
-                _timerController.Record(Time.deltaTime);
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                _playerController.CreatePlayer(_playerTypes.Players[0]);
+                _settingsController.UIModel.StartDistanceCount();
+            }
         }
+
+        private void CreateMainSystems()
+        {
+            _inputType = new KeyboardInput();
+
+            _settingsController = new SettingsController(_uiView);
+            _playerController = new PlayerControlSystem(_inputType);
+            _mainFactory = new MainFactory(_firstRoadSpan);
+        }
+
+        private void AssignConnections()
+        {
+            _playerController.OnChoosingPlayer += _cameraFollow.SetTarget;
+            _playerController.TriggerHandler.OnTriggeredByCoin += _settingsController.CoinCounter.AddCoins;
+        }
+
+        private void SignOffConnections()
+        {
+            _playerController.OnChoosingPlayer -= _cameraFollow.SetTarget;
+            _playerController.TriggerHandler.OnTriggeredByCoin -= _settingsController.CoinCounter.AddCoins;
+        }
+
         private void OnDestroy()
         {
-            _timerController.Timers.Clear();
             _mainFactory.Dispose();
-            _playerController.OnChoosingPlayer -= _cameraFollow.SetTarget;
-            _settingsController.OnChangingPlayer -= _playerController.CreatePlayer;
+            SignOffConnections();
         }
     }
 }

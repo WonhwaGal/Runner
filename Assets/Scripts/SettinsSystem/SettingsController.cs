@@ -1,62 +1,66 @@
 ﻿using SettingsSystem;
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
+using Tools;
 
-namespace Infrastructure
+namespace SettingsSystem
 {
     internal class SettingsController
     {
-        // private UIView _uiView;
-        private Model _uiModel;
-        // private UIPresenter _uiPresenter;
-        // private DataContainer _dataContainer;
-        private PlayerConfig _currentPlayer;
-
-        private List<PlayerConfig> _players;
-
-        public PlayerConfig CurrentPlayer 
-        { 
-            get => _currentPlayer;
-            set
-            {
-                UnityEngine.Debug.Log("came to setter");
-                if (_currentPlayer != value)
-                {
-                    _currentPlayer = value;
-                    OnChangingPlayer?.Invoke(_currentPlayer);
-                    UnityEngine.Debug.Log("player changed, event sent");
-                }
-            } 
-        }
-        public Model UiModel { get => _uiModel; set => _uiModel = value; }  // to delete
-
-        public event Action<PlayerConfig> OnChangingPlayer;
-
-        public SettingsController(PlayerCfgList playerTypes)
+        private UIView _uiView;
+        private UIModel _uiModel;
+        private CoinCounter _coinCounter;
+        public SettingsController(UIView uiView)
         {
-            _players = playerTypes.Players;
-            UiModel = new Model(playerTypes, _currentPlayer);
+            _uiView = uiView;
+            _uiModel = new UIModel();
+            _coinCounter = new CoinCounter();
+            UIModel.OnChangeKM += _uiView.SetDistance;
+            CoinCounter.OnCollentCoins += _uiView.SetCoinNumber;
         }
+
+        internal UIModel UIModel { get => _uiModel; }
+        internal CoinCounter CoinCounter { get => _coinCounter; }
     }
-    internal class Model
+
+    internal class UIModel 
     {
-        private List<PlayerConfig> _players;
-        private PlayerConfig _currentPlayer;
-        public Model(PlayerCfgList playerTypes, PlayerConfig currentPlayer)
+        public Action<int> OnChangeKM;
+        private int _distance = 0;
+        private int _distanceSpan;
+        public UIModel()
         {
-            _players = playerTypes.Players;
-            _currentPlayer = currentPlayer;
+            _distanceSpan = 10;
+        }
+        public void StartDistanceCount() => CountDistance();
+
+        private void CountDistance()
+        {
+            Sequence disSequence = DOTween.Sequence();
+            disSequence.AppendInterval(Constants.gameMultiplier).AppendCallback(IncreaseDistance).SetLoops(-1); ;
+        }
+        private void IncreaseDistance()
+        {
+            _distance += _distanceSpan;
+            OnChangeKM?.Invoke(_distance);
+        } 
+    }
+
+    internal class CoinCounter
+    {
+        public Action<int> OnCollentCoins;
+        private int _coinsCollected;
+
+        public CoinCounter()
+        {
+            _coinsCollected = 0;
         }
 
-        public void AssignPlayer(string name)
+        public void AddCoins(int value)
         {
-            for (int i = 0; i < _players.Count; i++)
-            {
-                if (_players[i].Name == name)
-                {
-                    _currentPlayer = _players[i];
-                }
-            }
+            _coinsCollected += value;
+            OnCollentCoins?.Invoke(_coinsCollected);
         }
     }
 }

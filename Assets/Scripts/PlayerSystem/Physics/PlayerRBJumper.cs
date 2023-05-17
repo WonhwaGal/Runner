@@ -4,31 +4,26 @@ using Tools;
 
 namespace PlayerSystem
 {
-    internal class PlayerJumper : MonoBehaviour
+    internal class PlayerRBJumper : MonoBehaviour
     {
-        [SerializeField] private Rigidbody _rigidbody;
-
+        private Rigidbody _rigidbody;
         private IInput _input;
-        private bool _canJump;
 
-        private bool _isJumping = false;
         private Vector3 _jumpVector = Constants.jumpVector;
         private float _jumpSpan = 0.1f;
         private const float _jumpMultiplier = 16;
 
-        public bool IsJumping { get => _isJumping; set => _isJumping = value; }
+        public bool IsJumping { get; private set; }
 
-        public void AssignInput(IInput input)
+        public void Init(IInput input, Rigidbody rigidbody)
         {
             _input = input;
-            _canJump = true;
+            _rigidbody = rigidbody;
+            _input.OnJump += StartJump;
         }
 
         private void Update()
         {
-            if (_canJump && _input.GetYAxisValue() > 0)
-                StartJump();
-
             if (IsJumping && _jumpSpan > 0)
                 _jumpSpan -= Time.deltaTime;
         }

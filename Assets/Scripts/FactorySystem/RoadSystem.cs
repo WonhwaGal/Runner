@@ -13,15 +13,16 @@ namespace Factories
         private readonly float _roadCreateSpeed;
         private Vector3 _shift = new Vector3(0, 0, 100);
 
-        public event Action<List<Transform>> OnBuildingRoadSpan;
+        Sequence _roadSequence;
+
+        public event Action<List<Transform>> OnRoadForCoins;
+        public event Action<List<Transform>> OnRoadForUpdates;
 
         public RoadSystem(Transform firstRoadSpan)
         {
             _firstPos = firstRoadSpan.position;
             _roadCreateSpeed = 50 / Constants.gameMultiplier;
             CreateRoadFactory();
-
-            SetRoadRespawn();
         }
 
         private void CreateRoadFactory()
@@ -33,19 +34,22 @@ namespace Factories
             _roadFactory.CreateListOfObjects();
         }
 
+        public void StartRoadSpawn() => SetRoadRespawn();
+        public void StopRoadSpawn() => _roadSequence.Kill();
+
         private void SetRoadRespawn()
         {
-            Sequence sequence = DOTween.Sequence();
-            sequence.AppendInterval(_roadCreateSpeed).AppendCallback(PutRoadAhead).SetLoops(-1);
+            _roadSequence = DOTween.Sequence();
+            _roadSequence.AppendCallback(PutRoadAhead).AppendInterval(_roadCreateSpeed).SetLoops(-1);
         }
-
         private void PutRoadAhead()
         {
             var roadSpan = _roadFactory.Spawn();
             roadSpan.transform.position = _firstPos + _shift;
             _firstPos += _shift;
 
-            OnBuildingRoadSpan?.Invoke(roadSpan.Spots);
+            OnRoadForCoins?.Invoke(roadSpan.Spots);
+            OnRoadForUpdates?.Invoke(roadSpan.UpgradeSpots);
         }
     }
 }

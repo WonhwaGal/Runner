@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-using Tools;
 using UnityEngine;
+
 
 namespace Factories
 {
@@ -8,17 +7,22 @@ namespace Factories
     {
         private RoadSystem _roadSystem;
         private CoinSetSystem _coinSetSystem;
+        private UpgradeSpawnSystem _upgradeSpawnSystem;
+        public RoadSystem RoadSystem { get => _roadSystem; }
+
         public MainFactory(Transform firstRoadSpan)
         {
             _roadSystem = new RoadSystem(firstRoadSpan);
             _coinSetSystem = new CoinSetSystem();
-            _roadSystem.OnBuildingRoadSpan += _coinSetSystem.PutCoinsOnRoad;
+            _upgradeSpawnSystem = new UpgradeSpawnSystem();
+            RoadSystem.OnRoadForCoins += _coinSetSystem.PutCoinsOnRoad;
+            RoadSystem.OnRoadForUpdates += _upgradeSpawnSystem.PutUpgradesOnRoad;
         }
 
         public void Dispose()
         {
-            _roadSystem.OnBuildingRoadSpan -= _coinSetSystem.PutCoinsOnRoad;
+            RoadSystem.OnRoadForCoins -= _coinSetSystem.PutCoinsOnRoad;
+            RoadSystem.OnRoadForCoins -= _upgradeSpawnSystem.PutUpgradesOnRoad;
         }
-
     }
 }

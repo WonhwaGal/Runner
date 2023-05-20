@@ -3,11 +3,14 @@ using DG.Tweening;
 using Infrastructure;
 using PlayerSystem;
 using Tools;
+using System;
 
 internal class PlayerDOMover : BaseMover
 {
     private IInput _input;
     private Transform _transform;
+
+    private Sequence _moveSequence;
     private float _forwardMove = 1.5f;
     private float _forwardSpeed = 1.0f;
     private float _multiplier;
@@ -16,8 +19,9 @@ internal class PlayerDOMover : BaseMover
     private float _sideSpeed = 0.5f;
     private bool _isSideMoving;
 
-    private float _jumpForce = 3;
+    private float _jumpForce = 4;
     private bool _isJumping;
+    private bool _canJump;
 
     private int _moveSides;
 
@@ -25,8 +29,9 @@ internal class PlayerDOMover : BaseMover
     {
         _transform = transform;
         _input = input;
+        _canJump = canJump;
         _input.OnChangingXValue += ShiftToSides;
-        if (canJump)
+        if (_canJump)
             _input.OnJump += Jump;
 
         _moveSides = 0;
@@ -37,9 +42,10 @@ internal class PlayerDOMover : BaseMover
 
     private void StartMove()
     {
-        _transform.DOMoveZ(_transform.position.z + (_forwardMove * _multiplier), _forwardSpeed)
-            .SetLoops(-1, LoopType.Incremental)
-            .SetEase(Ease.Linear);
+        _moveSequence = DOTween.Sequence();
+        _moveSequence.Append(_transform.DOMoveZ(_transform.position.z + (_forwardMove * _multiplier), _forwardSpeed)
+            .SetLoops(Int32.MaxValue, LoopType.Incremental)
+            .SetEase(Ease.Linear));
     }
 
     private void ShiftToSides(float xValue)
@@ -58,10 +64,10 @@ internal class PlayerDOMover : BaseMover
         _isSideMoving = true;
         _transform.DOMoveX(_transform.position.x + _sideShift * number, _sideSpeed)
             .OnComplete(() =>
-        {
-            _moveSides += number;
-            _isSideMoving = false;
-        });
+            { 
+                 _moveSides += number;
+                 _isSideMoving = false;
+            });
     }
 
     private void Jump()
@@ -73,5 +79,18 @@ internal class PlayerDOMover : BaseMover
                 .SetEase(Ease.Linear)
                 .OnComplete(() => _isJumping = false);
         }
+    }
+
+    public override void StopMoving()
+    {
+        _moveSequence.Kill();
+        _isJumping = true;
+    }
+
+    public override void Dispose()
+    {
+        _input.OnChangingXValue -= ShiftToSides;
+        if (_canJump)
+            _input.OnJump -= Jump;
     }
 }

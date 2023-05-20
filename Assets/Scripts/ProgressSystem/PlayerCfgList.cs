@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using PlayerSystem;
 
-namespace SettingsSystem
+namespace ProgressSystem
 {
     [CreateAssetMenu(fileName = nameof(PlayerCfgList), menuName = "MyConfigs/PlayerCfgList")]
     internal class PlayerCfgList : ScriptableObject

@@ -8,7 +8,6 @@ namespace PlayerSystem
     {
         [SerializeField] private Rigidbody _rigidBody;
         [SerializeField] private BaseMover _mover;
-        //[SerializeField] private PlayerRBJumper _jumper;
         [SerializeField] private PlayerTriggerModule _trigger;
         [SerializeField] private CapsuleCollider _collider;
         public bool CanJump { get; private set; }
@@ -20,5 +19,10 @@ namespace PlayerSystem
             _trigger.Init(_collider, handler);
         }
 
+        public void StopPlayerMove() => _mover.StopMoving();
+        private void OnDestroy()
+        {
+            _mover.Dispose();
+        }
     }
 }

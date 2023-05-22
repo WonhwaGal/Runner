@@ -14,7 +14,12 @@ namespace ProgressSystem
             public string Name;
             public PlayerController Player;
             public bool CanJump;
-            public Sprite Image;
+            public Sprite PlayerImage;
+            public Sprite CloseImage;
+            public bool IsDefault;
+            public bool IsCurrent;
+            public bool IsOpen;
+            public int CoinPrice;
         }
 
         public List<PlayerConfig> Players = new List<PlayerConfig>();

@@ -18,7 +18,8 @@ namespace Infrastructure
         private PlayerControlSystem _playerController;
         private ProgressController _progressController;
         private MainFactory _mainFactory;
-        private GameStateColtroller _gameStateColtroller;
+        private GameStateColtroller _gameStateController;
+        private IUiController _uiController;
         private void Start()
         {
             CreateMainSystems();
@@ -27,27 +28,27 @@ namespace Infrastructure
 
         private void Update()
         {
-            _inputType.GetXValue();
-            _inputType.GetYValue();
+            _inputType.RegisterInput();
         }
 
         private void CreateMainSystems()
         {
             _inputType = new KeyboardInput();
-
-            _progressController = new ProgressController(_mainCanvas.GameUIView);
-            _playerController = new PlayerControlSystem(_inputType);
             _mainFactory = new MainFactory(_firstRoadSpan);
-            _gameStateColtroller = new GameStateColtroller(_playerController, _progressController, _mainFactory.RoadSystem);
+
+            _uiController = new UIController(_mainCanvas);
+            _progressController = new ProgressController(_mainCanvas.GameUIView);
+            _playerController = new PlayerControlSystem(_inputType, _mainFactory.RoadSystem);
+            _gameStateController = new GameStateColtroller(_playerController, _progressController, _uiController);
         }
 
         private void AssignConnections()
         {
+            _inputType.OnPauseGame += _gameStateController.PauseGame;
             _playerController.OnChoosingPlayer += _cameraFollow.SetTarget;
             _playerController.TriggerHandler.OnTriggeredByCoin += _progressController.CoinCounter.AddCoins;
             _playerController.TriggerHandler.OnGettingUpgrade += _mainCanvas.GameUIView.ActivateUpgradeImage;
-            _playerController.TriggerHandler.OnHittingAnObstacle += _gameStateColtroller.StopGame;
-            _mainCanvas.MainMenuView.OnSelectPlayer += _gameStateColtroller.SetCurrentPlayer;
+            _playerController.TriggerHandler.OnHittingAnObstacle += _gameStateController.StopGame;
         }
 
         private void SignOffConnections()
@@ -55,8 +56,7 @@ namespace Infrastructure
             _playerController.OnChoosingPlayer -= _cameraFollow.SetTarget;
             _playerController.TriggerHandler.OnTriggeredByCoin -= _progressController.CoinCounter.AddCoins;
             _playerController.TriggerHandler.OnGettingUpgrade -= _mainCanvas.GameUIView.ActivateUpgradeImage;
-            _playerController.TriggerHandler.OnHittingAnObstacle -= _gameStateColtroller.StopGame;
-            _mainCanvas.MainMenuView.OnSelectPlayer -= _gameStateColtroller.SetCurrentPlayer;
+            _playerController.TriggerHandler.OnHittingAnObstacle -= _gameStateController.StopGame;
         }
 
         private void OnDestroy()
@@ -64,6 +64,8 @@ namespace Infrastructure
             _mainFactory.Dispose();
             _playerController.Dispose();
             _progressController.Dispose();
+            _uiController.Dispose();
+            _gameStateController.Dispose();
             SignOffConnections();
         }
     }

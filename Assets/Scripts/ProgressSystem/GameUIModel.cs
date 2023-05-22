@@ -4,7 +4,7 @@ using Tools;
 
 namespace ProgressSystem
 {
-    internal class UIModel 
+    internal class GameUIModel 
     {
         public Action<int> OnChangeKM;
         private int _distance = 0;
@@ -12,7 +12,7 @@ namespace ProgressSystem
         private int _progressDistance;
 
         Sequence disSequence;
-        public UIModel()
+        public GameUIModel()
         {
             _distanceSpan = 10;
         }

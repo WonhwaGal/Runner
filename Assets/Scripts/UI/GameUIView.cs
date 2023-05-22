@@ -21,6 +21,7 @@ namespace GameUI
             _coinNumberText.text = "0";
             _distanceKm.text = "0";
         }
+
         public void SetCoinNumber(int number) => _coinNumberText.text = number.ToString();
 
         public void SetDistance(int distance) => _distanceKm.text = distance.ToString();

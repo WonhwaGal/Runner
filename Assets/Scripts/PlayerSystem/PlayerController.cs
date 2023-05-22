@@ -20,6 +20,7 @@ namespace PlayerSystem
         }
 
         public void StopPlayerMove() => _mover.StopMoving();
+
         private void OnDestroy()
         {
             _mover.Dispose();

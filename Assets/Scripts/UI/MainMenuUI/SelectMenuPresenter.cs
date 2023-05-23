@@ -1,5 +1,5 @@
-using System;
-using static ProgressSystem.PlayerCfgList;
+using UnityEngine.SceneManagement;
+using static ProgressSystem.GameProgressConfig;
 
 namespace GameUI
 {
@@ -14,16 +14,18 @@ namespace GameUI
             _selectLogic.AssignPlayerConfig(selectView.PlayerTypes);
             
             _selectLogic.OnSettingCoinNumber += UpdateCoinNumber;
+            _selectLogic.OnPlayerSelected += LoadSceneWithSelectedPlayer;
         }
 
         public void AssignSelectedPlayer(PlayerConfig config) => _selectLogic.SelectChosenPlayer(config);
         public void BuyPlayer(PlayerConfig config) => _selectLogic.BuyPlayer(config);
-        public void OpenNewPlayer(PlayerConfig config) => _selectLogic.AddNewPlayer(config);
         private void UpdateCoinNumber(int number) => _selectView.SetCoinNumber(number);
 
+        private void LoadSceneWithSelectedPlayer() => SceneManager.LoadScene("GameScene");
         public void Dispose()
         {
             _selectLogic.OnSettingCoinNumber -= UpdateCoinNumber;
+            _selectLogic.OnPlayerSelected -= LoadSceneWithSelectedPlayer;
         }
     }
 }

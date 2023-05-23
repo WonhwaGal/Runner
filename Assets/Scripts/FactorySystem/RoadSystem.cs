@@ -21,7 +21,7 @@ namespace Factories
         public RoadSystem(Transform firstRoadSpan)
         {
             _firstPos = firstRoadSpan.position;
-            _roadCreateSpeed = 50 / Constants.gameMultiplier;
+            _roadCreateSpeed = 60 / Constants.gameMultiplier;
             CreateRoadFactory();
         }
 

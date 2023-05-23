@@ -1,32 +1,44 @@
 ﻿using GameUI;
-using static ProgressSystem.PlayerCfgList;
+using static ProgressSystem.GameProgressConfig;
 
 namespace ProgressSystem
 {
-    internal class ProgressController
+    internal class ProgressController : IProgressController
     {
         private GameUIView _uiView;
         private GameUIModel _uiModel;
         private CoinCounter _coinCounter;
-        public ProgressController(GameUIView uiView)
+        private GameProgressConfig _gameConfig;
+
+        public GameUIModel UIModel { get => _uiModel; }
+        public CoinCounter CoinCounter { get => _coinCounter; }
+        public GameProgressConfig GameConfig { get => _gameConfig; }
+
+        public ProgressController(GameUIView uiView, GameProgressConfig gameConfig)
         {
             _uiView = uiView;
+            _gameConfig = gameConfig;
             _uiModel = new GameUIModel();
             _coinCounter = new CoinCounter();
             UIModel.OnChangeKM += _uiView.SetDistance;
             CoinCounter.OnCollectCoins += _uiView.SetCoinNumber;
-            
+            CoinCounter.SetCoinNumber(_gameConfig.TotalCoinCount);
         }
 
-        public GameUIModel UIModel { get => _uiModel; }
-        public CoinCounter CoinCounter { get => _coinCounter; }
-
-        public int GetCurrentProgress()
+        public PlayerConfig RecieveCurrentPlayer()
+        {
+            for(int i = 0; i < GameConfig.Players.Count; i++)
+            {
+                if (GameConfig.Players[i].IsCurrent)
+                    return GameConfig.Players[i];
+            }
+            return GameConfig.Players[0];
+        }
+        public void RecieveCurrentProgress()
         {
             _uiModel.StopDistanceCount();
-            return _coinCounter.SaveCurrentCoinNumber();
+            _gameConfig.TotalCoinCount = _coinCounter.SaveCurrentCoinNumber();
         }
-        public void SpendCoinsOnPlayer(PlayerConfig config) => _coinCounter.AddCoins(config.CoinPrice * -1);
 
         public void Dispose()
         {

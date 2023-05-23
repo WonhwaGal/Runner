@@ -5,8 +5,8 @@ using PlayerSystem;
 
 namespace ProgressSystem
 {
-    [CreateAssetMenu(fileName = nameof(PlayerCfgList), menuName = "MyConfigs/PlayerCfgList")]
-    internal class PlayerCfgList : ScriptableObject
+    [CreateAssetMenu(fileName = nameof(GameProgressConfig), menuName = "MyConfigs/GameProgressConfig")]
+    internal class GameProgressConfig : ScriptableObject
     {
         [Serializable]
         internal class PlayerConfig
@@ -21,7 +21,8 @@ namespace ProgressSystem
             public bool IsOpen;
             public int CoinPrice;
         }
-
+        public string DefaultPlayerName;
+        public int TotalCoinCount;
         public List<PlayerConfig> Players = new List<PlayerConfig>();
     }
 }

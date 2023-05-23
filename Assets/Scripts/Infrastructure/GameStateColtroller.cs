@@ -3,8 +3,10 @@ using GameUI;
 using PlayerSystem;
 using ProgressSystem;
 using System;
-using static ProgressSystem.PlayerCfgList;
-
+using DG.Tweening;
+using UnityEngine.SceneManagement;
+using static ProgressSystem.GameProgressConfig;
+using Tools;
 
 namespace Infrastructure
 {
@@ -12,37 +14,30 @@ namespace Infrastructure
     {
         public Action OnGameStop;
 
-        private PlayerControlSystem _playerController;
-        private ProgressController _progressController;
+        private IPlayerControlSystem _playerController;
+        private IProgressController _progressController;
         private PlayerConfig _currentPlayer;
         private IUiController _uiController;
-        private SelectMenuLogic _selectMenuLogic;
 
-        private IDataSaver _dataSaver;
-        private SavedData _savedData;
-
+        private DataController _dataController;
         private bool _isPaused;
 
-        public GameStateColtroller(PlayerControlSystem playerController,
-            ProgressController progressController,
+        public GameStateColtroller(IPlayerControlSystem playerController,
+            IProgressController progressController,
             IUiController uiController)
         {
             _playerController = playerController;
             _progressController = progressController;
             _uiController = uiController;
-            _selectMenuLogic = _uiController.SelectLogic;
-            _selectMenuLogic.OnSelectPlayer += SetCurrentPlayer;
-            _selectMenuLogic.OnCancellingProgress += _progressController.CoinCounter.SetCoinNumber;
-            _selectMenuLogic.OnBuyingPlayer += _progressController.SpendCoinsOnPlayer;
-            _dataSaver = new JSONDataSaver();
-            LoadProgress();
-        }
-        public void SetCurrentPlayer(PlayerConfig currentPlayer)
-        {
-            _currentPlayer = currentPlayer;
-            currentPlayer.IsCurrent = true;
+            _currentPlayer = progressController.RecieveCurrentPlayer();
+
+            _uiController.PauseView.OnContinueGame += PauseGame;
+            _uiController.PauseView.OnExit += LoseGame;
+            _uiController.PauseView.OnBackToMenu += LoadMenuScene;
+
             StartGame();
         }
+
         public void StartGame()
         {
             _playerController.CreatePlayer(_currentPlayer);
@@ -55,29 +50,34 @@ namespace Infrastructure
             _playerController.PausePlayer(_isPaused);
         }
 
-        public void StopGame()
+        public void LoseGame()
+        {
+            SaveProgressAfterPlaying();
+
+            Sequence gameLostS = DOTween.Sequence();
+            gameLostS.AppendInterval(2.0f).AppendCallback(LoadMenuScene);
+        }
+        private void SaveProgressAfterPlaying()
         {
             _playerController.StopPlayer();
-            _savedData = _selectMenuLogic.UpdateAfterGame();
-            _savedData.TotalCollectedCoins = _progressController.GetCurrentProgress();
-            _dataSaver.Save(_savedData);
+            _progressController.RecieveCurrentProgress();
+            _dataController = new DataController(_progressController.GameConfig);
+            _dataController.SaveProgress();
         }
-        private void LoadProgress()
+        private void LoadMenuScene()
         {
-            _savedData = _dataSaver.Load();
-            _savedData = _selectMenuLogic.UpdatePlayersConfig(_savedData);
-
-            if (_savedData.CurrentPlayer != null)
-                _currentPlayer = _savedData.CurrentPlayer;
-
-            _progressController.CoinCounter.AddCoins(_savedData.TotalCollectedCoins);
+            SaveProgressAfterPlaying();
+            SceneManager.LoadScene("MenuScene");
         }
 
-        public void Dispose()
+        private void IncreaseGameSpeed() // ?????????
         {
-            _selectMenuLogic.OnSelectPlayer -= SetCurrentPlayer;
-            _selectMenuLogic.OnCancellingProgress -= _progressController.CoinCounter.SetCoinNumber;
-            _selectMenuLogic.OnBuyingPlayer -= _progressController.SpendCoinsOnPlayer;
+        }
+
+        public void Dispose() 
+        {
+            _uiController.PauseView.OnContinueGame -= PauseGame;
+            _uiController.PauseView.OnExit -= LoseGame;
         }
     }
 }

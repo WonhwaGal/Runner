@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using static ProgressSystem.PlayerCfgList;
+using static ProgressSystem.GameProgressConfig;
 
 namespace DataSaving
 {
@@ -8,12 +8,12 @@ namespace DataSaving
     internal class SavedData
     {
         public int TotalCollectedCoins;
-        public Dictionary<string, PlayerConfig> OpenPlayers;
-        public PlayerConfig CurrentPlayer;
+        public List<string> OpenPlayerNames;
+        public string CurrentPlayerName;
 
         public SavedData()
         {
-            OpenPlayers = new Dictionary<string, PlayerConfig>();
+            OpenPlayerNames = new List<string>();
             TotalCollectedCoins = 0;
         }
     }

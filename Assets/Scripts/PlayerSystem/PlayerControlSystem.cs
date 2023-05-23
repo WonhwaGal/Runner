@@ -1,43 +1,41 @@
 using Factories;
 using Infrastructure;
-using System;
 using UnityEngine;
 using DG.Tweening;
-using static ProgressSystem.PlayerCfgList;
+using static ProgressSystem.GameProgressConfig;
 
 
 namespace PlayerSystem
 {
-    internal class PlayerControlSystem
+    internal class PlayerControlSystem: IPlayerControlSystem
     {
-        public Action<Transform> OnChoosingPlayer;
-        public Action OnGameStart;
-
         private IInput _inputType;
         private RoadSystem _roadSystem;
         private TriggerHandler _triggerHandler;
         private PlayerUpgradeController _upgrader;
         private PlayerController _playerController;
-        public PlayerControlSystem(IInput inputType, RoadSystem roadSystem)
+        private CameraFollow _cameraFollow;
+        public TriggerHandler TriggerHandler { get => _triggerHandler; set => _triggerHandler = value; }
+
+        public PlayerControlSystem(IInput inputType, RoadSystem roadSystem, CameraFollow cameraFollow)
         {
             _inputType = inputType;
             _upgrader = new PlayerUpgradeController();
             _roadSystem = roadSystem;
-            TriggerHandler = new TriggerHandler(_upgrader);
+            _cameraFollow = cameraFollow;
 
+            _triggerHandler = new TriggerHandler(_upgrader);
             _triggerHandler.OnGettingUpgrade += _upgrader.ActivateUpgrade;
-            OnGameStart += roadSystem.StartRoadSpawn;
+            _triggerHandler.OnHittingAnObstacle += _cameraFollow.ShakeCamera;
         }
-
-        public TriggerHandler TriggerHandler { get => _triggerHandler; set => _triggerHandler = value; }
 
         public void CreatePlayer(PlayerConfig config)
         {
             _playerController = GameObject.Instantiate(config.Player);
             _playerController.Initialize(_inputType, config.CanJump, TriggerHandler);
 
-            OnChoosingPlayer?.Invoke(_playerController.transform);
-            OnGameStart?.Invoke();
+            _roadSystem.StartRoadSpawn();
+            _cameraFollow.SetTarget(_playerController.transform);
         }
         public void PausePlayer(bool pauseOn)
         {
@@ -53,10 +51,6 @@ namespace PlayerSystem
             _roadSystem.StopRoadSpawn();
         }
 
-        public void Dispose()
-        {
-            _triggerHandler.OnGettingUpgrade -= _upgrader.ActivateUpgrade;
-            OnGameStart -= _roadSystem.StartRoadSpawn;
-        }
+        public void Dispose() => _triggerHandler.OnGettingUpgrade -= _upgrader.ActivateUpgrade;
     }
 }

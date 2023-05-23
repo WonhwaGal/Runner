@@ -2,10 +2,9 @@
 
 namespace GameUI
 {
-    internal interface IUiController
+    internal interface IMenuController
     {
         SelectMenuLogic SelectLogic { get; }
-        void PauseGame(bool isPaused);
         void Dispose();
     }
 }

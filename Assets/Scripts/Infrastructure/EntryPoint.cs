@@ -10,53 +10,49 @@ namespace Infrastructure
     {
         [SerializeField] private Transform _firstRoadSpan;
         [SerializeField] private CameraFollow _cameraFollow;
-        [SerializeField] private MainCanvas _mainCanvas;
-
+        [SerializeField] private GameCanvas _gameCanvas;
+        [SerializeField] private GameProgressConfig _gameConfig;
 
         private IInput _inputType;
 
-        private PlayerControlSystem _playerController;
-        private ProgressController _progressController;
+        private IPlayerControlSystem _playerController;
+        private IProgressController _progressController;
         private MainFactory _mainFactory;
         private GameStateColtroller _gameStateController;
         private IUiController _uiController;
+
         private void Start()
         {
             CreateMainSystems();
             AssignConnections();
         }
 
-        private void Update()
-        {
-            _inputType.RegisterInput();
-        }
+        private void Update() => _inputType.RegisterInput();
 
         private void CreateMainSystems()
         {
             _inputType = new KeyboardInput();
             _mainFactory = new MainFactory(_firstRoadSpan);
-
-            _uiController = new UIController(_mainCanvas);
-            _progressController = new ProgressController(_mainCanvas.GameUIView);
-            _playerController = new PlayerControlSystem(_inputType, _mainFactory.RoadSystem);
+            _uiController = new GameUIController(_gameCanvas);
+            _progressController = new ProgressController(_gameCanvas.GameUIView, _gameConfig);
+            _playerController = new PlayerControlSystem(_inputType, _mainFactory.RoadSystem, _cameraFollow);
             _gameStateController = new GameStateColtroller(_playerController, _progressController, _uiController);
         }
 
         private void AssignConnections()
         {
             _inputType.OnPauseGame += _gameStateController.PauseGame;
-            _playerController.OnChoosingPlayer += _cameraFollow.SetTarget;
             _playerController.TriggerHandler.OnTriggeredByCoin += _progressController.CoinCounter.AddCoins;
-            _playerController.TriggerHandler.OnGettingUpgrade += _mainCanvas.GameUIView.ActivateUpgradeImage;
-            _playerController.TriggerHandler.OnHittingAnObstacle += _gameStateController.StopGame;
+            _playerController.TriggerHandler.OnGettingUpgrade += _gameCanvas.GameUIView.ActivateUpgradeImage;
+            _playerController.TriggerHandler.OnHittingAnObstacle += _gameStateController.LoseGame;
         }
 
         private void SignOffConnections()
         {
-            _playerController.OnChoosingPlayer -= _cameraFollow.SetTarget;
+            _inputType.OnPauseGame -= _gameStateController.PauseGame;
             _playerController.TriggerHandler.OnTriggeredByCoin -= _progressController.CoinCounter.AddCoins;
-            _playerController.TriggerHandler.OnGettingUpgrade -= _mainCanvas.GameUIView.ActivateUpgradeImage;
-            _playerController.TriggerHandler.OnHittingAnObstacle -= _gameStateController.StopGame;
+            _playerController.TriggerHandler.OnGettingUpgrade -= _gameCanvas.GameUIView.ActivateUpgradeImage;
+            _playerController.TriggerHandler.OnHittingAnObstacle -= _gameStateController.LoseGame;
         }
 
         private void OnDestroy()
@@ -64,7 +60,6 @@ namespace Infrastructure
             _mainFactory.Dispose();
             _playerController.Dispose();
             _progressController.Dispose();
-            _uiController.Dispose();
             _gameStateController.Dispose();
             SignOffConnections();
         }

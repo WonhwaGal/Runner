@@ -34,11 +34,8 @@ namespace ProgressSystem
             }
             return GameConfig.Players[0];
         }
-        public void RecieveCurrentProgress()
-        {
-            _uiModel.StopDistanceCount();
-            _gameConfig.TotalCoinCount = _coinCounter.SaveCurrentCoinNumber();
-        }
+        public void RegisterCurrentProgress() 
+            => _gameConfig.TotalCoinCount = _coinCounter.SaveCurrentCoinNumber();
 
         public void Dispose()
         {

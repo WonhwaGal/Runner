@@ -7,22 +7,33 @@ namespace GameUI
 {
     internal class SelectMenuLogic
     {
-        public Action OnPlayerSelected { get; set; }
-        public Action<int> OnSettingCoinNumber { get; set; }
+        public Action OnPlayerSelected;
+        public Action<int> OnSettingCoinNumber;
+        public Action OnChangingGameCfg;
 
         private SavedData _savedData;
         private GameProgressConfig _gameConfig;
 
         public void AssignPlayerConfig(GameProgressConfig playerTypes) => _gameConfig = playerTypes;
-        public void SelectChosenPlayer(PlayerConfig config)
+        public void ChangeCurrentPlayerTo(PlayerConfig config)
         {
-            config.IsCurrent = true;
-            FindCurrentPlayer();
+            for (int i = 0; i < _gameConfig.Players.Count; i++)
+            {
+                if (_gameConfig.Players[i].Name == config.Name)
+                    _gameConfig.Players[i].IsCurrent = true;
+                else
+                    _gameConfig.Players[i].IsCurrent = false;
+            }
+            OnPlayerSelected?.Invoke();
+            OnChangingGameCfg?.Invoke();
         }
         public void BuyPlayer(PlayerConfig config)
         {
             config.IsOpen = true;
             _savedData.OpenPlayerNames.Add(config.Name);
+            _gameConfig.TotalCoinCount -= config.CoinPrice;
+            OnSettingCoinNumber?.Invoke(_gameConfig.TotalCoinCount);
+            OnChangingGameCfg?.Invoke();
         }
         public SavedData UpdatePlayersConfig(SavedData savedData)
         {
@@ -80,6 +91,7 @@ namespace GameUI
                     _gameConfig.Players[i].IsCurrent = false;
             }
         }
+
         private SavedData DrawDataFromConfig()
         {
             foreach (var player in _gameConfig.Players)

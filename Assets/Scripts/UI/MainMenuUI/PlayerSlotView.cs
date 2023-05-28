@@ -22,6 +22,7 @@ namespace GameUI
         {
             _buttonText.text = "Buy";
             _image.sprite = config.CloseImage;
+            _imageText.gameObject.SetActive(true);
             _imageText.text = $"You can buy this Player for {config.CoinPrice} coins";
         }
 

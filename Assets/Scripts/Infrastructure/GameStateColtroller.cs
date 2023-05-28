@@ -1,83 +1,61 @@
 ﻿using DataSaving;
-using GameUI;
-using PlayerSystem;
-using ProgressSystem;
 using System;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
-using static ProgressSystem.GameProgressConfig;
-using Tools;
+
 
 namespace Infrastructure
 {
     internal class GameStateColtroller
     {
-        public Action OnGameStop;
-
-        private IPlayerControlSystem _playerController;
-        private IProgressController _progressController;
-        private PlayerConfig _currentPlayer;
-        private IUiController _uiController;
-
+        private CommandsManager _commandsManager;
         private DataController _dataController;
-        private bool _isPaused;
 
-        public GameStateColtroller(IPlayerControlSystem playerController,
-            IProgressController progressController,
-            IUiController uiController)
+        public GameStateColtroller(CommandsManager commandsManager)
         {
-            _playerController = playerController;
-            _progressController = progressController;
-            _uiController = uiController;
-            _currentPlayer = progressController.RecieveCurrentPlayer();
+            _commandsManager = commandsManager;
 
-            _uiController.PauseView.OnContinueGame += PauseGame;
-            _uiController.PauseView.OnExit += LoseGame;
-            _uiController.PauseView.OnBackToMenu += LoadMenuScene;
+            _commandsManager.PauseView.OnContinueGame += PauseGame;
+            _commandsManager.PauseView.OnExit += LoseGame;
+            _commandsManager.PauseView.OnBackToMenu += LoadMenuScene;
 
             StartGame();
         }
 
-        public void StartGame()
-        {
-            _playerController.CreatePlayer(_currentPlayer);
-            _progressController.UIModel.StartDistanceCount();
-        }
-        public void PauseGame() 
-        {
-            _isPaused = !_isPaused;
-            _uiController.PauseGame(_isPaused);
-            _playerController.PausePlayer(_isPaused);
-        }
+        public void StartGame() => _commandsManager.Start();
+        public void PauseGame(bool isPaused) => _commandsManager.Pause(isPaused);
+        private void StopGame() => _commandsManager.Stop();
 
         public void LoseGame()
         {
+            StopGame();
             SaveProgressAfterPlaying();
-
             Sequence gameLostS = DOTween.Sequence();
             gameLostS.AppendInterval(2.0f).AppendCallback(LoadMenuScene);
         }
         private void SaveProgressAfterPlaying()
         {
-            _playerController.StopPlayer();
-            _progressController.RecieveCurrentProgress();
-            _dataController = new DataController(_progressController.GameConfig);
-            _dataController.SaveProgress();
+            if (_commandsManager.ProgressCommander is ProgressCommander commander)
+            {
+                commander.RegisterCurrentProgress();
+                _dataController = new DataController(commander.GameConfig);
+                _dataController.SaveProgress();
+            }
+            else
+                UnityEngine.Debug.Log("Failed to save data");
         }
+
         private void LoadMenuScene()
         {
             SaveProgressAfterPlaying();
             SceneManager.LoadScene("MenuScene");
         }
 
-        private void IncreaseGameSpeed() // ?????????
-        {
-        }
-
         public void Dispose() 
         {
-            _uiController.PauseView.OnContinueGame -= PauseGame;
-            _uiController.PauseView.OnExit -= LoseGame;
+            _commandsManager.PauseView.OnContinueGame -= PauseGame;
+            _commandsManager.PauseView.OnExit -= LoseGame;
+            _commandsManager.PauseView.OnBackToMenu -= LoadMenuScene;
         }
     }
 }

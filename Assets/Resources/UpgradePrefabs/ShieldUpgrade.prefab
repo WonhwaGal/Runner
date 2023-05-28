@@ -93,7 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7725037683213721525}
   - component: {fileID: 4002668587409783044}
-  - component: {fileID: 3089619002276056153}
+  - component: {fileID: 3677941436040738353}
   m_Layer: 0
   m_Name: ShieldUpgrade
   m_TagString: Untagged
@@ -130,7 +130,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 0.34732056}
   m_Center: {x: 0, y: 0, z: 0.0017242432}
---- !u!114 &3089619002276056153
+--- !u!114 &3677941436040738353
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,8 +139,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8453792849552225214}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cb348c6e64731947a50b34df11fd150, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f47973f0ac404c4d9b7d7c0fb45776b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _collectables:
+  - {fileID: 3677941436040738353}
   _upgradeType: 1
   _timeActive: 15

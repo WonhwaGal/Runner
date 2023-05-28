@@ -11,11 +11,13 @@ namespace Infrastructure
         [SerializeField] private GameProgressConfig _playerList;
 
         private MainMenuController _menuController;
+        private DataController _dataController;
 
         private void Start()
         {
-            _menuController = new MainMenuController(_menuCanvas);
-            new DataController(_playerList, _menuController.SelectLogic);
+            _dataController = new DataController(_playerList);
+            _menuController = new MainMenuController(_menuCanvas, _dataController);
+            _dataController.Init(_menuController.SelectLogic);
         }
 
         private void OnDestroy() => _menuController.Dispose();

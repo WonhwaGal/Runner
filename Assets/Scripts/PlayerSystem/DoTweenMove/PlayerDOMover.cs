@@ -11,9 +11,8 @@ internal class PlayerDOMover : BaseMover
     private Transform _transform;
 
     private Sequence _moveSequence;
-    private float _forwardMove = 1.5f;
+    private float _forwardMove = 12.0f;
     private float _forwardSpeed = 1.0f;
-    private float _multiplier;
 
     private float _sideShift = 5.0f;
     private float _sideSpeed = 0.5f;
@@ -35,17 +34,27 @@ internal class PlayerDOMover : BaseMover
             _input.OnJump += Jump;
 
         _moveSides = 0;
-        _multiplier = Constants.gameMultiplier;
-
         StartMove();
     }
 
-    private void StartMove()
+    public override void StartMove()
     {
+        if (_moveSequence != null)
+        {
+            _moveSequence.Play();
+            return;
+        }
+ 
         _moveSequence = DOTween.Sequence();
-        _moveSequence.Append(_transform.DOMoveZ(_transform.position.z + (_forwardMove * _multiplier), _forwardSpeed)
-            .SetLoops(Int32.MaxValue, LoopType.Incremental)
-            .SetEase(Ease.Linear));
+        _moveSequence.Append(_transform.DOMoveZ(_transform.position.z + _forwardMove, _forwardSpeed)
+            .SetEase(Ease.Linear))
+            .AppendCallback(IncreaseSpeed)
+            .SetLoops(Int32.MaxValue, LoopType.Incremental);
+    }
+    private void IncreaseSpeed()
+    {
+        _moveSequence.timeScale += 0.01f;
+        OnChangingSpeed?.Invoke(_forwardSpeed * _moveSequence.timeScale);
     }
 
     private void ShiftToSides(float xValue)
@@ -75,15 +84,21 @@ internal class PlayerDOMover : BaseMover
         if (!_isJumping)
         {
             _isJumping = true;
-            _transform.DOJump(_transform.position + new Vector3(0, 0, _forwardMove) * _multiplier, _jumpForce, 1, _forwardSpeed)
+            _transform.DOJump(_transform.position + new Vector3(0, 0, _forwardMove), _jumpForce, (int)_forwardSpeed, _forwardSpeed)
                 .SetEase(Ease.Linear)
                 .OnComplete(() => _isJumping = false);
         }
     }
 
+    public override void PauseMoving()
+    {
+        _moveSequence.Pause();
+        _isJumping = true;
+    }
     public override void StopMoving()
     {
         _moveSequence.Kill();
+        transform.DOMoveZ(_transform.position.z - 1.2f, _forwardSpeed);
         _isJumping = true;
     }
 

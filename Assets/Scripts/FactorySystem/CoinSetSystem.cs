@@ -16,6 +16,12 @@ public class CoinSetSystem
         _coinFactory.CreateListOfObjects();
     }
 
+    public void UpdateAnimationState(bool isPaused)
+    {
+        for (int i = 0; i < _coinFactory.Objects.Count; i++)
+            _coinFactory.Objects[i].PauseChild(isPaused);
+    }
+
     public void PutCoinsOnRoad(List<Transform> coinSetSpots)
     {
         for (int i = 0; i < coinSetSpots.Count; i++)

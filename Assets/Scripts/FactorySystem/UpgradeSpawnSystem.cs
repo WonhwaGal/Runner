@@ -18,6 +18,11 @@ namespace Factories
             _upgradeFactory.CreateListOfObjects();
         }
 
+        public void UpdateAnimationState(bool isPaused)
+        {
+            for (int i = 0; i < _upgradeFactory.Objects.Count; i++)
+                _upgradeFactory.Objects[i].PauseChild(isPaused);
+        }
         public void PutUpgradesOnRoad(List<Transform> upgradeSpots)
         {
             for (int i = 0; i < GetNumberOfUpgrades(upgradeSpots.Count); i++)

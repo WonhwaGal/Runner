@@ -14,18 +14,32 @@ namespace GameUI
         [SerializeField] private List<Image> _upgradeImages;
         [SerializeField] private List<Sprite> _upgradeSprites;
 
-        private Dictionary<UpgradeType, Sequence> _runningSequences = new Dictionary<UpgradeType, Sequence>();
+        private Dictionary<UpgradeType, Sequence> _runningSequences;
 
         private void Start()
         {
             _coinNumberText.text = "0";
             _distanceKm.text = "0";
+            _runningSequences = new Dictionary<UpgradeType, Sequence>();
         }
 
         public void SetCoinNumber(int number) => _coinNumberText.text = number.ToString();
 
         public void SetDistance(int distance) => _distanceKm.text = distance.ToString();
 
+        public void PauseGame(bool isPaused)
+        {
+            if (isPaused)
+            {
+                foreach (var pair in _runningSequences)
+                    pair.Value.Pause();
+            }
+            else
+            {
+                foreach (var pair in _runningSequences)
+                    pair.Value.Play();
+            }
+        }
         public void ActivateUpgradeImage(float timeSpan, UpgradeType upgrade)
         {
             Sequence mySequence = DOTween.Sequence();

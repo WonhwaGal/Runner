@@ -13,16 +13,25 @@ MonoBehaviour:
   m_Name: GameProgressConfig
   m_EditorClassIdentifier: 
   DefaultPlayerName: Player1
-  TotalCoinCount: 4
+  TotalCoinCount: 13
   Players:
+  - Name: BlueHairedGirl
+    Player: {fileID: 5443824114454748626, guid: ba56e27dd71db314bbfa43a8b116b473, type: 3}
+    CanJump: 1
+    PlayerImage: {fileID: 21300000, guid: cdb88fdb0cf46b244a667edaff21c7df, type: 3}
+    CloseImage: {fileID: 21300000, guid: 626b9cddb29049e4cac50cd87b419945, type: 3}
+    IsDefault: 1
+    IsCurrent: 1
+    IsOpen: 1
+    CoinPrice: 0
   - Name: Player1
     Player: {fileID: 6086633647762046291, guid: 54319359c8d135a4787023237632501b, type: 3}
     CanJump: 0
     PlayerImage: {fileID: 21300000, guid: c8a69ecdf54ac8e4b873466605de27ff, type: 3}
     CloseImage: {fileID: 21300000, guid: 92b204cca46037444ab18ba6701f86f7, type: 3}
-    IsDefault: 1
+    IsDefault: 0
     IsCurrent: 0
-    IsOpen: 1
+    IsOpen: 0
     CoinPrice: 0
   - Name: Player2
     Player: {fileID: 6086633647762046291, guid: 57c49ea0558df134690695205838335d, type: 3}
@@ -31,5 +40,5 @@ MonoBehaviour:
     CloseImage: {fileID: 21300000, guid: 626b9cddb29049e4cac50cd87b419945, type: 3}
     IsDefault: 0
     IsCurrent: 0
-    IsOpen: 0
+    IsOpen: 1
     CoinPrice: 50

@@ -264,8 +264,8 @@ GameObject:
   - component: {fileID: 9102345968109992424}
   - component: {fileID: 9102345968109992439}
   - component: {fileID: 9102345968109992438}
-  - component: {fileID: 3753462288681291647}
   - component: {fileID: -1623234242238549474}
+  - component: {fileID: 3026833411261256663}
   m_Layer: 0
   m_Name: Road_2
   m_TagString: Untagged
@@ -359,26 +359,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &3753462288681291647
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9102345968109992437}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 534df061c8128064d9d114809da57dd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _coinSpots:
-  - {fileID: 7482582061780190280}
-  - {fileID: 5902153550049680147}
-  - {fileID: 6076561030654528661}
-  _upgradeSpots:
-  - {fileID: 2984122299699174193}
-  - {fileID: 6489974693725026158}
-  - {fileID: 8293718573597464147}
 --- !u!65 &-1623234242238549474
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -392,6 +372,27 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 10, y: 2.220446e-16, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3026833411261256663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9102345968109992437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 972768d81c75e38469957b625c3949b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _collectables: []
+  _coinSpots:
+  - {fileID: 7482582061780190280}
+  - {fileID: 5902153550049680147}
+  - {fileID: 6076561030654528661}
+  _upgradeSpots:
+  - {fileID: 2984122299699174193}
+  - {fileID: 6489974693725026158}
+  - {fileID: 8293718573597464147}
 --- !u!1 &9116782974233310085
 GameObject:
   m_ObjectHideFlags: 0

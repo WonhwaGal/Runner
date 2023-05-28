@@ -29,6 +29,13 @@ namespace ProgressSystem
             _distance += _distanceSpan;
             OnChangeKM?.Invoke(_distance);
         }
+        public void PauseDistanceCount(bool isPaused)
+        {
+            if (isPaused)
+                disSequence.Pause();
+            else
+                disSequence.Play();
+        }
         public void StopDistanceCount() => disSequence.Kill();
         
         private void RegisterDistance() => _progressDistance = _distance;

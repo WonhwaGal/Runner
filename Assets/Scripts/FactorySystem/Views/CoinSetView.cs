@@ -1,12 +1,42 @@
+using Collectables;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Factories
 {
-    internal class CoinSetView : RespawnableObject
+    internal class CoinSetView : MonoBehaviour, IRespawnable
     {
-        private void Start()
+        [SerializeField] private List<CollectableObject> _collectables;
+        private bool _isActive;
+
+        public List<CollectableObject> Collectables => _collectables;
+        public GameObject BodyObject => gameObject;
+        public bool IsActive => _isActive;
+        private void OnBecameInvisible() => Deactivate();
+        public void Activate()
         {
-            _hasChildObjects = true;
+            _isActive = true;
+            gameObject.SetActive(true);
+        }
+
+        public void Deactivate()
+        {
+            _isActive = false;
+            gameObject.SetActive(false);
+
+            if (_collectables.Count > 0)
+            {
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    transform.GetChild(i).gameObject.SetActive(true);
+                }
+            }
+        }
+
+        public void PauseChild(bool isPaused)
+        {
+            for (int i = 0; i < _collectables.Count; i++)
+                _collectables[i].PauseAnimation(isPaused);
         }
     }
 }

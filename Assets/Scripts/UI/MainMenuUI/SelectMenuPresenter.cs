@@ -17,7 +17,7 @@ namespace GameUI
             _selectLogic.OnPlayerSelected += LoadSceneWithSelectedPlayer;
         }
 
-        public void AssignSelectedPlayer(PlayerConfig config) => _selectLogic.SelectChosenPlayer(config);
+        public void AssignSelectedPlayer(PlayerConfig config) => _selectLogic.ChangeCurrentPlayerTo(config);
         public void BuyPlayer(PlayerConfig config) => _selectLogic.BuyPlayer(config);
         private void UpdateCoinNumber(int number) => _selectView.SetCoinNumber(number);
 

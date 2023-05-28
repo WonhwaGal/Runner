@@ -12,7 +12,7 @@ namespace PlayerSystem
         public Action OnHittingAnObstacle;
         public TriggerHandler(PlayerUpgradeController upgrader) => _upgrader = upgrader;
 
-        public void SortOutCollectable(ICollectable collectable)
+        public void SortOutCollectable(CollectableObject collectable)
         {
             if (collectable.Type == CollectableType.Coin)
                 OnTriggeredByCoin?.Invoke(collectable.Value * _upgrader.CoinMultiplier);

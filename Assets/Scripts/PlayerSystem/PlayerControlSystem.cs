@@ -15,6 +15,7 @@ namespace PlayerSystem
         private PlayerUpgradeController _upgrader;
         private PlayerController _playerController;
         private CameraFollow _cameraFollow;
+
         public TriggerHandler TriggerHandler { get => _triggerHandler; set => _triggerHandler = value; }
 
         public PlayerControlSystem(IInput inputType, RoadSystem roadSystem, CameraFollow cameraFollow)
@@ -23,6 +24,7 @@ namespace PlayerSystem
             _upgrader = new PlayerUpgradeController();
             _roadSystem = roadSystem;
             _cameraFollow = cameraFollow;
+
 
             _triggerHandler = new TriggerHandler(_upgrader);
             _triggerHandler.OnGettingUpgrade += _upgrader.ActivateUpgrade;
@@ -36,13 +38,21 @@ namespace PlayerSystem
 
             _roadSystem.StartRoadSpawn();
             _cameraFollow.SetTarget(_playerController.transform);
+            _triggerHandler.OnHittingAnObstacle += _playerController.PlayerAnimator.FallDown;
         }
+
         public void PausePlayer(bool pauseOn)
         {
             if (pauseOn)
-                DOTween.PauseAll();
+            {
+                _playerController.PausePlayerMove();
+                _roadSystem.PauseRoadSpawn();
+            }
             else
-                DOTween.PlayAll();
+            {
+                _playerController.ResumePlayerMove();
+                _roadSystem.StartRoadSpawn();
+            }
         }
 
         public void StopPlayer()
@@ -51,6 +61,11 @@ namespace PlayerSystem
             _roadSystem.StopRoadSpawn();
         }
 
-        public void Dispose() => _triggerHandler.OnGettingUpgrade -= _upgrader.ActivateUpgrade;
+        public void Dispose()
+        {
+            _triggerHandler.OnGettingUpgrade -= _upgrader.ActivateUpgrade;
+            if (_playerController != null)
+                _triggerHandler.OnHittingAnObstacle -= _playerController.PlayerAnimator.FallDown;
+        }
     }
 }

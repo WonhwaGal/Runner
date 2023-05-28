@@ -6,10 +6,10 @@ namespace PlayerSystem
 {
     internal class PlayerTriggerModule : MonoBehaviour
     {
-        private CapsuleCollider _collider;
+        private BoxCollider _collider;
         private TriggerHandler _triggerHandler;
 
-        public void Init(CapsuleCollider collider, TriggerHandler triggerHandler)
+        public void Init(BoxCollider collider, TriggerHandler triggerHandler)
         {
             _collider = collider;
             _triggerHandler = triggerHandler;
@@ -20,7 +20,7 @@ namespace PlayerSystem
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent(out ICollectable collectable))
+            if (other.TryGetComponent(out CollectableObject collectable))
             {
                 _triggerHandler.SortOutCollectable(collectable);
                 collectable.ExecuteAction();

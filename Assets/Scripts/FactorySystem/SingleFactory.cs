@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Factories
 {
-    internal class SingleFactory<T> : GenericFactory<T> where T : RespawnableObject
+    internal class SingleFactory<T> : GenericFactory<T> where T : IRespawnable
     {
         private List<T> _inactiveList = new List<T>();
         public SingleFactory(string name) : base(name) { }
@@ -11,11 +11,11 @@ namespace Factories
         public override T Spawn()
         {
             _inactiveList.Clear();
-            for (int i = 0; i < _objects.Count; i++)
+            for (int i = 0; i < Objects.Count; i++)
             {
-                if (!_objects[i].IsActive)
+                if (!Objects[i].IsActive)
                 {
-                    _inactiveList.Add(_objects[i]);
+                    _inactiveList.Add(Objects[i]);
                 }
             }
             if (_inactiveList.Count > 0)
@@ -25,6 +25,7 @@ namespace Factories
                 return _inactiveList[randomNumber];
             }
             DublicateObject();
+
             return Spawn();
         }
     }

@@ -3,17 +3,19 @@ using UnityEngine;
 
 namespace Factories
 {
-    internal abstract class GenericFactory<T> where T : RespawnableObject
+    internal abstract class GenericFactory<T> where T : IRespawnable
     {
-        protected List<T> _objects;
+        private List<T> objects;
         protected List<string> objectNames;
         private string _prefabFolderName;
         private Transform _rootObject;
 
+        public List<T> Objects { get => objects; private set => objects = value; }
+
         public GenericFactory(string name)
         {
             _prefabFolderName = name;
-            _objects = new List<T>();
+            Objects = new List<T>();
             objectNames = new List<string>();
             _rootObject = new GameObject(name).transform;
         }
@@ -24,9 +26,7 @@ namespace Factories
         public void CreateListOfObjects()
         {
             for (int i = 0; i < objectNames.Count; i++)
-            {
                 CreateSingleObject(i);
-            }
         }
         protected GameObject DublicateObject()
         {
@@ -40,7 +40,7 @@ namespace Factories
             GameObject obj
                     = Object.Instantiate(prefab, _rootObject);
             obj.SetActive(false);
-            _objects.Add(obj.GetComponent<T>());
+            Objects.Add(obj.GetComponent<T>());
             return obj;
         }
     }

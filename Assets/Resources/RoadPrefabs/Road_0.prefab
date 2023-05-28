@@ -392,8 +392,8 @@ GameObject:
   - component: {fileID: 9102345968109992424}
   - component: {fileID: 9102345968109992439}
   - component: {fileID: 9102345968109992438}
-  - component: {fileID: 6142662914709515550}
   - component: {fileID: -4439939247050895072}
+  - component: {fileID: 3158149986851837327}
   m_Layer: 0
   m_Name: Road_0
   m_TagString: Untagged
@@ -488,26 +488,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &6142662914709515550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9102345968109992437}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 534df061c8128064d9d114809da57dd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _coinSpots:
-  - {fileID: 4611375650540317450}
-  - {fileID: 8971065575142038306}
-  - {fileID: 8813479212913953349}
-  _upgradeSpots:
-  - {fileID: 2543542236656433780}
-  - {fileID: 1550041396862231711}
-  - {fileID: 6924957570896974609}
 --- !u!65 &-4439939247050895072
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -521,3 +501,24 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 10, y: 2.220446e-16, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3158149986851837327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9102345968109992437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 972768d81c75e38469957b625c3949b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _collectables: []
+  _coinSpots:
+  - {fileID: 4611375650540317450}
+  - {fileID: 8971065575142038306}
+  - {fileID: 8813479212913953349}
+  _upgradeSpots:
+  - {fileID: 2543542236656433780}
+  - {fileID: 1550041396862231711}
+  - {fileID: 6924957570896974609}

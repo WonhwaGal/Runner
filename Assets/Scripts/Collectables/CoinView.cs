@@ -4,38 +4,40 @@ using System;
 
 namespace Collectables
 {
-    internal class CoinView: MonoBehaviour, ICollectable
+    internal class CoinView: CollectableObject
     {
-        private int _value;
-        private Sequence _rotationSequence;
-        private Vector3 _rotationTargetVector = new Vector3(0,80,0);
-        public int Value { get => _value; set => _value = value; }
-
-        public CollectableType Type { get; private set; }
-        public UpgradeType Upgrade { get; private set; }
+        private Vector3 _rotationTargetVector = new Vector3(0, 360, 0);
 
         private void Start()
         {
-            _value = 1;
+            Value = 1;
             Type = CollectableType.Coin;
             Upgrade = UpgradeType.None;
             AnimateCollectable();
         }
-        private void OnBecameVisible() => _rotationSequence.Play();
+        private void OnBecameVisible() => _animationSequence.Play();
 
-        public void ExecuteAction()
+        public override void PauseAnimation(bool isPaused)
+        {
+            if (isPaused)
+                _animationSequence.Pause();
+            else
+                _animationSequence.Play();
+        }
+
+        public override void ExecuteAction()
         {
             gameObject.SetActive(false);
-            _rotationSequence.Pause();
+            PauseAnimation(true);
         }
 
-        public void AnimateCollectable()
+        public override void AnimateCollectable()
         {
-            _rotationSequence = DOTween.Sequence();
-            _rotationSequence.Append(transform.DOLocalRotate(_rotationTargetVector, 1.0f))
-                .SetLoops(Int32.MaxValue, LoopType.Yoyo)
+            _animationSequence = transform.DORotate(_rotationTargetVector, 3.0f, RotateMode.LocalAxisAdd)
+                .SetLoops(Int32.MaxValue, LoopType.Incremental)
+                .SetRelative()
                 .SetEase(Ease.Linear);
         }
-        private void OnDestroy() => _rotationSequence.Kill();
+        private void OnDestroy() => _animationSequence.Kill();
     }
 }

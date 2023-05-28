@@ -4,8 +4,8 @@ using System;
 
 public class PauseView : MonoBehaviour
 {
-    public Action OnContinueGame;
-    public Action OnBackToMenu { get; set; }
+    public Action<bool> OnContinueGame { get; set; }
+    public Action OnBackToMenu;
     public Action OnExit;
 
     [SerializeField] private Button _continue;
@@ -14,7 +14,7 @@ public class PauseView : MonoBehaviour
 
     public void Init()
     {
-        _continue.onClick.AddListener(() => OnContinueGame?.Invoke());
+        _continue.onClick.AddListener(() => OnContinueGame?.Invoke(!gameObject.activeInHierarchy));
         _backToMenu.onClick.AddListener(() => OnBackToMenu?.Invoke());
         _exit.onClick.AddListener(() => OnExit?.Invoke());
         _exit.onClick.AddListener(ExitGame);

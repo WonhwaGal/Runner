@@ -9,20 +9,18 @@ namespace DataSaving
         private SelectMenuLogic _selectMenuLogic;
         private IDataSaver _dataSaver;
         private SavedData _savedData;
-        public DataController(GameProgressConfig gameConfig, SelectMenuLogic selectMenuLogic)
-        {
-            _gameConfig = gameConfig;
-            _selectMenuLogic = selectMenuLogic;
-            _dataSaver = new JSONDataSaver();
 
-            LoadProgress();
-        }
         public DataController(GameProgressConfig gameConfig)
         {
             _gameConfig = gameConfig;
             _dataSaver = new JSONDataSaver();
         }
 
+        public void Init(SelectMenuLogic selectMenuLogic)
+        {
+            _selectMenuLogic = selectMenuLogic;
+            LoadProgress();
+        }
         private void LoadProgress()
         {
             _savedData = _dataSaver.Load();

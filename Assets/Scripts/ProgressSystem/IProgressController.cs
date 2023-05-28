@@ -9,6 +9,6 @@ namespace ProgressSystem
         GameProgressConfig GameConfig { get; }
         CoinCounter CoinCounter { get; }
         PlayerConfig RecieveCurrentPlayer();
-        void RecieveCurrentProgress();
+        void RegisterCurrentProgress();
     }
 }

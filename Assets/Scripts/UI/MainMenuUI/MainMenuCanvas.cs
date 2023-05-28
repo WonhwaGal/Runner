@@ -42,7 +42,7 @@ namespace GameUI
         {
             _startMenuPanel.SetActive(false);
             _selectPlayerView.gameObject.SetActive(true);
-            _selectPlayerView.FillInPlayerPanel();
+            _selectPlayerView.UpdatePlayerPanel();
             _backButton.gameObject.SetActive(true);
         }
 

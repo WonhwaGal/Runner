@@ -20,7 +20,7 @@ namespace Infrastructure
         private MainFactory _mainFactory;
         private GameStateColtroller _gameStateController;
         private IUiController _uiController;
-
+        private CommandsManager _commandsManager;
         private void Start()
         {
             CreateMainSystems();
@@ -36,12 +36,14 @@ namespace Infrastructure
             _uiController = new GameUIController(_gameCanvas);
             _progressController = new ProgressController(_gameCanvas.GameUIView, _gameConfig);
             _playerController = new PlayerControlSystem(_inputType, _mainFactory.RoadSystem, _cameraFollow);
-            _gameStateController = new GameStateColtroller(_playerController, _progressController, _uiController);
+            _commandsManager = new CommandsManager(_playerController, _uiController, _progressController);
+            _gameStateController = new GameStateColtroller(_commandsManager);
         }
 
         private void AssignConnections()
         {
             _inputType.OnPauseGame += _gameStateController.PauseGame;
+            _commandsManager.OnPause += _mainFactory.UpdateAnimations;
             _playerController.TriggerHandler.OnTriggeredByCoin += _progressController.CoinCounter.AddCoins;
             _playerController.TriggerHandler.OnGettingUpgrade += _gameCanvas.GameUIView.ActivateUpgradeImage;
             _playerController.TriggerHandler.OnHittingAnObstacle += _gameStateController.LoseGame;
@@ -50,6 +52,7 @@ namespace Infrastructure
         private void SignOffConnections()
         {
             _inputType.OnPauseGame -= _gameStateController.PauseGame;
+            _commandsManager.OnPause -= _mainFactory.UpdateAnimations;
             _playerController.TriggerHandler.OnTriggeredByCoin -= _progressController.CoinCounter.AddCoins;
             _playerController.TriggerHandler.OnGettingUpgrade -= _gameCanvas.GameUIView.ActivateUpgradeImage;
             _playerController.TriggerHandler.OnHittingAnObstacle -= _gameStateController.LoseGame;

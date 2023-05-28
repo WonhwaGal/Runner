@@ -9,10 +9,5 @@ namespace GameUI
 
         public GameUIView GameUIView { get => _gameUiView; private set => _gameUiView = value; }
         public PauseView PauseView { get => _pauseView; private set => _pauseView = value; }
-
-        private void Start()
-        {
-            _pauseView.gameObject.SetActive(false);
-        }
     }
 }

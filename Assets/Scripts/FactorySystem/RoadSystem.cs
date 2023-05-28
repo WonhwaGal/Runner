@@ -10,7 +10,7 @@ namespace Factories
     {
         private GenericFactory<RoadSpan> _roadFactory;
         private Vector3 _firstPos;
-        private readonly float _roadCreateSpeed;
+        private const float _roadCreateSpeed = 6;
         private Vector3 _shift = new Vector3(0, 0, 100);
 
         Sequence _roadSequence;
@@ -21,7 +21,6 @@ namespace Factories
         public RoadSystem(Transform firstRoadSpan)
         {
             _firstPos = firstRoadSpan.position;
-            _roadCreateSpeed = 60 / Constants.gameMultiplier;
             CreateRoadFactory();
         }
 
@@ -35,13 +34,24 @@ namespace Factories
         }
 
         public void StartRoadSpawn() => SetRoadRespawn();
+        public void PauseRoadSpawn() => _roadSequence.Pause();
         public void StopRoadSpawn() => _roadSequence.Kill();
 
         private void SetRoadRespawn()
         {
+            if (_roadSequence != null)
+            {
+                _roadSequence.Play();
+                return;
+            }
             _roadSequence = DOTween.Sequence();
-            _roadSequence.AppendCallback(PutRoadAhead).AppendInterval(_roadCreateSpeed).SetLoops(-1);
+            _roadSequence.AppendCallback(PutRoadAhead)
+                .AppendInterval(_roadCreateSpeed)
+                .AppendCallback(IncreaseSpeed)
+                .SetLoops(-1);
         }
+        private void IncreaseSpeed() => _roadSequence.timeScale += 0.05f;
+
         private void PutRoadAhead()
         {
             var roadSpan = _roadFactory.Spawn();

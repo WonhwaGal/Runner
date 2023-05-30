@@ -1,8 +1,8 @@
 ﻿using DataSaving;
-using System;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
-
+using Commands;
+using ProgressSystem;
 
 namespace Infrastructure
 {
@@ -19,6 +19,7 @@ namespace Infrastructure
             _commandsManager.PauseView.OnExit += LoseGame;
             _commandsManager.PauseView.OnBackToMenu += LoadMenuScene;
 
+            _dataController = new DataController();
             StartGame();
         }
 
@@ -29,20 +30,8 @@ namespace Infrastructure
         public void LoseGame()
         {
             StopGame();
-            SaveProgressAfterPlaying();
             Sequence gameLostS = DOTween.Sequence();
             gameLostS.AppendInterval(2.0f).AppendCallback(LoadMenuScene);
-        }
-        private void SaveProgressAfterPlaying()
-        {
-            if (_commandsManager.ProgressCommander is ProgressCommander commander)
-            {
-                commander.RegisterCurrentProgress();
-                _dataController = new DataController(commander.GameConfig);
-                _dataController.SaveProgress();
-            }
-            else
-                UnityEngine.Debug.Log("Failed to save data");
         }
 
         private void LoadMenuScene()
@@ -51,6 +40,16 @@ namespace Infrastructure
             SceneManager.LoadScene("MenuScene");
         }
 
+        private void SaveProgressAfterPlaying()
+        {
+            if (_commandsManager.ProgressCommander is ProgressCommander commander)
+            {
+                commander.RegisterCurrentProgress();
+                _dataController.SaveProgressFromConfig(commander.GameConfig);
+            }
+            else
+                UnityEngine.Debug.Log("Failed to save data");
+        }
         public void Dispose() 
         {
             _commandsManager.PauseView.OnContinueGame -= PauseGame;

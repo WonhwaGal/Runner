@@ -6,7 +6,7 @@ namespace Collectables
     internal abstract class CollectableObject : MonoBehaviour
     {
         private int _value;
-        protected Tween _animationSequence;
+        protected Tween _animationTween;
 
         public CollectableType Type { get; protected set; }
         public UpgradeType Upgrade { get; protected set; }

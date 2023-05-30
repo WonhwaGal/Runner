@@ -14,27 +14,26 @@ internal class PlayerDOMover : BaseMover
     private float _forwardMove = 12.0f;
     private float _forwardSpeed = 1.0f;
 
+    private Tween _sideTween;
     private float _sideShift = 5.0f;
-    private float _sideSpeed = 0.5f;
+    private float _sideSpeed = 0.3f;
     private bool _isSideMoving;
 
-    private float _jumpForce = 4;
+    private Tween _jumpTween;
+    private float _jumpForce;
     private bool _isJumping;
     private bool _canJump;
 
     private int _moveSides;
 
-    public override void Init(IInput input, bool canJump)
+    public override void Init(IInput input, float jumpForce)
     {
         _transform = transform;
         _input = input;
-        _canJump = canJump;
-        _input.OnChangingXValue += ShiftToSides;
-        if (_canJump)
-            _input.OnJump += Jump;
-
         _moveSides = 0;
+        SetJumpConditions(jumpForce);
         StartMove();
+        _input.OnChangingXValue += ShiftToSides;
     }
 
     public override void StartMove()
@@ -42,6 +41,7 @@ internal class PlayerDOMover : BaseMover
         if (_moveSequence != null)
         {
             _moveSequence.Play();
+            _isJumping = false;
             return;
         }
  
@@ -71,12 +71,13 @@ internal class PlayerDOMover : BaseMover
     private void MoveToSide(int number)
     {
         _isSideMoving = true;
-        _transform.DOMoveX(_transform.position.x + _sideShift * number, _sideSpeed)
+        _sideTween = _transform.DOMoveX(_transform.position.x + _sideShift * number, _sideSpeed)
             .OnComplete(() =>
             { 
                  _moveSides += number;
                  _isSideMoving = false;
             });
+        _sideTween.timeScale = _moveSequence.timeScale;
     }
 
     private void Jump()
@@ -84,9 +85,12 @@ internal class PlayerDOMover : BaseMover
         if (!_isJumping)
         {
             _isJumping = true;
-            _transform.DOJump(_transform.position + new Vector3(0, 0, _forwardMove), _jumpForce, (int)_forwardSpeed, _forwardSpeed)
+            OnJumping?.Invoke();
+            _jumpTween = _transform
+                .DOJump(_transform.position + new Vector3(0, 0, _forwardMove), _jumpForce, 1, _forwardSpeed)
                 .SetEase(Ease.Linear)
                 .OnComplete(() => _isJumping = false);
+            _jumpTween.timeScale = _moveSequence.timeScale;
         }
     }
 
@@ -98,10 +102,20 @@ internal class PlayerDOMover : BaseMover
     public override void StopMoving()
     {
         _moveSequence.Kill();
-        transform.DOMoveZ(_transform.position.z - 1.2f, _forwardSpeed);
+        transform.DOMoveZ(_transform.position.z - 1.7f, _forwardSpeed);
         _isJumping = true;
     }
-
+    private void SetJumpConditions(float jumpForce)
+    {
+        _jumpForce = jumpForce;
+        if (jumpForce == 0)
+            _canJump = false;
+        else
+        {
+            _canJump = true;
+            _input.OnJump += Jump;
+        }
+    }
     public override void Dispose()
     {
         _input.OnChangingXValue -= ShiftToSides;

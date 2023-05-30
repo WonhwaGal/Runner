@@ -15,14 +15,14 @@ namespace Collectables
             Upgrade = UpgradeType.None;
             AnimateCollectable();
         }
-        private void OnBecameVisible() => _animationSequence.Play();
+        private void OnBecameVisible() => _animationTween.Play();
 
         public override void PauseAnimation(bool isPaused)
         {
             if (isPaused)
-                _animationSequence.Pause();
+                _animationTween.Pause();
             else
-                _animationSequence.Play();
+                _animationTween.Play();
         }
 
         public override void ExecuteAction()
@@ -33,11 +33,11 @@ namespace Collectables
 
         public override void AnimateCollectable()
         {
-            _animationSequence = transform.DORotate(_rotationTargetVector, 3.0f, RotateMode.LocalAxisAdd)
+            _animationTween = transform.DORotate(_rotationTargetVector, 3.0f, RotateMode.LocalAxisAdd)
                 .SetLoops(Int32.MaxValue, LoopType.Incremental)
                 .SetRelative()
                 .SetEase(Ease.Linear);
         }
-        private void OnDestroy() => _animationSequence.Kill();
+        private void OnDestroy() => _animationTween.Kill();
     }
 }

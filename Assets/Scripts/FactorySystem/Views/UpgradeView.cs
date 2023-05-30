@@ -25,7 +25,10 @@ namespace Factories
         private void OnBecameInvisible() => Deactivate();
         private void Start()
         {
-            Type = CollectableType.Upgrade;
+            if (_upgradeType == UpgradeType.Crystal)
+                Type = CollectableType.Crystal;
+            else
+                Type = CollectableType.Upgrade;
             Upgrade = _upgradeType;
             Value = _timeActive;
             AnimateCollectable();

@@ -7,5 +7,6 @@ namespace Collectables
         None = 0,
         Shield = 1,
         DoublePoints = 2,
+        Crystal =3,
     }
 }

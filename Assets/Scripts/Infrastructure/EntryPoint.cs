@@ -1,3 +1,4 @@
+using Commands;
 using Factories;
 using GameUI;
 using PlayerSystem;
@@ -21,6 +22,7 @@ namespace Infrastructure
         private GameStateColtroller _gameStateController;
         private IUiController _uiController;
         private CommandsManager _commandsManager;
+
         private void Start()
         {
             CreateMainSystems();
@@ -44,7 +46,8 @@ namespace Infrastructure
         {
             _inputType.OnPauseGame += _gameStateController.PauseGame;
             _commandsManager.OnPause += _mainFactory.UpdateAnimations;
-            _playerController.TriggerHandler.OnTriggeredByCoin += _progressController.CoinCounter.AddCoins;
+            _playerController.TriggerHandler.OnTriggeredByCoin += _progressController.CollectableCounter.AddCoins;
+            _playerController.TriggerHandler.OnTriggeredByCrystal += _progressController.CollectableCounter.AddCrystals;
             _playerController.TriggerHandler.OnGettingUpgrade += _gameCanvas.GameUIView.ActivateUpgradeImage;
             _playerController.TriggerHandler.OnHittingAnObstacle += _gameStateController.LoseGame;
         }
@@ -53,7 +56,8 @@ namespace Infrastructure
         {
             _inputType.OnPauseGame -= _gameStateController.PauseGame;
             _commandsManager.OnPause -= _mainFactory.UpdateAnimations;
-            _playerController.TriggerHandler.OnTriggeredByCoin -= _progressController.CoinCounter.AddCoins;
+            _playerController.TriggerHandler.OnTriggeredByCoin -= _progressController.CollectableCounter.AddCoins;
+            _playerController.TriggerHandler.OnTriggeredByCrystal -= _progressController.CollectableCounter.AddCrystals;
             _playerController.TriggerHandler.OnGettingUpgrade -= _gameCanvas.GameUIView.ActivateUpgradeImage;
             _playerController.TriggerHandler.OnHittingAnObstacle -= _gameStateController.LoseGame;
         }

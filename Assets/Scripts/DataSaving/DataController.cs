@@ -1,45 +1,46 @@
 using GameUI;
 using ProgressSystem;
+using UnityEngine;
 
 namespace DataSaving
 {
     internal class DataController
     {
-        private GameProgressConfig _gameConfig;
         private SelectMenuLogic _selectMenuLogic;
         private IDataSaver _dataSaver;
         private SavedData _savedData;
 
-        public DataController(GameProgressConfig gameConfig)
+        internal SavedData SavedData { get => _savedData; }
+
+        public DataController()
         {
-            _gameConfig = gameConfig;
+            //UnityEngine.Debug.Log(Application.persistentDataPath + "/DataSaver.json");
             _dataSaver = new JSONDataSaver();
+            LoadProgress();
         }
 
         public void Init(SelectMenuLogic selectMenuLogic)
         {
             _selectMenuLogic = selectMenuLogic;
-            LoadProgress();
-        }
-        private void LoadProgress()
-        {
-            _savedData = _dataSaver.Load();
-            _savedData = _selectMenuLogic.UpdatePlayersConfig(_savedData);
-            _gameConfig.TotalCoinCount = _savedData.TotalCollectedCoins;
+            _selectMenuLogic.UpdatePlayersConfig(SavedData);
         }
 
-        public void SaveProgress()
+        private void LoadProgress() => _savedData = _dataSaver.Load();
+        public void SaveProgress(SavedData savedData) => _dataSaver.Save(savedData);
+        public void SaveProgressFromConfig(GameProgressConfig gameConfig)
         {
-            _savedData = new SavedData();
-            _savedData.TotalCollectedCoins = _gameConfig.TotalCoinCount;
-            foreach(var player in _gameConfig.Players)
+            var savedData = new SavedData();
+            savedData.TotalCollectedCoins = gameConfig.TotalCoinCount;
+            savedData.TotalCollectedCrystals = gameConfig.TotalCrystalCount;
+            for (int i = 0; i < gameConfig.Players.Count; i++)
             {
-                if (player.IsOpen)
-                    _savedData.OpenPlayerNames.Add(player.Name);
-                if (player.IsCurrent)
-                    _savedData.CurrentPlayerName = player.Name;
+                savedData.TimesLeftToPlay.Add(gameConfig.Players[i].TimesLeftToPlay);
+                if (gameConfig.Players[i].IsCurrent && gameConfig.Players[i].IsOpen)
+                    savedData.CurrentPlayerName = gameConfig.Players[i].Name;
+                if (gameConfig.Players[i].IsOpen)
+                    savedData.OpenPlayersNames.Add(gameConfig.Players[i].Name);
             }
-            _dataSaver.Save(_savedData);
+            _dataSaver.Save(savedData);
         }
     }
 }

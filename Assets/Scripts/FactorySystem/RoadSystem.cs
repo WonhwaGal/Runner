@@ -10,10 +10,12 @@ namespace Factories
     {
         private GenericFactory<RoadSpan> _roadFactory;
         private Vector3 _firstPos;
-        private const float _roadCreateSpeed = 6;
+        private const float _roadCreateSpeed = 7;
+        private const float _increaseSpeed = 1.0f;
         private Vector3 _shift = new Vector3(0, 0, 100);
 
         Sequence _roadSequence;
+        Sequence _speedSequence;
 
         public event Action<List<Transform>> OnRoadForCoins;
         public event Action<List<Transform>> OnRoadForUpdates;
@@ -33,9 +35,21 @@ namespace Factories
             _roadFactory.CreateListOfObjects();
         }
 
-        public void StartRoadSpawn() => SetRoadRespawn();
-        public void PauseRoadSpawn() => _roadSequence.Pause();
-        public void StopRoadSpawn() => _roadSequence.Kill();
+        public void StartRoadSpawn()
+        {
+            SetRoadRespawn();
+            IncreaseRespawn();
+        }
+        public void PauseRoadSpawn()
+        {
+            _roadSequence.Pause();
+            _speedSequence.Pause();
+        }
+        public void StopRoadSpawn()
+        {
+            _roadSequence.Kill();
+            _speedSequence.Kill();
+        }
 
         private void SetRoadRespawn()
         {
@@ -47,10 +61,17 @@ namespace Factories
             _roadSequence = DOTween.Sequence();
             _roadSequence.AppendCallback(PutRoadAhead)
                 .AppendInterval(_roadCreateSpeed)
-                .AppendCallback(IncreaseSpeed)
                 .SetLoops(-1);
         }
-        private void IncreaseSpeed() => _roadSequence.timeScale += 0.05f;
+
+        private void IncreaseRespawn()
+        {
+            _speedSequence = DOTween.Sequence();
+            _speedSequence.AppendInterval(_increaseSpeed)
+                .AppendCallback(IncreaseSpeed)
+                .SetLoops(Int32.MaxValue);
+        }
+        private void IncreaseSpeed() => _roadSequence.timeScale += 0.01f;
 
         private void PutRoadAhead()
         {

@@ -7,7 +7,7 @@ namespace ProgressSystem
     {
         GameUIModel UIModel { get; }
         GameProgressConfig GameConfig { get; }
-        CoinCounter CoinCounter { get; }
+        CollectableCounter CollectableCounter { get; }
         PlayerConfig RecieveCurrentPlayer();
         void RegisterCurrentProgress();
     }

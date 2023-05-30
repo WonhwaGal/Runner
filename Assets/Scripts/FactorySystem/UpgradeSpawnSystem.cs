@@ -14,6 +14,7 @@ namespace Factories
             _upgradeFactory = new SingleFactory<UpgradeView>("UpgradePrefabs");
             _upgradeFactory.AddPrefabNameToList("DoubleUpgrade");
             _upgradeFactory.AddPrefabNameToList("ShieldUpgrade");
+            _upgradeFactory.AddPrefabNameToList("JemCollectable");
 
             _upgradeFactory.CreateListOfObjects();
         }
@@ -33,8 +34,9 @@ namespace Factories
         }
         private int GetNumberOfUpgrades(int listCount)
         {
-            var number = Random.Range(0, 2);
-            if (number == 0)
+            int probability = 3;
+            var number = Random.Range(0, probability);
+            if (number < probability - 1)
                 return 0;
             else
                 return Random.Range(0, listCount);

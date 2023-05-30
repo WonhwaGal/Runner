@@ -10,6 +10,7 @@ namespace GameUI
     public class GameUIView : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _coinNumberText;
+        [SerializeField] private TextMeshProUGUI _crystalNumberText;
         [SerializeField] private TextMeshProUGUI _distanceKm;
         [SerializeField] private List<Image> _upgradeImages;
         [SerializeField] private List<Sprite> _upgradeSprites;
@@ -24,7 +25,7 @@ namespace GameUI
         }
 
         public void SetCoinNumber(int number) => _coinNumberText.text = number.ToString();
-
+        public void SetCrystalNumber(int number) => _crystalNumberText.text = number.ToString();
         public void SetDistance(int distance) => _distanceKm.text = distance.ToString();
 
         public void PauseGame(bool isPaused)
@@ -66,6 +67,8 @@ namespace GameUI
 
             for(int i = 0; i < _upgradeImages.Count; i++)
             {
+                if (_upgradeImages[i].gameObject == null)
+                    return;
                 if (!_upgradeImages[i].gameObject.activeInHierarchy)
                 {
                     _upgradeImages[i].sprite = result;

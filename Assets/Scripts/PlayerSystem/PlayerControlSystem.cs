@@ -33,14 +33,25 @@ namespace PlayerSystem
 
         public void CreatePlayer(PlayerConfig config)
         {
+            UpdateLimitedUse(config);
             _playerController = GameObject.Instantiate(config.Player);
-            _playerController.Initialize(_inputType, config.CanJump, TriggerHandler);
+            _playerController.Initialize(_inputType, config.JumpForce, TriggerHandler);
 
             _roadSystem.StartRoadSpawn();
             _cameraFollow.SetTarget(_playerController.transform);
+            _triggerHandler.Init(config.UpgradeMultiplier, config.CoinMultiplier);
             _triggerHandler.OnHittingAnObstacle += _playerController.PlayerAnimator.FallDown;
         }
 
+        private void UpdateLimitedUse(PlayerConfig config)
+        {
+            if (config.LimitedUse)
+            {
+                config.TimesLeftToPlay--;
+                if (config.TimesLeftToPlay == 0)
+                    config.IsOpen = false;
+            }
+        }
         public void PausePlayer(bool pauseOn)
         {
             if (pauseOn)

@@ -16,11 +16,9 @@ namespace GameUI
         [SerializeField] private Button _cancelProgressButton;
         [SerializeField] private Button _exitButton;
         [SerializeField] private Button _backButton;
-
-        public Action OnStartingGame;
+  
         internal SelectPlayerView SelectPlayerView { get => _selectPlayerView; private set => _selectPlayerView = value; }
         public Button StartButton { get => _startButton; set => _startButton = value; }
-        public Button ExitButton { get => _exitButton; set => _exitButton = value; }
 
         private void Start()
         {

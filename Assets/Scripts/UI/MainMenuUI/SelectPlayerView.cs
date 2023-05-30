@@ -12,6 +12,7 @@ namespace GameUI
         [SerializeField] private GameProgressConfig _playerTypes;
         [SerializeField] private PlayerSlotView _playerSlotView;
         [SerializeField] private TextMeshProUGUI _coinNumber;
+        [SerializeField] private TextMeshProUGUI _crystalNumber;
 
         private SelectMenuPresenter _presenter;
         private List<PlayerSlotView> _playerSlots;
@@ -26,6 +27,8 @@ namespace GameUI
         }
 
         public void SetCoinNumber(int number) => _coinNumber.text = number.ToString();
+        public void SetCrystalNumber(int number) => _crystalNumber.text = number.ToString();
+
         public void FillInPlayerPanel()
         {
             for (int i = 0; i < PlayerTypes.Players.Count; i++)
@@ -40,7 +43,11 @@ namespace GameUI
         {
             for (int i = 0; i < _playerSlots.Count; i++)
             {
-                if (PlayerTypes.Players[i].IsOpen)
+                var player = PlayerTypes.Players[i];
+                if (player.LimitedUse && player.TimesLeftToPlay == 0)
+                    player.IsOpen = false;
+
+                if (player.IsOpen)
                     OpenPlayer(_playerSlots[i], i);
                 else
                     ClosePlayer(_playerSlots[i], i);
@@ -73,6 +80,6 @@ namespace GameUI
             }
         }
         private void PlayThisPlayer(int number) 
-            => _presenter.AssignSelectedPlayer(PlayerTypes.Players[number]);
+            => _presenter.MakePlayerCurrent(PlayerTypes.Players[number]);
     }
 }

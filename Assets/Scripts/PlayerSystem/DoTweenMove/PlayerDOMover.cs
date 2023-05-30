@@ -12,7 +12,7 @@ internal class PlayerDOMover : BaseMover
 
     private Sequence _moveSequence;
     private float _forwardMove = 12.0f;
-    private float _forwardSpeed = 1.0f;
+    private float _forwardSpeed = Constants.increaseSpeed;
 
     private Tween _sideTween;
     private float _sideShift = 5.0f;

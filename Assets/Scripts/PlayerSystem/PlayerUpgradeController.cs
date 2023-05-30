@@ -7,17 +7,20 @@ namespace PlayerSystem
     internal class PlayerUpgradeController
     {
         private bool _shieldOn;
-        private int _defaultCoinMultiplier;
+        private int _defaultMultiplier;
         private int _coinMultiplier;
+        private int _crystalMultiplier;
 
         private Dictionary<UpgradeType, Sequence> _runningSequences = new();
 
-        public int CoinMultiplier { get => _coinMultiplier; set => _coinMultiplier = value; }
+        public int CoinMultiplier { get => _coinMultiplier; }
+        public int CrystalMultiplier { get => _crystalMultiplier;}
 
         public PlayerUpgradeController()
         {
-            _defaultCoinMultiplier = 1;
-            CoinMultiplier = _defaultCoinMultiplier;
+            _defaultMultiplier = 1;
+            _coinMultiplier = _defaultMultiplier;
+            _crystalMultiplier = _defaultMultiplier;
         }
 
         public void ActivateUpgrade(float timeSpan, UpgradeType upgrade)
@@ -30,14 +33,18 @@ namespace PlayerSystem
         }
         private void SetDoublePoints(float timeSpan)
         {
-            if(_coinMultiplier > _defaultCoinMultiplier)
+            if(_coinMultiplier > _defaultMultiplier)
             {
                 KillPreviousSequence(UpgradeType.DoublePoints);
                 ResetPoints();
             }
 
             Sequence doublePointsSequence = DOTween.Sequence();
-            doublePointsSequence.AppendCallback(() => _coinMultiplier *= 2).AppendInterval(timeSpan)
+            doublePointsSequence.AppendCallback(() =>
+            {
+                _coinMultiplier *= 2;
+                _crystalMultiplier *= 2;
+            }).AppendInterval(timeSpan)
                 .OnComplete(ResetPoints); ;
         }
         private void TurnOnShield(float timeSpan)
@@ -56,7 +63,8 @@ namespace PlayerSystem
 
         private void ResetPoints()
         {
-            _coinMultiplier = _defaultCoinMultiplier;
+            _coinMultiplier = _defaultMultiplier;
+            _crystalMultiplier = _defaultMultiplier;
             _runningSequences.Remove(UpgradeType.DoublePoints);
         }
         private void TurnOffShield()

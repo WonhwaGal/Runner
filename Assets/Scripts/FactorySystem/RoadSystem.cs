@@ -11,7 +11,7 @@ namespace Factories
         private GenericFactory<RoadSpan> _roadFactory;
         private Vector3 _firstPos;
         private const float _roadCreateSpeed = 7;
-        private const float _increaseSpeed = 1.0f;
+        private float _increaseSpeed = Constants.increaseSpeed;
         private Vector3 _shift = new Vector3(0, 0, 100);
 
         Sequence _roadSequence;
@@ -29,9 +29,7 @@ namespace Factories
         private void CreateRoadFactory()
         {
             _roadFactory = new SingleFactory<RoadSpan>("RoadPrefabs");
-            _roadFactory.AddPrefabNameToList("Road_0");
-            _roadFactory.AddPrefabNameToList("Road_1");
-            _roadFactory.AddPrefabNameToList("Road_2");
+            _roadFactory.AddPrefabNameToList("RoadBlock1");
             _roadFactory.CreateListOfObjects();
         }
 

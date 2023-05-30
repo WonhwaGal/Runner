@@ -25,6 +25,7 @@ namespace ProgressSystem
             public int CoinPrice;
             public float UpgradeMultiplier = 1;
             public int CoinMultiplier = 1;
+            public int CrystalMultiplier = 1;
         }
         public string DefaultPlayerName;
         public int TotalCoinCount;

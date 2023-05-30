@@ -12,11 +12,13 @@ namespace ProgressSystem
         public void AddCoins(int value)
         {
             _coinsCollected += value;
+            if (_coinsCollected <= 0)
+                _coinsCollected = 0;
             OnCollectCoins?.Invoke(_coinsCollected);
         }
-        public void AddCrystals()
+        public void AddCrystals(int value)
         {
-            _crystalsCollected++;
+            _crystalsCollected += value;
             OnCollectCrystals?.Invoke(_crystalsCollected);
         }
         public void SetCoinNumber(int coins, int crystals)

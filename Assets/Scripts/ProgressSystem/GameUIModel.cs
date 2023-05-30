@@ -9,20 +9,25 @@ namespace ProgressSystem
         public Action<int> OnChangeKM;
         private int _distance = 0;
         private int _distanceSpan;
-        private int _progressDistance;
+        private float _increaseSpeed = Constants.increaseSpeed;
 
-        Sequence disSequence;
+        Sequence _disSequence;
+        Sequence _speedSequence;
         public GameUIModel()
         {
             _distanceSpan = 10;
         }
-        public void StartDistanceCount() => CountDistance();
+        public void StartDistanceCount()
+        {
+            CountDistance();
+            IncreaseCountSpeed();
+        }
 
         private void CountDistance()
         {
-            disSequence = DOTween.Sequence();
-            disSequence.AppendInterval(Constants.gameMultiplier)
-                .AppendCallback(IncreaseDistance).SetLoops(-1).OnKill(RegisterDistance);
+            _disSequence = DOTween.Sequence();
+            _disSequence.AppendInterval(Constants.gameMultiplier)
+                .AppendCallback(IncreaseDistance).SetLoops(-1);
         }
         private void IncreaseDistance()
         {
@@ -32,12 +37,22 @@ namespace ProgressSystem
         public void PauseDistanceCount(bool isPaused)
         {
             if (isPaused)
-                disSequence.Pause();
+                _disSequence.Pause();
             else
-                disSequence.Play();
+                _disSequence.Play();
         }
-        public void StopDistanceCount() => disSequence.Kill();
-        
-        private void RegisterDistance() => _progressDistance = _distance;
+        public void StopDistanceCount() => _disSequence.Kill();
+
+        private void IncreaseCountSpeed()
+        {
+            _speedSequence = DOTween.Sequence();
+            _speedSequence.AppendInterval(_increaseSpeed)
+                .AppendCallback(IncreaseSpeed)
+                .SetLoops(Int32.MaxValue);
+        }
+        private void IncreaseSpeed() => _disSequence.timeScale += 0.01f;
+
+        //may need it later to keep track of km
+        //private void RegisterDistance() => _progressDistance = _distance;
     }
 }

@@ -30,6 +30,7 @@ MonoBehaviour:
     CoinPrice: 0
     UpgradeMultiplier: 1
     CoinMultiplier: 2
+    CrystalMultiplier: 1
   - Name: Lily
     Description: Great jumper, bad ubgrade user
     Player: {fileID: 5443824114454748626, guid: ba56e27dd71db314bbfa43a8b116b473, type: 3}
@@ -44,8 +45,9 @@ MonoBehaviour:
     CoinPrice: 50
     UpgradeMultiplier: 0.5
     CoinMultiplier: 1
+    CrystalMultiplier: 1
   - Name: Bianka
-    Description: Jem collector, buy to use 3 times
+    Description: Jem collector, big coin spender
     Player: {fileID: 6199670903983241977, guid: 56f573d4a5cb5f342b1df0398a49e801, type: 3}
     JumpForce: 2.3
     PlayerImage: {fileID: 21300000, guid: 51dfd109771417a4c81d3b352c59f2e3, type: 3}
@@ -56,5 +58,6 @@ MonoBehaviour:
     TimesToPlay: 3
     TimesLeftToPlay: 3
     CoinPrice: 100
-    UpgradeMultiplier: 2
-    CoinMultiplier: 1
+    UpgradeMultiplier: 1
+    CoinMultiplier: -2
+    CrystalMultiplier: 3

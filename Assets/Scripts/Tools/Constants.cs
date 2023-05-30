@@ -8,6 +8,6 @@ namespace Tools
         public static float rightBorder = 5f;
         public static float gameMultiplier = 5.0f;
         public static Vector3 jumpVector = new Vector3(0, 40, 10);
-        public static float jumpSpan = 0.1f;
+        public static float increaseSpeed = 1.0f;
     }
 }

@@ -83,33 +83,37 @@ namespace GameUI
         }
         public void BuyPlayer(PlayerConfig config)
         {
-            //change Config
             config.IsOpen = true;
             _gameConfig.TotalCoinCount -= config.CoinPrice;
-            //change saveData
+
             _savedData.OpenPlayersNames.Add(config.Name);
             _savedData.TotalCollectedCoins = _gameConfig.TotalCoinCount;
             _savedData.TotalCollectedCrystals = _gameConfig.TotalCrystalCount;
-            //change UI
+
             OnSettingCoinNumber?.Invoke(_gameConfig.TotalCoinCount);
             OnSettingCrystalNumber?.Invoke(_gameConfig.TotalCrystalCount);
             OnChangingGameCfg?.Invoke(_savedData);
         }
         public void CancelProgress()
         {
-            for(int i = 0; i < _gameConfig.Players.Count; i++)
+            _savedData.OpenPlayersNames.Clear();
+            _savedData.TimesLeftToPlay.Clear();
+
+            for (int i = 0; i < _gameConfig.Players.Count; i++)
             {
                 _gameConfig.Players[i].IsCurrent = false;
                 if (_gameConfig.Players[i].IsDefault)
+                {
                     _gameConfig.Players[i].IsOpen = true;
+                    _savedData.OpenPlayersNames.Add(_gameConfig.Players[i].Name);
+                }
                 else
                     _gameConfig.Players[i].IsOpen = false;
                 _gameConfig.Players[i].TimesLeftToPlay = _gameConfig.Players[i].TimesToPlay;
+                _savedData.TimesLeftToPlay.Add(_gameConfig.Players[i].TimesToPlay);
             }
             ConfigCollectablesToZero();
-
-            _savedData.OpenPlayersNames.Clear();
-            _savedData.TimesLeftToPlay.Clear();
+            UpdateGameUIFromConfig();
             _savedData.TotalCollectedCoins = 0;
             _savedData.TotalCollectedCrystals = 0;
             OnChangingGameCfg?.Invoke(_savedData);

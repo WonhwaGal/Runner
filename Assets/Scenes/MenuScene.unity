@@ -1049,7 +1049,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuCanvas: {fileID: 679513399}
-  _playerList: {fileID: 11400000, guid: a81e415c52bd25c4d9b207d14eba6db6, type: 2}
 --- !u!1 &1953027788
 GameObject:
   m_ObjectHideFlags: 0

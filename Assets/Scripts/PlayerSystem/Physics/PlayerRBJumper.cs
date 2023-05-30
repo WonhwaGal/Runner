@@ -40,7 +40,7 @@ namespace PlayerSystem
         public void FinishJump()
         {
             IsJumping = false;
-            _jumpSpan = Constants.jumpSpan;
+            //_jumpSpan = Constants.jumpSpan;
         }
     }
 }

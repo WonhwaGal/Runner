@@ -15,6 +15,7 @@ namespace Factories
             _upgradeFactory.AddPrefabNameToList("DoubleUpgrade");
             _upgradeFactory.AddPrefabNameToList("ShieldUpgrade");
             _upgradeFactory.AddPrefabNameToList("JemCollectable");
+            _upgradeFactory.AddPrefabNameToList("MagnetUpgrade");
 
             _upgradeFactory.CreateListOfObjects();
         }

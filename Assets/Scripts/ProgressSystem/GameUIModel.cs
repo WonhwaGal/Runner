@@ -9,7 +9,7 @@ namespace ProgressSystem
         public Action<int> OnChangeKM;
         private int _distance = 0;
         private int _distanceSpan;
-        private float _increaseSpeed = Constants.increaseSpeed;
+        private float _increaseSpeed = Constants.increaseSpeedSpan;
 
         Sequence _disSequence;
         Sequence _speedSequence;

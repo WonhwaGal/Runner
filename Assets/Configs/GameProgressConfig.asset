@@ -22,12 +22,13 @@ MonoBehaviour:
     JumpForce: 0
     PlayerImage: {fileID: 21300000, guid: 93d21406c3e32e84aa5d739fe56a81ad, type: 3}
     IsDefault: 1
-    IsCurrent: 1
+    IsCurrent: 0
     IsOpen: 1
     LimitedUse: 0
     TimesToPlay: 0
     TimesLeftToPlay: 0
-    CoinPrice: 0
+    CurrencyType: 0
+    CurrencyPrice: 0
     UpgradeMultiplier: 1
     CoinMultiplier: 2
     CrystalMultiplier: 1
@@ -37,12 +38,13 @@ MonoBehaviour:
     JumpForce: 3.7
     PlayerImage: {fileID: 21300000, guid: 75f14f89aa115ba47adcce65e5a060cc, type: 3}
     IsDefault: 0
-    IsCurrent: 0
+    IsCurrent: 1
     IsOpen: 0
     LimitedUse: 0
     TimesToPlay: 0
     TimesLeftToPlay: 0
-    CoinPrice: 50
+    CurrencyType: 1
+    CurrencyPrice: 150
     UpgradeMultiplier: 0.5
     CoinMultiplier: 1
     CrystalMultiplier: 1
@@ -57,7 +59,8 @@ MonoBehaviour:
     LimitedUse: 1
     TimesToPlay: 3
     TimesLeftToPlay: 3
-    CoinPrice: 100
+    CurrencyType: 1
+    CurrencyPrice: 500
     UpgradeMultiplier: 1
     CoinMultiplier: -2
     CrystalMultiplier: 3

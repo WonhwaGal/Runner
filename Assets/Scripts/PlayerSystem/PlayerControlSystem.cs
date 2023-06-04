@@ -25,7 +25,6 @@ namespace PlayerSystem
             _roadSystem = roadSystem;
             _cameraFollow = cameraFollow;
 
-
             _triggerHandler = new TriggerHandler(_upgrader);
             _triggerHandler.OnGettingUpgrade += _upgrader.ActivateUpgrade;
             _triggerHandler.OnHittingAnObstacle += _cameraFollow.ShakeCamera;

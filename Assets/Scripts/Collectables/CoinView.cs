@@ -1,21 +1,24 @@
 ﻿using UnityEngine;
 using DG.Tweening;
 using System;
+using Tools;
 
 namespace Collectables
 {
     internal class CoinView: CollectableObject
     {
         private Vector3 _rotationTargetVector = new Vector3(0, 360, 0);
+        private Vector3 _localPos;
 
         private void Start()
         {
             Value = 1;
             Type = CollectableType.Coin;
             Upgrade = UpgradeType.None;
+            _localPos = transform.localPosition;
             AnimateCollectable();
         }
-        private void OnBecameVisible() => _animationTween.Play();
+        private void OnBecameVisible() => AnimateCollectable();
 
         public override void PauseAnimation(bool isPaused)
         {
@@ -24,6 +27,10 @@ namespace Collectables
             else
                 _animationTween.Play();
         }
+
+        public void MoveToTarget(Vector3 position) =>
+            _animationTween = transform.DOMove(position, Constants.coinMagnetSpeed);
+
 
         public override void ExecuteAction()
         {
@@ -38,6 +45,12 @@ namespace Collectables
                 .SetRelative()
                 .SetEase(Ease.Linear);
         }
+
+        public override void ReturnToPlace()
+        {
+            transform.localPosition = _localPos;
+        }
+
         private void OnDestroy() => _animationTween.Kill();
     }
 }

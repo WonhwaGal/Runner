@@ -62,6 +62,7 @@ namespace GameUI
             {
                 UpgradeType.Shield => _upgradeSprites[(int)UpgradeType.Shield],
                 UpgradeType.DoublePoints => _upgradeSprites[(int)UpgradeType.DoublePoints],
+                UpgradeType.Magnet => _upgradeSprites[(int)UpgradeType.Magnet],
                 _ => _upgradeSprites[(int)UpgradeType.None],
             };
 

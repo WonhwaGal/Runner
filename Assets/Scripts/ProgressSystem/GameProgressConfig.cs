@@ -22,7 +22,8 @@ namespace ProgressSystem
             public bool LimitedUse;
             public int TimesToPlay;
             public int TimesLeftToPlay;
-            public int CoinPrice;
+            public CurrencyType CurrencyType;
+            public int CurrencyPrice;
             public float UpgradeMultiplier = 1;
             public int CoinMultiplier = 1;
             public int CrystalMultiplier = 1;

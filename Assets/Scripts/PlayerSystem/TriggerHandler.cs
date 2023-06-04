@@ -23,6 +23,9 @@ namespace PlayerSystem
             _playerCrystalMultiplier = crystalM;
         }
 
+        public void SendMagnetController(PlayerMagnetController playerMagnetCollider) 
+            => _upgrader.AddMagnetController(playerMagnetCollider);
+
         public void SortOutCollectable(CollectableObject collectable)
         {
             if (collectable.Type == CollectableType.Coin)
@@ -31,7 +34,6 @@ namespace PlayerSystem
                 OnGettingUpgrade?.Invoke(collectable.Value * _playerUpgradeMultiplier, collectable.Upgrade);
             else if (collectable.Type == CollectableType.Crystal)
                 OnTriggeredByCrystal?.Invoke(_playerCrystalMultiplier * _upgrader.CrystalMultiplier);
-
         }
 
         public void RegisterObstacleHit()

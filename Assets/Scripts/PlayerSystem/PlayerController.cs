@@ -10,14 +10,19 @@ namespace PlayerSystem
         [SerializeField] private BaseMover _mover;
         [SerializeField] private PlayerTriggerModule _trigger;
         [SerializeField] private BoxCollider _collider;
+        [SerializeField] private CapsuleCollider _magnetCollider;
+        [SerializeField] private PlayerMagnetController _playerMagnetController;
         [SerializeField] private Animator _animator;
+
+
         private PlayerAnimator _playerAnimator;
         public PlayerAnimator PlayerAnimator { get => _playerAnimator;}
 
         public void Initialize(IInput input, float jumpForce, TriggerHandler handler)
         {
             _mover.Init(input, jumpForce);
-            _trigger.Init(_collider, handler);
+            _playerMagnetController.Init(_magnetCollider);
+            _trigger.Init(_collider, handler, _playerMagnetController);
             _playerAnimator = new PlayerAnimator(_animator);
             _mover.OnChangingSpeed += _playerAnimator.Move;
             _mover.OnJumping += _playerAnimator.Jump;

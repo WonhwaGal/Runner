@@ -12,7 +12,9 @@ namespace Factories
         public List<CollectableObject> Collectables => _collectables;
         public GameObject BodyObject => gameObject;
         public bool IsActive => _isActive;
+
         private void OnBecameInvisible() => Deactivate();
+
         public void Activate()
         {
             _isActive = true;
@@ -28,6 +30,11 @@ namespace Factories
         {
             _isActive = false;
             gameObject.SetActive(false);
+            if (_collectables.Count > 0)
+            {
+                for (int i = 0; i < _collectables.Count; i++)
+                    _collectables[i].ReturnToPlace();
+            }
         }
 
         public void PauseChild(bool isPaused)

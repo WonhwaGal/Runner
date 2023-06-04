@@ -84,7 +84,10 @@ namespace GameUI
         public void BuyPlayer(PlayerConfig config)
         {
             config.IsOpen = true;
-            _gameConfig.TotalCoinCount -= config.CoinPrice;
+            if (config.CurrencyType == CurrencyType.Coins)
+                _gameConfig.TotalCoinCount -= config.CurrencyPrice;
+            else
+                _gameConfig.TotalCrystalCount -= config.CurrencyPrice;
 
             _savedData.OpenPlayersNames.Add(config.Name);
             _savedData.TotalCollectedCoins = _gameConfig.TotalCoinCount;

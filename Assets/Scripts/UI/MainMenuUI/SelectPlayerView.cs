@@ -69,8 +69,7 @@ namespace GameUI
 
         private void TryToBuyPlayer(PlayerSlotView playerSlotView, int number)
         {
-            int totalCoins = int.Parse(_coinNumber.text.ToString());
-            if (totalCoins >= PlayerTypes.Players[number].CoinPrice)
+            if (CheckCurrency(PlayerTypes.Players[number].CurrencyType, number))
             {
                 _presenter.BuyPlayer(PlayerTypes.Players[number]);
                 playerSlotView.OpenPlayer(PlayerTypes.Players[number]);
@@ -79,6 +78,24 @@ namespace GameUI
                 playerSlotView.ChooseButton.onClick.AddListener(() => PlayThisPlayer(number));
             }
         }
+
+        private bool CheckCurrency(CurrencyType currency, int number)
+        {
+            if (currency == CurrencyType.Coins)
+            {
+                int result = int.Parse(_coinNumber.text.ToString());
+                if (result >= PlayerTypes.Players[number].CurrencyPrice)
+                    return true;
+            }
+            else
+            {
+                int result = int.Parse(_crystalNumber.text.ToString());
+                if (result >= PlayerTypes.Players[number].CurrencyPrice)
+                    return true;
+            }
+            return false;
+        }
+
         private void PlayThisPlayer(int number) 
             => _presenter.MakePlayerCurrent(PlayerTypes.Players[number]);
     }

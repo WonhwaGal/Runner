@@ -11,6 +11,8 @@ namespace Collectables
         public CollectableType Type { get; protected set; }
         public UpgradeType Upgrade { get; protected set; }
         public int Value { get => _value; set => _value = value; }
+
+        public virtual void ReturnToPlace() { }
         public abstract void PauseAnimation(bool isPaused);
         public abstract void ExecuteAction();
         public abstract void AnimateCollectable();

@@ -27,7 +27,8 @@ namespace GameUI
         
         public void ClosePlayer(PlayerConfig config)
         {
-            _buttonText.text = $"Buy {config.CoinPrice} coins";
+            string currency = config.CurrencyType == CurrencyType.Coins ? "coins" : "crystals"; 
+            _buttonText.text = $"{config.CurrencyPrice} {currency}";
             _image.color = Color.black;
         }
 

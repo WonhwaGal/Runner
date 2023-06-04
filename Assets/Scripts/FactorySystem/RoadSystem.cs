@@ -11,7 +11,7 @@ namespace Factories
         private GenericFactory<RoadSpan> _roadFactory;
         private Vector3 _firstPos;
         private const float _roadCreateSpeed = 7;
-        private float _increaseSpeed = Constants.increaseSpeed;
+        private float _increaseSpeed = Constants.increaseSpeedSpan;
         private Vector3 _shift = new Vector3(0, 0, 100);
 
         Sequence _roadSequence;

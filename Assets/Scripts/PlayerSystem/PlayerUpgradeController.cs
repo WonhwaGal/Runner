@@ -1,6 +1,7 @@
 ﻿using Collectables;
 using DG.Tweening;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace PlayerSystem
 {
@@ -10,6 +11,7 @@ namespace PlayerSystem
         private int _defaultMultiplier;
         private int _coinMultiplier;
         private int _crystalMultiplier;
+        private PlayerMagnetController _playerMagnetController;
 
         private Dictionary<UpgradeType, Sequence> _runningSequences = new();
 
@@ -23,14 +25,35 @@ namespace PlayerSystem
             _crystalMultiplier = _defaultMultiplier;
         }
 
+        public void AddMagnetController(PlayerMagnetController playerMagnetController)
+            => _playerMagnetController = playerMagnetController;
+
         public void ActivateUpgrade(float timeSpan, UpgradeType upgrade)
         {
             if (upgrade == UpgradeType.Shield)
                 TurnOnShield(timeSpan);
-            else if (upgrade == UpgradeType.DoublePoints)
+            if (upgrade == UpgradeType.DoublePoints)
                 SetDoublePoints(timeSpan);
-
+            if (upgrade == UpgradeType.Magnet)
+                DrewCoins(timeSpan);
         }
+
+        private void DrewCoins(float timeSpan)
+        {
+            if (_playerMagnetController.gameObject.activeInHierarchy)
+            {
+                KillPreviousSequence(UpgradeType.Magnet);
+                UnDrewCoins();
+            }
+
+            Sequence magnetSequence = DOTween.Sequence();
+            magnetSequence.AppendCallback(() => _playerMagnetController.gameObject.SetActive(true))
+                .AppendInterval(timeSpan)
+                .OnComplete(UnDrewCoins);
+        }
+
+        private void UnDrewCoins() => _playerMagnetController.gameObject.SetActive(false);
+
         private void SetDoublePoints(float timeSpan)
         {
             if(_coinMultiplier > _defaultMultiplier)
@@ -45,7 +68,7 @@ namespace PlayerSystem
                 _coinMultiplier *= 2;
                 _crystalMultiplier *= 2;
             }).AppendInterval(timeSpan)
-                .OnComplete(ResetPoints); ;
+                .OnComplete(ResetPoints);
         }
         private void TurnOnShield(float timeSpan)
         {

@@ -40,8 +40,8 @@ namespace ProgressSystem
         }
         public void RegisterCurrentProgress()
         {
-            _gameConfig.TotalCoinCount = _collectableCounter.SaveCurrentCoinNumber();
-            _gameConfig.TotalCrystalCount = _collectableCounter.SaveCurrentCrystalNumber();
+            _gameConfig.TotalCoinCount = _collectableCounter.SetCurrentCoinNumber();
+            _gameConfig.TotalCrystalCount = _collectableCounter.SetCurrentCrystalNumber();
         }
 
         public void Dispose()

@@ -28,7 +28,7 @@ namespace ProgressSystem
             _crystalsCollected = crystals;
             OnCollectCrystals?.Invoke(_crystalsCollected);
         }
-        public int SaveCurrentCoinNumber() => _coinsCollected;
-        public int SaveCurrentCrystalNumber() => _crystalsCollected;
+        public int SetCurrentCoinNumber() => _coinsCollected;
+        public int SetCurrentCrystalNumber() => _crystalsCollected;
     }
 }

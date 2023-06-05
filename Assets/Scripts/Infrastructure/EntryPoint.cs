@@ -64,11 +64,11 @@ namespace Infrastructure
 
         private void OnDestroy()
         {
+            SignOffConnections();
             _mainFactory.Dispose();
             _playerController.Dispose();
             _progressController.Dispose();
             _gameStateController.Dispose();
-            SignOffConnections();
         }
     }
 }

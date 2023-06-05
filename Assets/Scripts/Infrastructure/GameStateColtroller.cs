@@ -2,7 +2,7 @@
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 using Commands;
-using ProgressSystem;
+
 
 namespace Infrastructure
 {

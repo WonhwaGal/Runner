@@ -27,20 +27,36 @@ namespace Factories
         }
         public void PutUpgradesOnRoad(List<Transform> upgradeSpots)
         {
-            for (int i = 0; i < GetNumberOfUpgrades(upgradeSpots.Count); i++)
+            for (int i = 0; i < GetRandomProbability(upgradeSpots); i++)
             {
                 var YShiftVector = new Vector3(0, Random.Range(1.0f, 3.0f), 0);
                 _upgradeFactory.Spawn().transform.position = upgradeSpots[i].position + YShiftVector;
             }
         }
-        private int GetNumberOfUpgrades(int listCount)
+
+        private int GetRandomProbability(List<Transform> upgradeSpots)
         {
-            int probability = 3;
-            var number = Random.Range(0, probability);
-            if (number < probability - 1)
-                return 0;
-            else
-                return Random.Range(0, listCount);
+            int returnOfThreeUpgrades = 10;
+            int returnOfTwoUpgrades = 35;
+            int returnOfOneUpgrade = 80;
+            int  result = 0;
+
+            int randomnumber = Random.Range(0, 100);
+            if (randomnumber <= returnOfThreeUpgrades)
+                result = returnOfTwoUpgrades;
+            else if (randomnumber <= returnOfTwoUpgrades)
+                result = returnOfTwoUpgrades;
+            else if (randomnumber <= returnOfOneUpgrade)
+                result = returnOfOneUpgrade;
+
+            UnityEngine.Debug.Log(result);
+            return result switch
+            {
+                10 => upgradeSpots.Count,
+                35 => upgradeSpots.Count - 1,
+                80 => upgradeSpots.Count - 2,
+                _ => 0,
+            };
         }
     }
 }

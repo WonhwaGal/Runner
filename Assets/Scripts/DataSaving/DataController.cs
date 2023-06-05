@@ -26,7 +26,9 @@ namespace DataSaving
         }
 
         private void LoadProgress() => _savedData = _dataSaver.Load();
+
         public void SaveProgress(SavedData savedData) => _dataSaver.Save(savedData);
+
         public void SaveProgressFromConfig(GameProgressConfig gameConfig)
         {
             var savedData = new SavedData();

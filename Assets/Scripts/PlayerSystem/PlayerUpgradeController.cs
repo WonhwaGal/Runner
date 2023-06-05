@@ -52,8 +52,6 @@ namespace PlayerSystem
                 .OnComplete(UnDrewCoins);
         }
 
-        private void UnDrewCoins() => _playerMagnetController.gameObject.SetActive(false);
-
         private void SetDoublePoints(float timeSpan)
         {
             if(_coinMultiplier > _defaultMultiplier)
@@ -95,7 +93,11 @@ namespace PlayerSystem
             _shieldOn = false;
             _runningSequences.Remove(UpgradeType.Shield);
         }
-
+        private void UnDrewCoins()
+        {
+            if (_playerMagnetController != null)
+                _playerMagnetController.gameObject.SetActive(false);
+        }
         public bool CheckShield()
         {
             if (_shieldOn)

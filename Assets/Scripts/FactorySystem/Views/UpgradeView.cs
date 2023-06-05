@@ -3,6 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using Tools;
 
 namespace Factories
 {
@@ -21,8 +22,9 @@ namespace Factories
         public bool IsActive => _isActive;
         public List<CollectableObject> Collectables => _collectables;
 
-        private void OnBecameVisible() => _rotationTween.Play();
+        private void OnBecameVisible() => AnimateCollectable();
         private void OnBecameInvisible() => Deactivate();
+
         private void Start()
         {
             if (_upgradeType == UpgradeType.Crystal)
@@ -36,7 +38,16 @@ namespace Factories
         public override void ExecuteAction()
         {
             gameObject.SetActive(false);
+            _isMagnetized = false;
             _rotationTween.Pause();
+        }
+
+        public override void MoveToTarget(Vector3 position)
+        {
+            if (!_isMagnetized)
+                _isMagnetized = true;
+            if (_upgradeType == UpgradeType.Crystal)
+                _animationTween = transform.DOMove(position, Constants.coinMagnetSpeed);
         }
 
         public override void AnimateCollectable()

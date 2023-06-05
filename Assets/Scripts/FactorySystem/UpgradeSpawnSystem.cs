@@ -12,10 +12,7 @@ namespace Factories
         private void CreateUpgradesFactory()
         {
             _upgradeFactory = new SingleFactory<UpgradeView>("UpgradePrefabs");
-            _upgradeFactory.AddPrefabNameToList("DoubleUpgrade");
-            _upgradeFactory.AddPrefabNameToList("ShieldUpgrade");
-            _upgradeFactory.AddPrefabNameToList("JemCollectable");
-            _upgradeFactory.AddPrefabNameToList("MagnetUpgrade");
+            AddObjectsToTheFactory();
 
             _upgradeFactory.CreateListOfObjects();
         }
@@ -49,7 +46,6 @@ namespace Factories
             else if (randomnumber <= returnOfOneUpgrade)
                 result = returnOfOneUpgrade;
 
-            UnityEngine.Debug.Log(result);
             return result switch
             {
                 10 => upgradeSpots.Count,
@@ -57,6 +53,14 @@ namespace Factories
                 80 => upgradeSpots.Count - 2,
                 _ => 0,
             };
+        }
+
+        private void AddObjectsToTheFactory()
+        {
+            _upgradeFactory.AddPrefabNameToList("DoubleUpgrade");
+            _upgradeFactory.AddPrefabNameToList("ShieldUpgrade");
+            _upgradeFactory.AddPrefabNameToList("JemCollectable");
+            _upgradeFactory.AddPrefabNameToList("MagnetUpgrade");
         }
     }
 }

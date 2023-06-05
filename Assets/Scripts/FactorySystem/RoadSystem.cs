@@ -69,7 +69,10 @@ namespace Factories
                 .AppendCallback(IncreaseSpeed)
                 .SetLoops(Int32.MaxValue);
         }
-        private void IncreaseSpeed() => _roadSequence.timeScale += 0.01f;
+        private void IncreaseSpeed()
+        {
+            _roadSequence.timeScale += 0.01f;
+        }
 
         private void PutRoadAhead()
         {

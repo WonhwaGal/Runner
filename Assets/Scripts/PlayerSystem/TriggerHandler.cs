@@ -1,5 +1,8 @@
 ﻿using Collectables;
 using System;
+using UnityEngine;
+using static ProgressSystem.GameProgressConfig;
+
 
 namespace PlayerSystem
 {
@@ -8,7 +11,7 @@ namespace PlayerSystem
         public Action<int> OnTriggeredByCoin { get; set; }
         public Action<int> OnTriggeredByCrystal { get; set; }
         public Action<float, UpgradeType> OnGettingUpgrade { get; set; }
-        public Action OnHittingAnObstacle;
+        public Action OnHittingAnObstacle { get; set; }
 
         private PlayerUpgradeController _upgrader;
         private float _playerUpgradeMultiplier;
@@ -16,11 +19,11 @@ namespace PlayerSystem
         private int _playerCrystalMultiplier;
 
         public TriggerHandler(PlayerUpgradeController upgrader) => _upgrader = upgrader;
-        public void Init(float upgradeM, int coinM, int crystalM)
+        public void Init(PlayerConfig config)
         {
-            _playerUpgradeMultiplier = upgradeM;
-            _playerCoinMultiplier = coinM;
-            _playerCrystalMultiplier = crystalM;
+            _playerUpgradeMultiplier = config.UpgradeMultiplier;
+            _playerCoinMultiplier = config.CoinMultiplier;
+            _playerCrystalMultiplier = config.CrystalMultiplier;
         }
 
         public void SendMagnetController(PlayerMagnetController playerMagnetCollider) 
@@ -47,7 +50,6 @@ namespace PlayerSystem
                 UnityEngine.Debug.Log("shield down");
                 OnHittingAnObstacle?.Invoke();
             }
-
         }
     }
 }

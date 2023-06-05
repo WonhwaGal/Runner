@@ -1,4 +1,5 @@
 using Collectables;
+using Factories;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,21 +8,19 @@ namespace PlayerSystem
     internal class PlayerMagnetController : MonoBehaviour
     {
         private CapsuleCollider _capsuleCollider;
-        private List<CoinView> _inCircleTransforms;
+        private List<CollectableObject> _inCircleTransforms;
         private Vector3 _shift = new Vector3(0, 3, 1);
 
-        public List<CoinView> InCircleTransforms { get => _inCircleTransforms; set => _inCircleTransforms = value; }
+        public List<CollectableObject> InCircleTransforms { get => _inCircleTransforms; set => _inCircleTransforms = value; }
 
 
-        private void Start() => _inCircleTransforms = new List<CoinView>();
-
+        private void Start() => _inCircleTransforms = new List<CollectableObject>();
 
         private void Update()
         {
             var targetVector = transform.position + _shift;
             MagnetCoins(targetVector);
         }
-
 
         public void Init(CapsuleCollider capsuleCollider)
         {
@@ -34,6 +33,8 @@ namespace PlayerSystem
         {
             if (other.TryGetComponent(out CoinView coin))
                 InCircleTransforms.Add(coin);
+            if (other.TryGetComponent(out UpgradeView upgrade))
+                InCircleTransforms.Add(upgrade);
         }
 
         private void MagnetCoins(Vector3 targetVector)
@@ -44,11 +45,13 @@ namespace PlayerSystem
                     coin.MoveToTarget(targetVector);
             }
         }
-        private List<CoinView> SortOutTheList()
+        private List<CollectableObject> SortOutTheList()
         {
             for (int i = 0; i < InCircleTransforms.Count; i++)
             {
-                if (!InCircleTransforms[i].gameObject.activeInHierarchy)
+                bool isBehind = transform.position.z - InCircleTransforms[i].gameObject.transform.position.z > 1;
+                if (!InCircleTransforms[i].gameObject.activeInHierarchy 
+                    || (isBehind && !InCircleTransforms[i].IsBeingMagnetized))
                     InCircleTransforms.Remove(InCircleTransforms[i]);
             }
             return InCircleTransforms;

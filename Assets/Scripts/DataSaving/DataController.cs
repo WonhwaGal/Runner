@@ -27,8 +27,6 @@ namespace DataSaving
 
         private void LoadProgress() => _savedData = _dataSaver.Load();
 
-        public void SaveProgress(SavedData savedData) => _dataSaver.Save(savedData);
-
         public void SaveProgressFromConfig(GameProgressConfig gameConfig)
         {
             var savedData = new SavedData();
@@ -36,11 +34,10 @@ namespace DataSaving
             savedData.TotalCollectedCrystals = gameConfig.TotalCrystalCount;
             for (int i = 0; i < gameConfig.Players.Count; i++)
             {
-                savedData.TimesLeftToPlay.Add(gameConfig.Players[i].TimesLeftToPlay);
                 if (gameConfig.Players[i].IsCurrent && gameConfig.Players[i].IsOpen)
                     savedData.CurrentPlayerName = gameConfig.Players[i].Name;
                 if (gameConfig.Players[i].IsOpen)
-                    savedData.OpenPlayersNames.Add(gameConfig.Players[i].Name);
+                    savedData.OpenPlayerConfigs.Add(gameConfig.Players[i]);
             }
             _dataSaver.Save(savedData);
         }

@@ -61,7 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _collectables:
   - {fileID: 7892490653844457287}
-  _upgradeType: 3
+  _upgradeType: 4
   _timeActive: 0
 --- !u!1 &5350200263995436015
 GameObject:

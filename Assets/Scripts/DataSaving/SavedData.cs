@@ -9,14 +9,13 @@ namespace DataSaving
     {
         public int TotalCollectedCoins;
         public int TotalCollectedCrystals;
-        public List<string> OpenPlayersNames;
-        public List<int> TimesLeftToPlay;
+        public List<PlayerConfig> OpenPlayerConfigs;
         public string CurrentPlayerName;
+
 
         public SavedData()
         {
-            OpenPlayersNames = new List<string>();
-            TimesLeftToPlay = new List<int>();
+            OpenPlayerConfigs = new List<PlayerConfig>();
             TotalCollectedCoins = 0;
             TotalCollectedCrystals = 0;
         }

@@ -38,7 +38,7 @@ namespace PlayerSystem
 
             _roadSystem.StartRoadSpawn();
             _cameraFollow.SetTarget(_playerController.transform);
-            _triggerHandler.Init(config.UpgradeMultiplier, config.CoinMultiplier, config.CrystalMultiplier);
+            _triggerHandler.Init(config);
             _triggerHandler.OnHittingAnObstacle += _playerController.PlayerAnimator.FallDown;
         }
 

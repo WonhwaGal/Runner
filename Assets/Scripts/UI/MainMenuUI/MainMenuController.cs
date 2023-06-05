@@ -17,14 +17,14 @@ namespace GameUI
             _dataController = dataController;
             _selectLogic = new SelectMenuLogic();
             _selectPresenter = new SelectMenuPresenter(_menuCanvas.SelectPlayerView, SelectLogic);
-            _selectLogic.OnChangingGameCfg += _dataController.SaveProgress;
+            _selectLogic.OnChangingGameCfg += _dataController.SaveProgressFromConfig;
             _menuCanvas.Init(_selectPresenter, SelectLogic.SelectCurrentPlayer, SelectLogic.CancelProgress);
         }
 
         public void Dispose()
         {
             _selectPresenter.Dispose();
-            _selectLogic.OnChangingGameCfg -= _dataController.SaveProgress;
+            _selectLogic.OnChangingGameCfg -= _dataController.SaveProgressFromConfig;
         } 
     }
 }

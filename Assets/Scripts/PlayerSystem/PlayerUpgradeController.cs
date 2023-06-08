@@ -7,6 +7,8 @@ namespace PlayerSystem
 {
     internal class PlayerUpgradeController
     {
+        private GameObject _shield;
+        private GameObject _magnet;
         private bool _shieldOn;
         private int _defaultMultiplier;
         private int _coinMultiplier;
@@ -25,8 +27,14 @@ namespace PlayerSystem
             _crystalMultiplier = _defaultMultiplier;
         }
 
-        public void AddMagnetController(PlayerMagnetController playerMagnetController)
-            => _playerMagnetController = playerMagnetController;
+        public void AddComponents(PlayerMagnetController playerMagnetController, 
+            GameObject shield,
+            GameObject magnet)
+        {
+            _playerMagnetController = playerMagnetController;
+            _shield = shield;
+            _magnet = magnet;
+        }
 
         public void ActivateUpgrade(float timeSpan, UpgradeType upgrade)
         {
@@ -47,7 +55,11 @@ namespace PlayerSystem
             }
 
             Sequence magnetSequence = DOTween.Sequence();
-            magnetSequence.AppendCallback(() => _playerMagnetController.gameObject.SetActive(true))
+            magnetSequence.AppendCallback(() =>
+            {
+                _playerMagnetController.gameObject.SetActive(true);
+                _magnet.SetActive(true);
+            })
                 .AppendInterval(timeSpan)
                 .OnComplete(UnDrewCoins);
         }
@@ -78,7 +90,11 @@ namespace PlayerSystem
 
             Sequence shieldSequence = DOTween.Sequence();
             _runningSequences.Add(UpgradeType.Shield, shieldSequence);
-            shieldSequence.AppendCallback(() => _shieldOn = true).AppendInterval(timeSpan)
+            shieldSequence.AppendCallback(() =>
+            {
+                _shield.SetActive(true);
+                _shieldOn = true;
+            }).AppendInterval(timeSpan)
                     .OnComplete(() => TurnOffShield());
         }
 
@@ -90,13 +106,17 @@ namespace PlayerSystem
         }
         private void TurnOffShield()
         {
+            _shield.SetActive(false);
             _shieldOn = false;
             _runningSequences.Remove(UpgradeType.Shield);
         }
         private void UnDrewCoins()
         {
             if (_playerMagnetController != null)
+            {
                 _playerMagnetController.gameObject.SetActive(false);
+                _magnet.SetActive(false);
+            }
         }
         public bool CheckShield()
         {

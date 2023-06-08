@@ -4,15 +4,6 @@ using UnityEngine;
 
 namespace Factories
 {
-    internal interface IRespawnable
-    {
-        List<CollectableObject> Collectables { get; }
-        public GameObject BodyObject { get;  }
-        public bool IsActive { get; }
-        void Activate();
-        void Deactivate();
-        void PauseChild(bool isPaused);
-    }
     internal class RespawnableObject : MonoBehaviour
     {
         [SerializeField] private List<CollectableObject> _collectables;

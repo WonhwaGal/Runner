@@ -29,7 +29,7 @@ namespace Factories
         private void CreateRoadFactory()
         {
             _roadFactory = new SingleFactory<RoadSpan>("RoadPrefabs");
-            _roadFactory.AddPrefabNameToList("RoadBlock1");
+            AddObjectsToTheFactory();
             _roadFactory.CreateListOfObjects();
         }
 
@@ -80,8 +80,14 @@ namespace Factories
             roadSpan.transform.position = _firstPos + _shift;
             _firstPos += _shift;
 
-            OnRoadForCoins?.Invoke(roadSpan.Spots);
+            OnRoadForCoins?.Invoke(roadSpan.CoinSpots);
             OnRoadForUpdates?.Invoke(roadSpan.UpgradeSpots);
+        }
+
+        private void AddObjectsToTheFactory()
+        {
+            _roadFactory.AddPrefabNameToList("RoadBlock1");
+            _roadFactory.AddPrefabNameToList("RoadBlock2");
         }
     }
 }

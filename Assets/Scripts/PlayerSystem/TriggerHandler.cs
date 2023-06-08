@@ -18,7 +18,10 @@ namespace PlayerSystem
         private int _playerCoinMultiplier;
         private int _playerCrystalMultiplier;
 
+        public PlayerUpgradeController Upgrader { get => _upgrader;}
+
         public TriggerHandler(PlayerUpgradeController upgrader) => _upgrader = upgrader;
+
         public void Init(PlayerConfig config)
         {
             _playerUpgradeMultiplier = config.UpgradeMultiplier;
@@ -26,30 +29,20 @@ namespace PlayerSystem
             _playerCrystalMultiplier = config.CrystalMultiplier;
         }
 
-        public void SendMagnetController(PlayerMagnetController playerMagnetCollider) 
-            => _upgrader.AddMagnetController(playerMagnetCollider);
-
         public void SortOutCollectable(CollectableObject collectable)
         {
             if (collectable.Type == CollectableType.Coin)
-                OnTriggeredByCoin?.Invoke(collectable.Value * _upgrader.CoinMultiplier * _playerCoinMultiplier);
+                OnTriggeredByCoin?.Invoke(collectable.Value * Upgrader.CoinMultiplier * _playerCoinMultiplier);
             else if (collectable.Type == CollectableType.Upgrade)
                 OnGettingUpgrade?.Invoke(collectable.Value * _playerUpgradeMultiplier, collectable.Upgrade);
             else if (collectable.Type == CollectableType.Crystal)
-                OnTriggeredByCrystal?.Invoke(_playerCrystalMultiplier * _upgrader.CrystalMultiplier);
+                OnTriggeredByCrystal?.Invoke(_playerCrystalMultiplier * Upgrader.CrystalMultiplier);
         }
 
         public void RegisterObstacleHit()
         {
-            if (_upgrader.CheckShield()) 
-            {
-                UnityEngine.Debug.Log("shield is ON");
-            }
-            else
-            {
-                UnityEngine.Debug.Log("shield down");
+            if (!Upgrader.CheckShield())
                 OnHittingAnObstacle?.Invoke();
-            }
         }
     }
 }

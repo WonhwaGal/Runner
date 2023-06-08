@@ -9,13 +9,12 @@ namespace PlayerSystem
         private BoxCollider _collider;
         private TriggerHandler _triggerHandler;
 
-        public void Init(BoxCollider collider, TriggerHandler triggerHandler, PlayerMagnetController playerMagnetCollider)
+        public void Init(BoxCollider collider, TriggerHandler triggerHandler)
         {
             _collider = collider;
             _triggerHandler = triggerHandler;
             _collider.enabled = true;
             _collider.isTrigger = true;
-            _triggerHandler.SendMagnetController(playerMagnetCollider);
         }
 
 

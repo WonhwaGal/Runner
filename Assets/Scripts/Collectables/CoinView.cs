@@ -16,6 +16,7 @@ namespace Collectables
             Type = CollectableType.Coin;
             Upgrade = UpgradeType.None;
             _localPos = transform.localPosition;
+            _animationTween = transform.DOMove(transform.position, 0);
             AnimateCollectable();
         }
         private void OnBecameVisible() => AnimateCollectable();
@@ -50,7 +51,6 @@ namespace Collectables
                 .SetLoops(Int32.MaxValue, LoopType.Incremental)
                 .SetRelative()
                 .SetEase(Ease.Linear);
-
         }
 
         public override void ReturnToPlace() => transform.localPosition = _localPos;

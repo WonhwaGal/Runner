@@ -13,8 +13,6 @@ namespace Factories
         public GameObject BodyObject => gameObject;
         public bool IsActive => _isActive;
 
-        private void OnBecameInvisible() => Deactivate();
-
         public void Activate()
         {
             _isActive = true;
@@ -25,6 +23,8 @@ namespace Factories
                     _collectables[i].gameObject.SetActive(true);
             }
         }
+
+        private void OnBecameInvisible() => Deactivate();
 
         public void Deactivate()
         {

@@ -4,13 +4,14 @@ namespace Commands
 {
     internal class UICommander : ICommander
     {
-        private IUiController _uiController;
+        private IGameUiController _uiController;
 
-        internal IUiController UiController { get => _uiController; private set => _uiController = value; }
+        internal IGameUiController UiController { get => _uiController; private set => _uiController = value; }
 
-        public UICommander(IUiController uiController) => UiController = uiController;
+        public UICommander(IGameUiController uiController) => UiController = uiController;
 
-        public void Start() => UiController.PauseView.gameObject.SetActive(false);
+
+        public void Start() => UiController.PauseView.Gameobject.SetActive(false);
         public void Pause(bool isPaused) => UiController.PauseGame(isPaused);
         public void Stop() { }
     }

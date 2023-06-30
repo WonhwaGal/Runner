@@ -22,15 +22,11 @@ namespace Infrastructure
             _followPos = Vector3.zero;
             _camera = GetComponent<Camera>();
         }
+
         public void SetTarget(Transform target)
         {
             _target = target;
             _canFollow = true;
-        }
-        public void ShakeCamera()
-        {
-            _canFollow = false;
-            _camera.DOShakePosition(1.0f, 1, 5, 60, true);
         }
 
         private void LateUpdate()
@@ -40,6 +36,12 @@ namespace Infrastructure
 
             _followPos = new Vector3(_target.transform.position.x, 0, _target.transform.position.z) + _followShift;
             transform.position = _followPos;
+        }
+
+        public void ShakeCamera()
+        {
+            _canFollow = false;
+            _camera.DOShakePosition(1.0f, 1, 5, 60, true);
         }
     }
 }

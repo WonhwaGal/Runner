@@ -6,7 +6,7 @@ namespace DataSaving
 {
     internal class DataController
     {
-        private SelectMenuLogic _selectMenuLogic;
+        private ISelectLogic _selectMenuLogic;
         private IDataSaver _dataSaver;
         private SavedData _savedData;
 
@@ -14,12 +14,11 @@ namespace DataSaving
 
         public DataController()
         {
-            //UnityEngine.Debug.Log(Application.persistentDataPath + "/DataSaver.json");
             _dataSaver = new JSONDataSaver();
             LoadProgress();
         }
 
-        public void Init(SelectMenuLogic selectMenuLogic)
+        public void Init(ISelectLogic selectMenuLogic)
         {
             _selectMenuLogic = selectMenuLogic;
             _selectMenuLogic.UpdatePlayersConfig(SavedData);

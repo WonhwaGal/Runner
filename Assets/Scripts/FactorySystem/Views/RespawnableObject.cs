@@ -15,13 +15,13 @@ namespace Factories
 
         private void OnEnable() => BodyObject = gameObject;
 
-        private void OnBecameInvisible() => Deactivate();
-
         public void Activate()
         {
             _isActive = true;
             gameObject.SetActive(true);
         }
+
+        private void OnBecameInvisible() => Deactivate();
 
         private void Deactivate()
         {
@@ -36,6 +36,7 @@ namespace Factories
                 }
             }
         }
+
         public void Pause(bool isPaused)
         {
             for(int i = 0; i < _collectables.Count; i++)

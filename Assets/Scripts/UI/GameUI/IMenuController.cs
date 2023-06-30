@@ -4,7 +4,7 @@ namespace GameUI
 {
     internal interface IMenuController
     {
-        SelectMenuLogic SelectLogic { get; }
+        ISelectLogic SelectLogic { get; }
         void Dispose();
     }
 }

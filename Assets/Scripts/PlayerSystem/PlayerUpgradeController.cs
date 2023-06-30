@@ -64,6 +64,15 @@ namespace PlayerSystem
                 .OnComplete(UnDrewCoins);
         }
 
+        private void UnDrewCoins()
+        {
+            if (_playerMagnetController != null)
+            {
+                _playerMagnetController.gameObject.SetActive(false);
+                _magnet.SetActive(false);
+            }
+        }
+
         private void SetDoublePoints(float timeSpan)
         {
             if(_coinMultiplier > _defaultMultiplier)
@@ -80,6 +89,14 @@ namespace PlayerSystem
             }).AppendInterval(timeSpan)
                 .OnComplete(ResetPoints);
         }
+
+        private void ResetPoints()
+        {
+            _coinMultiplier = _defaultMultiplier;
+            _crystalMultiplier = _defaultMultiplier;
+            _runningSequences.Remove(UpgradeType.DoublePoints);
+        }
+
         private void TurnOnShield(float timeSpan)
         {
             if (_shieldOn)
@@ -98,26 +115,13 @@ namespace PlayerSystem
                     .OnComplete(() => TurnOffShield());
         }
 
-        private void ResetPoints()
-        {
-            _coinMultiplier = _defaultMultiplier;
-            _crystalMultiplier = _defaultMultiplier;
-            _runningSequences.Remove(UpgradeType.DoublePoints);
-        }
         private void TurnOffShield()
         {
             _shield.SetActive(false);
             _shieldOn = false;
             _runningSequences.Remove(UpgradeType.Shield);
         }
-        private void UnDrewCoins()
-        {
-            if (_playerMagnetController != null)
-            {
-                _playerMagnetController.gameObject.SetActive(false);
-                _magnet.SetActive(false);
-            }
-        }
+
         public bool CheckShield()
         {
             if (_shieldOn)

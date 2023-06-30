@@ -39,6 +39,7 @@ namespace GameUI
             }
             UpdatePlayerPanel();
         }
+
         public void UpdatePlayerPanel()
         {
             for (int i = 0; i < _playerSlots.Count; i++)
@@ -53,6 +54,7 @@ namespace GameUI
                     ClosePlayer(_playerSlots[i], i);
             }
         }
+
         private void OpenPlayer(PlayerSlotView playerSlotView, int number)
         {
             playerSlotView.OpenPlayer(PlayerTypes.Players[number]);

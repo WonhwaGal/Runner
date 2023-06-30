@@ -10,6 +10,7 @@ namespace Collectables
         private Vector3 _rotationTargetVector = new Vector3(0, 360, 0);
         private Vector3 _localPos;
 
+
         private void Start()
         {
             Value = 1;
@@ -19,7 +20,17 @@ namespace Collectables
             _animationTween = transform.DOMove(transform.position, 0);
             AnimateCollectable();
         }
+
         private void OnBecameVisible() => AnimateCollectable();
+
+        public override void AnimateCollectable()
+        {
+            if (_animationTween != null)
+                _animationTween = transform.DORotate(_rotationTargetVector, 3.0f, RotateMode.LocalAxisAdd)
+                    .SetLoops(Int32.MaxValue, LoopType.Incremental)
+                    .SetRelative()
+                    .SetEase(Ease.Linear);
+        }
 
         public override void PauseAnimation(bool isPaused)
         {
@@ -36,21 +47,11 @@ namespace Collectables
             _animationTween = transform.DOMove(position, Constants.coinMagnetSpeed);
         }
 
-
         public override void ExecuteAction()
         {
             gameObject.SetActive(false);
             _isMagnetized = false;
             PauseAnimation(true);
-        }
-
-        public override void AnimateCollectable()
-        {
-            if (_animationTween != null)
-            _animationTween = transform.DORotate(_rotationTargetVector, 3.0f, RotateMode.LocalAxisAdd)
-                .SetLoops(Int32.MaxValue, LoopType.Incremental)
-                .SetRelative()
-                .SetEase(Ease.Linear);
         }
 
         public override void ReturnToPlace() => transform.localPosition = _localPos;

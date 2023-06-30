@@ -7,9 +7,9 @@ namespace GameUI
     {
         private MainMenuCanvas _menuCanvas;
         private SelectMenuPresenter _selectPresenter;
-        private SelectMenuLogic _selectLogic;
+        private ISelectLogic _selectLogic;
         private DataController _dataController;
-        public SelectMenuLogic SelectLogic { get => _selectLogic; }
+        public ISelectLogic SelectLogic { get => _selectLogic; }
 
         public MainMenuController(MainMenuCanvas menuCanvas, DataController dataController)
         {
@@ -20,6 +20,7 @@ namespace GameUI
             _selectLogic.OnChangingGameCfg += _dataController.SaveProgressFromConfig;
             _menuCanvas.Init(_selectPresenter, SelectLogic.SelectCurrentPlayer, SelectLogic.CancelProgress);
         }
+
 
         public void Dispose()
         {

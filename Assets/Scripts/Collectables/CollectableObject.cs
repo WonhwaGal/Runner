@@ -14,10 +14,10 @@ namespace Collectables
         public int Value { get => _value; set => _value = value; }
         public bool IsBeingMagnetized { get => _isMagnetized; }
 
-        public virtual void MoveToTarget(Vector3 position) { }
-        public virtual void ReturnToPlace() { }
-        public abstract void PauseAnimation(bool isPaused);
-        public abstract void ExecuteAction();
         public abstract void AnimateCollectable();
+        public abstract void PauseAnimation(bool isPaused);
+        public virtual void MoveToTarget(Vector3 position) { }
+        public abstract void ExecuteAction();
+        public virtual void ReturnToPlace() { }
     }
 }

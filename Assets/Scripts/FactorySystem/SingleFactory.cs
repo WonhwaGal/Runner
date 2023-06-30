@@ -6,7 +6,9 @@ namespace Factories
     internal class SingleFactory<T> : GenericFactory<T> where T : IRespawnable
     {
         private List<T> _inactiveList = new List<T>();
+
         public SingleFactory(string name) : base(name) { }
+
 
         public override T Spawn()
         {
@@ -14,9 +16,7 @@ namespace Factories
             for (int i = 0; i < Objects.Count; i++)
             {
                 if (!Objects[i].IsActive)
-                {
                     _inactiveList.Add(Objects[i]);
-                }
             }
             if (_inactiveList.Count > 0)
             {
@@ -27,6 +27,12 @@ namespace Factories
             DublicateObject();
 
             return Spawn();
+        }
+
+        public override void Despawn(T spawnObject)
+        {
+            base.Despawn(spawnObject);
+            spawnObject.Deactivate();
         }
     }
 }

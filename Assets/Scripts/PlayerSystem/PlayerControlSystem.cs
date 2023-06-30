@@ -1,7 +1,7 @@
 using Factories;
 using Infrastructure;
+using System;
 using UnityEngine;
-using DG.Tweening;
 using static ProgressSystem.GameProgressConfig;
 
 
@@ -9,16 +9,19 @@ namespace PlayerSystem
 {
     internal class PlayerControlSystem: IPlayerControlSystem
     {
+        public event Action OnPlayerControllerSet;
+
         private IInput _inputType;
-        private RoadSystem _roadSystem;
+        private IRoadSystem _roadSystem;
         private TriggerHandler _triggerHandler;
         private PlayerUpgradeController _upgrader;
         private PlayerController _playerController;
         private CameraFollow _cameraFollow;
 
         public TriggerHandler TriggerHandler { get => _triggerHandler; set => _triggerHandler = value; }
+        public IPlayerController PlayerController { get => _playerController; }
 
-        public PlayerControlSystem(IInput inputType, RoadSystem roadSystem, CameraFollow cameraFollow)
+        public PlayerControlSystem(IInput inputType, IRoadSystem roadSystem, CameraFollow cameraFollow)
         {
             _inputType = inputType;
             _upgrader = new PlayerUpgradeController();
@@ -30,14 +33,26 @@ namespace PlayerSystem
             _triggerHandler.OnHittingAnObstacle += _cameraFollow.ShakeCamera;
         }
 
+
         public void CreatePlayer(PlayerConfig config)
         {
             UpdateLimitedUse(config);
             _playerController = GameObject.Instantiate(config.Player);
             _playerController.Initialize(_inputType, config.JumpForce, TriggerHandler);
 
-            _roadSystem.StartRoadSpawn();
+            SetConnections(config);
+        }
+
+        private void SetConnections(PlayerConfig config)
+        {
+            //_playerController.Mover.OnSpeedingUp += _roadSystem.IncreaseSpeed;
+            OnPlayerControllerSet?.Invoke();
+
+            _playerController.Mover.OnChangingLane += _roadSystem.CheckPlayerLane;
+            //_roadSystem.StartRoadSpawn();
+
             _cameraFollow.SetTarget(_playerController.transform);
+
             _triggerHandler.Init(config);
             _triggerHandler.OnHittingAnObstacle += _playerController.PlayerAnimator.FallDown;
         }
@@ -51,29 +66,32 @@ namespace PlayerSystem
                     config.IsOpen = false;
             }
         }
+
         public void PausePlayer(bool pauseOn)
         {
             if (pauseOn)
             {
                 _playerController.PausePlayerMove();
-                _roadSystem.PauseRoadSpawn();
+                //_roadSystem.PauseRoadSpawn();
             }
             else
             {
                 _playerController.ResumePlayerMove();
-                _roadSystem.StartRoadSpawn();
+                //_roadSystem.StartRoadSpawn();
             }
         }
 
         public void StopPlayer()
         {
             _playerController.StopPlayerMove();
-            _roadSystem.StopRoadSpawn();
+            //_roadSystem.StopRoadSpawn();
         }
 
         public void Dispose()
         {
             _triggerHandler.OnGettingUpgrade -= _upgrader.ActivateUpgrade;
+            //_playerController.Mover.OnSpeedingUp -= _roadSystem.IncreaseSpeed;
+            _playerController.Mover.OnChangingLane -= _roadSystem.CheckPlayerLane;
             if (_playerController != null)
                 _triggerHandler.OnHittingAnObstacle -= _playerController.PlayerAnimator.FallDown;
         }

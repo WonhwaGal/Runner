@@ -5,22 +5,22 @@ namespace ProgressSystem
 {
     internal class ProgressController : IProgressController
     {
-        private GameUIView _uiView;
-        private GameUIModel _uiModel;
-        private CollectableCounter _collectableCounter;
+        private IGameUIView _uiView;
+        private IGameUIModel _gameUIModel;
+        private ICollectableCounter _collectableCounter;
         private GameProgressConfig _gameConfig;
 
-        public GameUIModel UIModel { get => _uiModel; }
-        public CollectableCounter CollectableCounter { get => _collectableCounter; }
+        public IGameUIModel GameUIModel { get => _gameUIModel; }
+        public ICollectableCounter CollectableCounter { get => _collectableCounter; }
         public GameProgressConfig GameConfig { get => _gameConfig; }
 
-        public ProgressController(GameUIView uiView, GameProgressConfig gameConfig)
+        public ProgressController(IGameUIView uiView, GameProgressConfig gameConfig)
         {
             _uiView = uiView;
             _gameConfig = gameConfig;
-            _uiModel = new GameUIModel();
+            _gameUIModel = new GameUIModel();
             _collectableCounter = new CollectableCounter();
-            UIModel.OnChangeKM += _uiView.SetDistance;
+            _gameUIModel.OnChangeKM += _uiView.SetDistance;
             CollectableCounter.OnCollectCoins += _uiView.SetCoinNumber;
             CollectableCounter.OnCollectCrystals += _uiView.SetCrystalNumber;
             CollectableCounter.SetCoinNumber(_gameConfig.TotalCoinCount, _gameConfig.TotalCrystalCount);
@@ -46,7 +46,7 @@ namespace ProgressSystem
 
         public void Dispose()
         {
-            UIModel.OnChangeKM -= _uiView.SetDistance;
+            GameUIModel.OnChangeKM -= _uiView.SetDistance;
             CollectableCounter.OnCollectCoins -= _uiView.SetCoinNumber;
             CollectableCounter.OnCollectCrystals -= _uiView.SetCrystalNumber;
         }

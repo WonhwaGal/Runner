@@ -1,13 +1,14 @@
 ﻿using System;
 using static ProgressSystem.GameProgressConfig;
 
+
 namespace ProgressSystem
 {
     internal interface IProgressController: IDisposable
     {
-        GameUIModel UIModel { get; }
+        IGameUIModel GameUIModel { get; }
+        ICollectableCounter CollectableCounter { get; }
         GameProgressConfig GameConfig { get; }
-        CollectableCounter CollectableCounter { get; }
         PlayerConfig RecieveCurrentPlayer();
         void RegisterCurrentProgress();
     }

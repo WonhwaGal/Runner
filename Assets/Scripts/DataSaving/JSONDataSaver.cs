@@ -6,10 +6,10 @@ namespace DataSaving
     internal sealed class JSONDataSaver : IDataSaver
     {
         private readonly string _savePath = Application.persistentDataPath + "/DataSaver.json";
+
         public void Save(SavedData data)
         {
             string json = JsonUtility.ToJson(data);
-            UnityEngine.Debug.Log(json);
             File.WriteAllText(_savePath, json);
         }
 

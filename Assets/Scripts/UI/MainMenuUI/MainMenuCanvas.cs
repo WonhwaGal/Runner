@@ -10,6 +10,7 @@ namespace GameUI
     {
         [SerializeField] private SelectPlayerView _selectPlayerView;
         [SerializeField] private GameObject _startMenuPanel;
+        [SerializeField] private GameObject _selectMenuPanel;
 
         [SerializeField] private Button _startButton;
         [SerializeField] private Button _selectPlayerPanelButton;
@@ -22,7 +23,7 @@ namespace GameUI
 
         private void Start()
         {
-            _selectPlayerView.gameObject.SetActive(false);
+            _selectMenuPanel.gameObject.SetActive(false);
             _backButton.gameObject.SetActive(false);
             _startButton.onClick.AddListener(() => _startMenuPanel.SetActive(false));
             _selectPlayerPanelButton.onClick.AddListener(GoToSelectPlayer);
@@ -39,7 +40,7 @@ namespace GameUI
         private void GoToSelectPlayer()
         {
             _startMenuPanel.SetActive(false);
-            _selectPlayerView.gameObject.SetActive(true);
+            _selectMenuPanel.SetActive(true);
             _selectPlayerView.UpdatePlayerPanel();
             _backButton.gameObject.SetActive(true);
         }
@@ -47,7 +48,7 @@ namespace GameUI
         private void GoBackToMenu()
         {
             _startMenuPanel.SetActive(true);
-            _selectPlayerView.gameObject.SetActive(false);
+            _selectMenuPanel.SetActive(false);
             _backButton.gameObject.SetActive(false);
         }
         private void Exit()

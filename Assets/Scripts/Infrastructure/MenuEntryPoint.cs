@@ -9,7 +9,7 @@ namespace Infrastructure
     {
         [SerializeField] private MainMenuCanvas _menuCanvas;
 
-        private MainMenuController _menuController;
+        private IMenuController _menuController;
         private DataController _dataController;
 
         private void Start()

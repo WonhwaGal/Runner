@@ -4,24 +4,20 @@ using Tools;
 
 namespace ProgressSystem
 {
-    internal class GameUIModel 
+
+    internal class GameUIModel : IGameUIModel
     {
-        public Action<int> OnChangeKM;
+        public event Action<int> OnChangeKM;
         private int _distance = 0;
         private int _distanceSpan;
         private float _increaseSpeed = Constants.increaseSpeedSpan;
 
         Sequence _disSequence;
-        Sequence _speedSequence;
-        public GameUIModel()
-        {
-            _distanceSpan = 10;
-        }
-        public void StartDistanceCount()
-        {
-            CountDistance();
-            IncreaseCountSpeed();
-        }
+
+        public GameUIModel() => _distanceSpan = 10;
+
+
+        public void StartDistanceCount() => CountDistance();
 
         private void CountDistance()
         {
@@ -29,11 +25,13 @@ namespace ProgressSystem
             _disSequence.AppendInterval(Constants.gameMultiplier)
                 .AppendCallback(IncreaseDistance).SetLoops(-1);
         }
+
         private void IncreaseDistance()
         {
             _distance += _distanceSpan;
             OnChangeKM?.Invoke(_distance);
         }
+
         public void PauseDistanceCount(bool isPaused)
         {
             if (isPaused)
@@ -41,18 +39,9 @@ namespace ProgressSystem
             else
                 _disSequence.Play();
         }
+
         public void StopDistanceCount() => _disSequence.Kill();
 
-        private void IncreaseCountSpeed()
-        {
-            _speedSequence = DOTween.Sequence();
-            _speedSequence.AppendInterval(_increaseSpeed)
-                .AppendCallback(IncreaseSpeed)
-                .SetLoops(Int32.MaxValue);
-        }
-        private void IncreaseSpeed() => _disSequence.timeScale += 0.01f;
-
-        //may need it later to keep track of km
-        //private void RegisterDistance() => _progressDistance = _distance;
+        public void IncreaseSpeed(float timeScale) => _disSequence.timeScale = timeScale;
     }
 }

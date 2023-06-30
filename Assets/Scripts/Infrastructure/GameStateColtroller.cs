@@ -6,7 +6,7 @@ using Commands;
 
 namespace Infrastructure
 {
-    internal class GameStateColtroller
+    internal class GameStateColtroller: IStateController
     {
         private CommandsManager _commandsManager;
         private DataController _dataController;

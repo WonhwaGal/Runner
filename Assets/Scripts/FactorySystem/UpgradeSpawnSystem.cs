@@ -3,18 +3,26 @@ using UnityEngine;
 
 namespace Factories
 {
-    public class UpgradeSpawnSystem
+    internal class UpgradeSpawnSystem: IUpgradeSpawnSystem
     {
         private GenericFactory<UpgradeView> _upgradeFactory;
 
         public UpgradeSpawnSystem() => CreateUpgradesFactory();
 
+
         private void CreateUpgradesFactory()
         {
             _upgradeFactory = new SingleFactory<UpgradeView>("UpgradePrefabs");
             AddObjectsToTheFactory();
-
             _upgradeFactory.CreateListOfObjects();
+        }
+
+        private void AddObjectsToTheFactory()
+        {
+            _upgradeFactory.AddPrefabNameToList("DoubleUpgrade");
+            _upgradeFactory.AddPrefabNameToList("ShieldUpgrade");
+            _upgradeFactory.AddPrefabNameToList("JemCollectable");
+            _upgradeFactory.AddPrefabNameToList("MagnetUpgrade");
         }
 
         public void UpdateAnimationState(bool isPaused)
@@ -22,6 +30,7 @@ namespace Factories
             for (int i = 0; i < _upgradeFactory.Objects.Count; i++)
                 _upgradeFactory.Objects[i].PauseChild(isPaused);
         }
+
         public void PutUpgradesOnRoad(List<Transform> upgradeSpots)
         {
             for (int i = 0; i < GetRandomProbability(upgradeSpots); i++)
@@ -55,12 +64,6 @@ namespace Factories
             };
         }
 
-        private void AddObjectsToTheFactory()
-        {
-            _upgradeFactory.AddPrefabNameToList("DoubleUpgrade");
-            _upgradeFactory.AddPrefabNameToList("ShieldUpgrade");
-            _upgradeFactory.AddPrefabNameToList("JemCollectable");
-            _upgradeFactory.AddPrefabNameToList("MagnetUpgrade");
-        }
+
     }
 }

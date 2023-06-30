@@ -3,13 +3,14 @@ using UnityEngine;
 
 namespace Factories
 {
-    internal class MainFactory
+    internal class MainFactory: IMainFactory
     {
-        private RoadSystem _roadSystem;
-        private CoinSetSystem _coinSetSystem;
-        private UpgradeSpawnSystem _upgradeSpawnSystem;
-        public RoadSystem RoadSystem { get => _roadSystem; }
-        public CoinSetSystem CoinSetSystem { get => _coinSetSystem; }
+        private IRoadSystem _roadSystem;
+        private ICoinSetSystem _coinSetSystem;
+        private IUpgradeSpawnSystem _upgradeSpawnSystem;
+
+        public IRoadSystem RoadSystem { get => _roadSystem; }
+        public ICoinSetSystem CoinSetSystem { get => _coinSetSystem; }
 
         public MainFactory(Transform firstRoadSpan)
         {
@@ -19,6 +20,8 @@ namespace Factories
             RoadSystem.OnRoadForCoins += CoinSetSystem.PutCoinsOnRoad;
             RoadSystem.OnRoadForUpdates += _upgradeSpawnSystem.PutUpgradesOnRoad;
         }
+
+
         public void UpdateAnimations(bool isPaused)
         {
             _coinSetSystem.UpdateAnimationState(isPaused);
@@ -29,6 +32,7 @@ namespace Factories
         {
             RoadSystem.OnRoadForCoins -= CoinSetSystem.PutCoinsOnRoad;
             RoadSystem.OnRoadForCoins -= _upgradeSpawnSystem.PutUpgradesOnRoad;
+            _roadSystem.Dispose();
         }
     }
 }

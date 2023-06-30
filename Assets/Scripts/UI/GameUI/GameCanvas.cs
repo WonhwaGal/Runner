@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace GameUI
 {
-    public class GameCanvas : MonoBehaviour
+    internal class GameCanvas : MonoBehaviour
     {
         [SerializeField] private GameUIView _gameUiView;
         [SerializeField] private PauseView _pauseView;

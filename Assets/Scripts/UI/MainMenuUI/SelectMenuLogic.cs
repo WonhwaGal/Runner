@@ -5,16 +5,17 @@ using static ProgressSystem.GameProgressConfig;
 
 namespace GameUI
 {
-    internal class SelectMenuLogic
+    internal class SelectMenuLogic: ISelectLogic
     {
-        public Action OnPlayerSelected { get; set; }
-        public Action<int> OnSettingCoinNumber { get; set; }
-        public Action<int> OnSettingCrystalNumber { get; set; }
-        public Action<GameProgressConfig> OnChangingGameCfg { get; set; }
+        public event Action OnPlayerSelected;
+        public event Action<int> OnSettingCoinNumber;
+        public event Action<int> OnSettingCrystalNumber;
+        public event Action<GameProgressConfig> OnChangingGameCfg;
 
         private GameProgressConfig _gameConfig;
 
         public void AssignPlayerConfig(GameProgressConfig gameConfig) => _gameConfig = gameConfig;
+
         public void UpdatePlayersConfig(SavedData savedData)
         {
             if (savedData.OpenPlayerConfigs.Count == 0)

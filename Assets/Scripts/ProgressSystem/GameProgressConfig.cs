@@ -28,6 +28,7 @@ namespace ProgressSystem
             public int CoinMultiplier = 1;
             public int CrystalMultiplier = 1;
         }
+
         public string DefaultPlayerName;
         public int TotalCoinCount;
         public int TotalCrystalCount;

@@ -38,7 +38,9 @@ namespace Tools
             }
 
         }
+
         private void CurrentTimeToZero() => _currentTimePassed = 0.0f;
+
         public void StartTimer() => ShouldBeWorking = true;
 
         public void StopTimer() => ShouldBeWorking = false;

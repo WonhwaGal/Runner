@@ -1,13 +1,15 @@
 using UnityEngine.SceneManagement;
 using static ProgressSystem.GameProgressConfig;
 
+
 namespace GameUI
 {
     internal class SelectMenuPresenter
     {
         SelectPlayerView _selectView;
-        SelectMenuLogic _selectLogic;
-        public SelectMenuPresenter(SelectPlayerView selectView, SelectMenuLogic selectLogic)
+        ISelectLogic _selectLogic;
+
+        public SelectMenuPresenter(SelectPlayerView selectView, ISelectLogic selectLogic)
         {
             _selectView = selectView;
             _selectLogic = selectLogic;
@@ -18,12 +20,17 @@ namespace GameUI
             _selectLogic.OnPlayerSelected += LoadSceneWithSelectedPlayer;
         }
 
+
         public void MakePlayerCurrent(PlayerConfig config) => _selectLogic.ChangeCurrentPlayerTo(config);
+
         public void BuyPlayer(PlayerConfig config) => _selectLogic.BuyPlayer(config);
+
         private void UpdateCoinNumber(int number) => _selectView.SetCoinNumber(number);
+
         private void UpdateCrystalNumber(int number) => _selectView.SetCrystalNumber(number);
-        
+
         private void LoadSceneWithSelectedPlayer() => SceneManager.LoadScene("GameScene");
+
         public void Dispose()
         {
             _selectLogic.OnSettingCoinNumber -= UpdateCoinNumber;

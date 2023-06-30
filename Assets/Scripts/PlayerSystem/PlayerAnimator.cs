@@ -15,11 +15,10 @@ public class PlayerAnimator
         _startAnimationSpeed = _animator.speed;
     }
 
-    public void Move(float input)
-    {
-        _animator.SetFloat(_speedAnimatorParameter, input);
-    }
+    public void Move(float input) => _animator.SetFloat(_speedAnimatorParameter, input);
+
     public void Jump() => _animator.SetTrigger(_jumpTrigger);
+
     public void FallDown()
     {
         if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Jumping"))

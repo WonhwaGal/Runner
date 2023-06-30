@@ -2,7 +2,7 @@
 
 namespace ProgressSystem
 {
-    internal class CollectableCounter
+    internal class CollectableCounter : ICollectableCounter
     {
         public Action<int> OnCollectCoins { get; set; }
         public Action<int> OnCollectCrystals { get; set; }

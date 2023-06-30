@@ -14,7 +14,6 @@ namespace Factories
         [SerializeField] private int _timeActive;
 
         private bool _isActive;
-
         private Tween _rotationTween;
         private Vector3 _rotationTargetVector = new Vector3(0, 360, 0);
 
@@ -22,8 +21,6 @@ namespace Factories
         public bool IsActive => _isActive;
         public List<CollectableObject> Collectables => _collectables;
 
-        private void OnBecameVisible() => AnimateCollectable();
-        private void OnBecameInvisible() => Deactivate();
 
         private void Start()
         {
@@ -35,20 +32,8 @@ namespace Factories
             Value = _timeActive;
             AnimateCollectable();
         }
-        public override void ExecuteAction()
-        {
-            gameObject.SetActive(false);
-            _isMagnetized = false;
-            _rotationTween.Pause();
-        }
 
-        public override void MoveToTarget(Vector3 position)
-        {
-            if (!_isMagnetized)
-                _isMagnetized = true;
-            if (_upgradeType == UpgradeType.Crystal)
-                _animationTween = transform.DOMove(position, Constants.coinMagnetSpeed);
-        }
+        private void OnBecameVisible() => AnimateCollectable();
 
         public override void AnimateCollectable()
         {
@@ -64,6 +49,8 @@ namespace Factories
             gameObject.SetActive(true);
         }
 
+        private void OnBecameInvisible() => Deactivate();
+
         public void Deactivate()
         {
             _isActive = false;
@@ -75,6 +62,22 @@ namespace Factories
                     transform.GetChild(i).gameObject.SetActive(true);
             }
         }
+
+        public override void ExecuteAction()
+        {
+            gameObject.SetActive(false);
+            _isMagnetized = false;
+            _rotationTween.Pause();
+        }
+
+        public override void MoveToTarget(Vector3 position)
+        {
+            if (!_isMagnetized)
+                _isMagnetized = true;
+            if (_upgradeType == UpgradeType.Crystal)
+                _animationTween = transform.DOMove(position, Constants.coinMagnetSpeed);
+        }
+
         public override void PauseAnimation(bool isPaused)
         {
             if (isPaused)

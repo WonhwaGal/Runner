@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace GameUI
 {
-    public class GameUIView : MonoBehaviour
+    internal class GameUIView : MonoBehaviour, IGameUIView
     {
         [SerializeField] private TextMeshProUGUI _coinNumberText;
         [SerializeField] private TextMeshProUGUI _crystalNumberText;
@@ -30,17 +30,15 @@ namespace GameUI
 
         public void PauseGame(bool isPaused)
         {
-            if (isPaused)
+            foreach (var pair in _runningSequences)
             {
-                foreach (var pair in _runningSequences)
+                if (isPaused)
                     pair.Value.Pause();
-            }
-            else
-            {
-                foreach (var pair in _runningSequences)
+                else
                     pair.Value.Play();
             }
         }
+
         public void ActivateUpgradeImage(float timeSpan, UpgradeType upgrade)
         {
             Sequence mySequence = DOTween.Sequence();
@@ -56,6 +54,7 @@ namespace GameUI
                 .AppendInterval(timeSpan)
                 .OnComplete(() => TurnOffUpgrade(upgrade));
         }
+
         private void ChooseUpgradeImage(UpgradeType upgrade)
         {
             var result = upgrade switch

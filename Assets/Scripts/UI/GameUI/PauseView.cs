@@ -2,38 +2,44 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class PauseView : MonoBehaviour
+namespace GameUI
 {
-    public Action<bool> OnContinueGame { get; set; }
-    public Action OnBackToMenu;
-    public Action OnExit;
-
-    [SerializeField] private Button _continue;
-    [SerializeField] private Button _backToMenu;
-    [SerializeField] private Button _exit;
-
-    public void Init()
+    internal class PauseView : MonoBehaviour, IPauseView
     {
-        _continue.onClick.AddListener(() => OnContinueGame?.Invoke(!gameObject.activeInHierarchy));
-        _backToMenu.onClick.AddListener(() => OnBackToMenu?.Invoke());
-        _exit.onClick.AddListener(() => OnExit?.Invoke());
-        _exit.onClick.AddListener(ExitGame);
-    }
+        public event Action<bool> OnContinueGame;
+        public event Action OnBackToMenu;
+        public event Action OnExit;
 
-    private void ExitGame()
-    {
+        [SerializeField] private Button _continue;
+        [SerializeField] private Button _backToMenu;
+        [SerializeField] private Button _exit;
+
+        public GameObject Gameobject => gameObject;
+
+        public void Init()
+        {
+            _continue.onClick.AddListener(() => OnContinueGame?.Invoke(!gameObject.activeInHierarchy));
+            _backToMenu.onClick.AddListener(() => OnBackToMenu?.Invoke());
+            _exit.onClick.AddListener(() => OnExit?.Invoke());
+            _exit.onClick.AddListener(ExitGame);
+        }
+
+        private void ExitGame()
+        {
 #if UNITY_EDITOR
-        if (UnityEditor.EditorApplication.isPlaying)
-            UnityEditor.EditorApplication.isPlaying = false;
+            if (UnityEditor.EditorApplication.isPlaying)
+                UnityEditor.EditorApplication.isPlaying = false;
 #endif
 #if UNITY_STANDALONE
-        Application.Quit();
+            Application.Quit();
 #endif
-    }
-    private void OnDestroy()
-    {
-        _continue.onClick.RemoveAllListeners();
-        _backToMenu.onClick.RemoveAllListeners();
-        _exit.onClick.RemoveAllListeners();
+        }
+
+        private void OnDestroy()
+        {
+            _continue.onClick.RemoveAllListeners();
+            _backToMenu.onClick.RemoveAllListeners();
+            _exit.onClick.RemoveAllListeners();
+        }
     }
 }

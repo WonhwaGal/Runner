@@ -8,16 +8,21 @@ namespace Factories
     {
         public event Action<List<Transform>> OnRoadForCoins;
         public event Action<List<Transform>> OnRoadForUpdates;
+        public event Action<bool> OnLaneChangingBlocked;
 
         private GenericFactory<RoadSpan> _roadFactory;
-        private Vector3 _previousPos;
+        private Vector3 _parentPos;
+        private Quaternion _parentRot;
+
         private Vector3 _forwardShift = new Vector3(0, 0, 100);
         private Vector3 _leftShift = new Vector3(-100, 0, 0);
         private Vector3 _rightShift = new Vector3(100, 0, 0);
         private Vector3 _currentShift;
+
         private RoadSpan _startSpan;
         private List<RoadSpan> _endSpans;
         private List<RoadSpan> _roadSpans;
+        private int _maxRoadSpansSpawned = 5;
         private int _roadSpansSpawned;
 
         public RoadSystem(Transform firstRoadSpan)
@@ -29,13 +34,13 @@ namespace Factories
             PlanRoadAhead();
             UnityEngine.Debug.Log("2nd spawn");
             PlanRoadAhead();
-            UnityEngine.Debug.Log("3rd spawn");
-            PlanRoadAhead();
+            //UnityEngine.Debug.Log("3rd spawn");
+            //PlanRoadAhead();
         }
 
         private void Init(Transform firstRoadSpan)
         {
-            _previousPos = firstRoadSpan.position;
+            _parentPos = firstRoadSpan.position;
             _currentShift = _forwardShift;
             _startSpan = firstRoadSpan.gameObject.GetComponent<RoadSpan>();
             _startSpan.Activate();
@@ -43,6 +48,7 @@ namespace Factories
             _startSpan.FactoryParentTransfom = _roadFactory.RootObject;
             _endSpans = new List<RoadSpan>();
             _endSpans.Add(_startSpan);
+            _roadSpansSpawned = _maxRoadSpansSpawned;
         }
 
         private void CreateRoadFactory()
@@ -69,10 +75,12 @@ namespace Factories
         {
             roadSpan.OnTurnedOff += PlanRoadAhead;
             roadSpan.OnSettingNextRoadSpan += UpdatePreviousSpan;
+            roadSpan.OnTurning += BlockLaneChanging;
             roadSpan.FactoryParentTransfom = _roadFactory.RootObject;
             _roadSpans.Add(roadSpan);
-
         }
+
+        public void BlockLaneChanging(bool shouldBlock) => OnLaneChangingBlocked?.Invoke(shouldBlock);
 
         public void CheckPlayerLane(int number)
         {
@@ -83,27 +91,23 @@ namespace Factories
         private void UpdatePreviousSpan(RoadSpan roadSpan, int chosenLane)
         {
             if(chosenLane == -1)
-            {
                 _endSpans.Remove(_endSpans[0]);
-                UnityEngine.Debug.Log($"chosen right way");
-            }
             else if (chosenLane == 1)
-            {
                 _endSpans.Remove(_endSpans[1]);
-                UnityEngine.Debug.Log($"chosen left way");
-            }
-            if (_endSpans.Count == 1)
-            UnityEngine.Debug.Log($"new only end is {_endSpans[0]}");
         }
 
         private void PlanRoadAhead()
         {
+            _roadSpansSpawned--;
+            //if (_roadSpansSpawned > _maxRoadSpansSpawned)
+                //return;
+
             int currentEndListState = _endSpans.Count;
             UnityEngine.Debug.Log($"number of span ends is {_endSpans.Count}:");
             for (int i = 0; i < currentEndListState; i++)
             {
                 UnityEngine.Debug.Log($"creating from element {i} - {_endSpans[i].name}");
-                //_roadSpansSpawned--;
+
                 _currentShift = _endSpans[i].RoadType switch
                 {
                     RoadSpanType.RightTurn => _rightShift,
@@ -139,57 +143,54 @@ namespace Factories
         {
             RoadSpan roadSpan = null;
             bool goodRoadMatch = false;
-            while (!goodRoadMatch)
+            if (!goodRoadMatch)
             {
                 roadSpan = _roadFactory.Spawn();
                 if (previousRoadType != RoadSpanType.Straight && roadSpan.RoadType != RoadSpanType.Straight)
                 {
                     roadSpan.Deactivate();
                     Debug.LogWarning($"{roadSpan.name} got deactivated");
-                }
-                else
-                {
-                    goodRoadMatch = true;
+                    SpawnRoadSpan(previousRoadType);
                 }
             }
 
             if (!_roadSpans.Contains(roadSpan))
                 RegisterRoadSpan(roadSpan);
+            _roadSpansSpawned++;
             return roadSpan;
         }
 
         private void UpdateRoadSpanPosition(RoadSpan currentSpan, RoadSpan previousSpan, Vector3 currentShift)
         {
-            _previousPos = previousSpan.transform.position;
-            currentSpan.transform.position = _previousPos + currentShift;
+            _parentPos = previousSpan.transform.position;
+            _parentRot = previousSpan.transform.rotation;
 
-            if (currentShift == _rightShift)
-                AttachChildRoadSpan(currentSpan.transform, previousSpan, 1);
+            if(currentShift == _rightShift)
+            {
+                currentSpan.transform.rotation = _parentRot;
+                currentSpan.transform.rotation *= Quaternion.Euler(0, 90, 0);
+                previousSpan.AcceptAChildObject(currentSpan.transform);
+                currentSpan.transform.position = _parentPos;
+                currentSpan.transform.localPosition += _rightShift;
+            }
             else if (currentShift == _leftShift)
-                AttachChildRoadSpan(currentSpan.transform, previousSpan, -1);
+            {
+                currentSpan.transform.rotation = _parentRot;
+                currentSpan.transform.rotation *= Quaternion.Euler(0, -90, 0);
+                previousSpan.AcceptAChildObject(currentSpan.transform);
+                currentSpan.transform.position = _parentPos;
+                currentSpan.transform.localPosition += _leftShift;
+            }
             else if (currentShift == _forwardShift)
-                AttachChildRoadSpan(currentSpan.transform, previousSpan, 0);
+            {
+                currentSpan.transform.rotation = _parentRot;
+                previousSpan.AcceptAChildObject(currentSpan.transform);
+                currentSpan.transform.position = _parentPos;
+                currentSpan.transform.localPosition += _forwardShift;
+            }
 
             //OnRoadForCoins?.Invoke(roadSpan.CoinSpots);
             //OnRoadForUpdates?.Invoke(roadSpan.UpgradeSpots);
-        }
-
-        private void AttachChildRoadSpan(Transform currentSpan, RoadSpan previousSpan, int Xdirection)
-        {
-            if (Xdirection != 0)
-                currentSpan.transform.forward = Vector3.right * Xdirection;
-            else
-            {
-                currentSpan.transform.forward = previousSpan.transform.forward;
-
-                if (previousSpan.transform.forward == Vector3.right)
-                    currentSpan.transform.position = previousSpan.transform.position + _rightShift;
-
-                if (previousSpan.transform.forward == Vector3.left)
-                    currentSpan.transform.position = previousSpan.transform.position + _leftShift;
-            }
-
-            previousSpan.AcceptAChildObject(currentSpan);
         }
 
         public void Dispose()
@@ -199,6 +200,7 @@ namespace Factories
             {
                 _roadFactory.Objects[i].OnTurnedOff -= PlanRoadAhead;
                 _roadFactory.Objects[i].OnSettingNextRoadSpan -= UpdatePreviousSpan;
+                _roadFactory.Objects[i].OnTurning -= BlockLaneChanging;
             }
         }
     }

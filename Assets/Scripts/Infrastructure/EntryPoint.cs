@@ -16,7 +16,7 @@ namespace Infrastructure
 
         private IInput _inputType;
 
-        private IPlayerControlSystem _playerController;
+        private IPlayerControlSystem _playerControlSystem;
         private IProgressController _progressController;
         private IMainFactory _mainFactory;
         private IStateController _gameStateController;
@@ -37,8 +37,8 @@ namespace Infrastructure
             _mainFactory = new MainFactory(_firstRoadSpan);
             _uiController = new GameUIController(_gameCanvas);
             _progressController = new ProgressController(_gameCanvas.GameUIView, _gameConfig);
-            _playerController = new PlayerControlSystem(_inputType, _mainFactory.RoadSystem, _cameraFollow);
-            _commandsManager = new CommandsManager(_playerController, _uiController, _progressController);
+            _playerControlSystem = new PlayerControlSystem(_inputType, _mainFactory.RoadSystem, _cameraFollow);
+            _commandsManager = new CommandsManager(_playerControlSystem, _uiController, _progressController);
             _gameStateController = new GameStateColtroller(_commandsManager);
         }
 
@@ -46,27 +46,29 @@ namespace Infrastructure
         {
             _inputType.OnPauseGame += _gameStateController.PauseGame;
             _commandsManager.OnPause += _mainFactory.UpdateAnimations;
-            _playerController.TriggerHandler.OnTriggeredByCoin += _progressController.CollectableCounter.AddCoins;
-            _playerController.TriggerHandler.OnTriggeredByCrystal += _progressController.CollectableCounter.AddCrystals;
-            _playerController.TriggerHandler.OnGettingUpgrade += _gameCanvas.GameUIView.ActivateUpgradeImage;
-            _playerController.TriggerHandler.OnHittingAnObstacle += _gameStateController.LoseGame;
+            _playerControlSystem.TriggerHandler.OnTriggeredByCoin += _progressController.CollectableCounter.AddCoins;
+            _playerControlSystem.TriggerHandler.OnTriggeredByCrystal += _progressController.CollectableCounter.AddCrystals;
+            _playerControlSystem.TriggerHandler.OnGettingUpgrade += _gameCanvas.GameUIView.ActivateUpgradeImage;
+            _playerControlSystem.TriggerHandler.OnHittingAnObstacle += _gameStateController.LoseGame;
+            _mainFactory.RoadSystem.OnLaneChangingBlocked += _inputType.IgnoreInput;
         }
 
         private void SignOffConnections()
         {
             _inputType.OnPauseGame -= _gameStateController.PauseGame;
             _commandsManager.OnPause -= _mainFactory.UpdateAnimations;
-            _playerController.TriggerHandler.OnTriggeredByCoin -= _progressController.CollectableCounter.AddCoins;
-            _playerController.TriggerHandler.OnTriggeredByCrystal -= _progressController.CollectableCounter.AddCrystals;
-            _playerController.TriggerHandler.OnGettingUpgrade -= _gameCanvas.GameUIView.ActivateUpgradeImage;
-            _playerController.TriggerHandler.OnHittingAnObstacle -= _gameStateController.LoseGame;
+            _playerControlSystem.TriggerHandler.OnTriggeredByCoin -= _progressController.CollectableCounter.AddCoins;
+            _playerControlSystem.TriggerHandler.OnTriggeredByCrystal -= _progressController.CollectableCounter.AddCrystals;
+            _playerControlSystem.TriggerHandler.OnGettingUpgrade -= _gameCanvas.GameUIView.ActivateUpgradeImage;
+            _playerControlSystem.TriggerHandler.OnHittingAnObstacle -= _gameStateController.LoseGame;
+            _mainFactory.RoadSystem.OnLaneChangingBlocked -= _inputType.IgnoreInput;
         }
 
         private void OnDestroy()
         {
             SignOffConnections();
             _mainFactory.Dispose();
-            _playerController.Dispose();
+            _playerControlSystem.Dispose();
             _progressController.Dispose();
             _gameStateController.Dispose();
         }

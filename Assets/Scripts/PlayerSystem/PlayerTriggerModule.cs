@@ -34,7 +34,7 @@ namespace PlayerSystem
             }
             else if (other.TryGetComponent(out RoadSpan turnRoad))
             {
-                turnRoad.TryMakeTurn();
+                turnRoad.CheckForTurn();
             }
             else
             {
@@ -47,7 +47,7 @@ namespace PlayerSystem
         {
             if (other.TryGetComponent(out RoadSpan road))
             {
-                road.UnparentChildObjects();
+                //road.UnparentChildObjects();
 
                 if (road.RoadType != RoadSpanType.Straight)
                     OnTurning?.Invoke(0);

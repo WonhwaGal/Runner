@@ -8,7 +8,7 @@ namespace Factories
     {
         event Action<List<Transform>> OnRoadForCoins;
         event Action<List<Transform>> OnRoadForUpdates;
-
+        event Action<bool> OnLaneChangingBlocked;
         void CheckPlayerLane(int number);
         //void IncreaseSpeed(float timeScale);
         //void StartRoadSpawn();

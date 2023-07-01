@@ -45,11 +45,9 @@ namespace PlayerSystem
 
         private void SetConnections(PlayerConfig config)
         {
-            //_playerController.Mover.OnSpeedingUp += _roadSystem.IncreaseSpeed;
             OnPlayerControllerSet?.Invoke();
 
             _playerController.Mover.OnChangingLane += _roadSystem.CheckPlayerLane;
-            //_roadSystem.StartRoadSpawn();
 
             _cameraFollow.SetTarget(_playerController.transform);
 

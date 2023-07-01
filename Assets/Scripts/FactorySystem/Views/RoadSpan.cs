@@ -19,6 +19,7 @@ namespace Factories
         [SerializeField] private RoadSpanType _roadType;
 
         public Action OnTurnedOff;
+        public Action<bool> OnTurning;
         public Action<RoadSpan, int> OnSettingNextRoadSpan;
 
         private bool _isActive;
@@ -56,7 +57,6 @@ namespace Factories
         public RoadSpanType RoadType { get => _roadType; }
         public int PlayerLane { get => _playerLane; set => _playerLane = value; }
         public Transform FactoryParentTransfom { get => _factoryParentTransfom; set => _factoryParentTransfom = value; }
-        public RoadSpan ChildSpan {get => _childRoadSpans[0].GetComponent<RoadSpan>();  }
 
         public void Activate()
         {
@@ -81,43 +81,50 @@ namespace Factories
             }
         }
 
-        public void TryMakeTurn()
+        public void CheckForTurn()
         {
-            if (PlayerLane != 0 && _roadType != RoadSpanType.Straight)
-            {
-                if (PlayerLane == 1 && (_roadType == RoadSpanType.TwoWays || _roadType == RoadSpanType.RightTurn))
-                    MakeTurn(4.9f, -90);
+            if (_roadType == RoadSpanType.Straight)
+                return;
 
-                if (PlayerLane == -1 && (_roadType == RoadSpanType.TwoWays || _roadType == RoadSpanType.LeftTurn))
-                {
-                    MakeTurn(-4.9f, 90);
-                    RoadSpan nextRoadSpan = _childRoadSpans[0].GetComponent<RoadSpan>();
-                    OnSettingNextRoadSpan?.Invoke(nextRoadSpan, PlayerLane);
-                }
+            if (PlayerLane == 1 && (_roadType == RoadSpanType.TwoWays || _roadType == RoadSpanType.RightTurn))
+            {
+                MakeTurn(4.9f, -90);
+                return;
+            }
+
+            if (PlayerLane == -1 && (_roadType == RoadSpanType.TwoWays || _roadType == RoadSpanType.LeftTurn))
+            {
+                MakeTurn(-4.9f, 90);
+                RoadSpan nextRoadSpan = _childRoadSpans[0].GetComponent<RoadSpan>();
+                OnSettingNextRoadSpan?.Invoke(nextRoadSpan, PlayerLane);
             }
         }
 
         private void MakeTurn(float shift, int yRotation)
         {
+            OnTurning?.Invoke(true);
             _turnSequence = DOTween.Sequence();
             _turnSequence.Append(transform.DOMoveX(transform.position.x + shift, 1.0f))
                         .Join(transform.DORotate(new Vector3(0, yRotation, 0), 1.0f))
                         .OnComplete(KillSequence);
-            return;
         }
 
-        private void KillSequence() => _turnSequence.Kill();
+        private void KillSequence()
+        {
+            _turnSequence.Kill();
+            OnTurning?.Invoke(false);
+        }
 
         public void AcceptAChildObject(Transform span)
         {
-            span.SetParent(transform);
+            span.SetParent(transform, true);
             _childRoadSpans.Add(span);
         }
 
         public void UnparentChildObjects()
         {
             Debug.Log($"{gameObject.name} went UNparent");
-            for(int i = 0; i < _childRoadSpans.Count; i++)
+            for (int i = 0; i < _childRoadSpans.Count; i++)
                 _childRoadSpans[i].transform.SetParent(_factoryParentTransfom);
 
             _childRoadSpans.Clear(); ;
@@ -135,7 +142,7 @@ namespace Factories
             while (!shouldDeactivate)
             {
                 float saveDistance = Camera.main.transform.position.z - 70;
-                if (transform.position.z > saveDistance)
+                if (transform.position.z > saveDistance)   // transform.rotation.y % 90 == 0
                     yield return new WaitForSeconds(1);
                 else
                     shouldDeactivate = true;
@@ -148,17 +155,18 @@ namespace Factories
         public void Deactivate()
         {
             StopCoroutine(CheckForDeactivate());
+            UnparentChildObjects();
             _isActive = false;
             transform.forward = Vector3.forward;
             transform.rotation = Quaternion.identity;
             transform.SetParent(_factoryParentTransfom);
             gameObject.SetActive(false);
 
-            if (_collectables.Count > 0)
-            {
-                for (int i = 0; i < transform.childCount; i++)
-                    transform.GetChild(i).gameObject.SetActive(true);
-            }
+            //if (_collectables.Count > 0)
+            //{
+            //    for (int i = 0; i < transform.childCount; i++)
+            //        transform.GetChild(i).gameObject.SetActive(true);
+            //}
         }
     }
 }

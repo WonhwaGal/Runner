@@ -10,5 +10,7 @@ namespace Infrastructure
         event Action<float> OnChangingXValue;
         void RegisterInput();
         Vector3 GetXAxisValue();
+
+        void IgnoreInput(bool shouldBeIgnored);
     }
 }

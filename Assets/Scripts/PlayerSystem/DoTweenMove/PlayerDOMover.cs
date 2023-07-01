@@ -25,12 +25,14 @@ internal class PlayerDOMover : BaseMover
     private bool _canJump;
 
     private int _moveSides;
+    private float _moveDirection;
     private float _fallBack = 2.5f;
 
     public override void Init(IInput input, float jumpForce)
     {
         _transform = transform;
         _input = input;
+        _isSideMoving = true;
         SetLane(0);
         SetJumpConditions(jumpForce);
 
@@ -67,6 +69,7 @@ internal class PlayerDOMover : BaseMover
         }
 
         OnStartRunning?.Invoke();
+        _isSideMoving = false;
 
         _moveSequence = DOTween.Sequence();
         _moveSequence.Append(_transform.DOMoveZ(_transform.position.z + _forwardMove, _forwardSpeed)
@@ -87,6 +90,7 @@ internal class PlayerDOMover : BaseMover
         if ((_isJumping || _isSideMoving))
             return;
 
+        _moveDirection = xValue;
         if (xValue > 0 && _moveSides < 1)
             MoveToSide(1);
         else if (xValue < 0 && _moveSides > -1)
@@ -96,12 +100,14 @@ internal class PlayerDOMover : BaseMover
     private void MoveToSide(int number)
     {
         _isSideMoving = true;
+        _moveSides += number;
+        OnChangingLane?.Invoke(_moveSides);
         _sideTween = _transform.DOMoveX(_transform.position.x + _sideShift * number, _sideSpeed)
             .OnComplete(() =>
             { 
-                _moveSides += number;
+                //_moveSides += number;
                 _isSideMoving = false;
-                OnChangingLane?.Invoke(_moveSides);
+                //OnChangingLane?.Invoke(_moveSides);
             });
 
         if (_moveSequence != null)
@@ -131,8 +137,12 @@ internal class PlayerDOMover : BaseMover
     public override void StopMoving()
     {
         _moveSequence.Kill();
-        transform.DOMoveZ(_transform.position.z - _fallBack, _forwardSpeed);
         _isJumping = true;
+
+        if (!_isSideMoving)
+            transform.DOMoveZ(_transform.position.z - _fallBack, _forwardSpeed);
+        else
+            transform.DOMoveX(_transform.position.x + (_fallBack * _moveDirection * -1), _forwardSpeed);
     }
 
     public override void Dispose()

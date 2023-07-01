@@ -17,8 +17,8 @@ namespace Factories
             _roadSystem = new RoadSystem(firstRoadSpan);
             _coinSetSystem = new CoinSetSystem();
             _upgradeSpawnSystem = new UpgradeSpawnSystem();
-            RoadSystem.OnRoadForCoins += CoinSetSystem.PutCoinsOnRoad;
-            RoadSystem.OnRoadForUpdates += _upgradeSpawnSystem.PutUpgradesOnRoad;
+            RoadSystem.RoadAnalyzer.RequestForCoins += CoinSetSystem.PutCoinsOnRoad;
+            RoadSystem.RoadAnalyzer.RequestForUpdates += _upgradeSpawnSystem.PutUpgradesOnRoad;
         }
 
 
@@ -30,8 +30,8 @@ namespace Factories
 
         public void Dispose()
         {
-            RoadSystem.OnRoadForCoins -= CoinSetSystem.PutCoinsOnRoad;
-            RoadSystem.OnRoadForCoins -= _upgradeSpawnSystem.PutUpgradesOnRoad;
+            RoadSystem.RoadAnalyzer.RequestForCoins -= CoinSetSystem.PutCoinsOnRoad;
+            RoadSystem.RoadAnalyzer.RequestForCoins -= _upgradeSpawnSystem.PutUpgradesOnRoad;
             _roadSystem.Dispose();
         }
     }

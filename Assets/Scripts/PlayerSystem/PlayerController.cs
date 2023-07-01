@@ -29,7 +29,7 @@ namespace PlayerSystem
             PlayerUpgradeController upgrader = handler.Upgrader;
             upgrader.AddComponents(_playerMagnetController, _shield, _magnet);
             _trigger.Init(_collider, handler);
-            _trigger.OnTurning += _mover.SetLane;
+            _trigger.ChangeLaneOnTurning += _mover.SetLane;
             _playerAnimator = new PlayerAnimator(_animator);
             _mover.OnChangingSpeed += _playerAnimator.Move;
             _mover.OnJumping += _playerAnimator.Jump;
@@ -53,7 +53,7 @@ namespace PlayerSystem
         {
             _mover.OnChangingSpeed -= _playerAnimator.Move;
             _mover.OnJumping -= _playerAnimator.Jump;
-            _trigger.OnTurning -= _mover.SetLane;
+            _trigger.ChangeLaneOnTurning -= _mover.SetLane;
             _mover.Dispose();
         }
     }

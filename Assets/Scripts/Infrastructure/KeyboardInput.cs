@@ -27,10 +27,7 @@ namespace Infrastructure
         public void GetXValue()
         {
             if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                UnityEngine.Debug.Log("got x shift");
                 OnChangingXValue?.Invoke(-1);
-            }   
             else if (Input.GetKey(KeyCode.RightArrow))
                 OnChangingXValue?.Invoke(1);
         }

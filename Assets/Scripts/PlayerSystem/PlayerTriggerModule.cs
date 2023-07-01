@@ -8,7 +8,7 @@ namespace PlayerSystem
 {
     internal class PlayerTriggerModule : MonoBehaviour
     {
-        public Action<int> OnTurning;
+        public Action<int> ChangeLaneOnTurning;
 
         private BoxCollider _collider;
         private TriggerHandler _triggerHandler;
@@ -47,10 +47,11 @@ namespace PlayerSystem
         {
             if (other.TryGetComponent(out RoadSpan road))
             {
-                //road.UnparentChildObjects();
-
                 if (road.RoadType != RoadSpanType.Straight)
-                    OnTurning?.Invoke(0);
+                {
+                    ChangeLaneOnTurning?.Invoke(0);
+                    road.OnTurning?.Invoke(false);
+                }
             }
         }
     }

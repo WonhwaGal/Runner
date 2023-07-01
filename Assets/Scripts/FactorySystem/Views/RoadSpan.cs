@@ -83,11 +83,12 @@ namespace Factories
 
         public void CheckForTurn()
         {
-            if (_roadType == RoadSpanType.Straight)
+            if (_roadType == RoadSpanType.Straight || PlayerLane == 0)
                 return;
-
+            OnTurning?.Invoke(true);
             if (PlayerLane == 1 && (_roadType == RoadSpanType.TwoWays || _roadType == RoadSpanType.RightTurn))
             {
+                Debug.Log("turning coz my lane is 1");
                 MakeTurn(4.9f, -90);
                 return;
             }
@@ -102,18 +103,13 @@ namespace Factories
 
         private void MakeTurn(float shift, int yRotation)
         {
-            OnTurning?.Invoke(true);
             _turnSequence = DOTween.Sequence();
             _turnSequence.Append(transform.DOMoveX(transform.position.x + shift, 1.0f))
                         .Join(transform.DORotate(new Vector3(0, yRotation, 0), 1.0f))
                         .OnComplete(KillSequence);
         }
 
-        private void KillSequence()
-        {
-            _turnSequence.Kill();
-            OnTurning?.Invoke(false);
-        }
+        private void KillSequence() => _turnSequence.Kill();
 
         public void AcceptAChildObject(Transform span)
         {
@@ -161,12 +157,6 @@ namespace Factories
             transform.rotation = Quaternion.identity;
             transform.SetParent(_factoryParentTransfom);
             gameObject.SetActive(false);
-
-            //if (_collectables.Count > 0)
-            //{
-            //    for (int i = 0; i < transform.childCount; i++)
-            //        transform.GetChild(i).gameObject.SetActive(true);
-            //}
         }
     }
 }

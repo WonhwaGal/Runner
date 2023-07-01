@@ -50,7 +50,6 @@ namespace Infrastructure
             _playerControlSystem.TriggerHandler.OnTriggeredByCrystal += _progressController.CollectableCounter.AddCrystals;
             _playerControlSystem.TriggerHandler.OnGettingUpgrade += _gameCanvas.GameUIView.ActivateUpgradeImage;
             _playerControlSystem.TriggerHandler.OnHittingAnObstacle += _gameStateController.LoseGame;
-            _mainFactory.RoadSystem.OnLaneChangingBlocked += _inputType.IgnoreInput;
         }
 
         private void SignOffConnections()
@@ -61,7 +60,6 @@ namespace Infrastructure
             _playerControlSystem.TriggerHandler.OnTriggeredByCrystal -= _progressController.CollectableCounter.AddCrystals;
             _playerControlSystem.TriggerHandler.OnGettingUpgrade -= _gameCanvas.GameUIView.ActivateUpgradeImage;
             _playerControlSystem.TriggerHandler.OnHittingAnObstacle -= _gameStateController.LoseGame;
-            _mainFactory.RoadSystem.OnLaneChangingBlocked -= _inputType.IgnoreInput;
         }
 
         private void OnDestroy()

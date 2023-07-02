@@ -12,6 +12,7 @@ namespace Infrastructure
 
         private bool _isPaused = false;
         private bool _isIgnored = false;
+
         public void RegisterInput()
         {
             if (!_isIgnored)

@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 namespace Factories
 {
     internal interface ICoinSetSystem
     {
-        void PutCoinsOnRoad(List<Transform> coinSetSpots);
+        void PutCoinsOnRoad(IRoadSpan roadSpan);
         void UpdateAnimationState(bool isPaused);
     }
 }

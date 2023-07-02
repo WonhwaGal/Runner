@@ -37,7 +37,7 @@ namespace Collectables
             if (isPaused)
                 _animationTween.Pause();
             else
-                _animationTween.Play();
+                AnimateCollectable();
         }
 
         public override void MoveToTarget(Vector3 position)

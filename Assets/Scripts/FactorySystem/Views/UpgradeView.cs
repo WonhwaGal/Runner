@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Tools;
 
+
 namespace Factories
 {
     internal class UpgradeView : CollectableObject, IRespawnable
@@ -17,6 +18,7 @@ namespace Factories
         private Tween _rotationTween;
         private Vector3 _rotationTargetVector = new Vector3(0, 360, 0);
 
+        public Transform RootObject { get; set; }
         public GameObject BodyObject => gameObject;
         public bool IsActive => _isActive;
         public List<CollectableObject> Collectables => _collectables;
@@ -49,11 +51,10 @@ namespace Factories
             gameObject.SetActive(true);
         }
 
-        private void OnBecameInvisible() => Deactivate();
-
         public void Deactivate()
         {
             _isActive = false;
+            gameObject.transform.SetParent(RootObject);
             gameObject.SetActive(false);
             _rotationTween.Pause();
             if (_collectables.Count > 0)

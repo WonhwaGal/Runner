@@ -9,6 +9,8 @@ namespace PlayerSystem
     internal class PlayerTriggerModule : MonoBehaviour
     {
         public Action<int> ChangeLaneOnTurning;
+        public Action<RoadSpan> OnTriggeredByRoadSpan;
+        //public Action<bool> OnFinishTurning;
 
         private BoxCollider _collider;
         private TriggerHandler _triggerHandler;
@@ -32,9 +34,10 @@ namespace PlayerSystem
                 _triggerHandler.SortOutCollectable(collectable);
                 collectable.ExecuteAction();
             }
-            else if (other.TryGetComponent(out RoadSpan turnRoad))
+            else if (other.TryGetComponent(out RoadSpan road))
             {
-                turnRoad.CheckForTurn();
+                OnTriggeredByRoadSpan?.Invoke(road);
+                //road.CheckForTurn();
             }
             else
             {

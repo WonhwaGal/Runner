@@ -31,7 +31,7 @@ namespace PlayerSystem
             _triggerHandler = new TriggerHandler(_upgrader);
             _triggerHandler.OnGettingUpgrade += _upgrader.ActivateUpgrade;
             _triggerHandler.OnHittingAnObstacle += _cameraFollow.ShakeCamera;
-            _roadSystem.RoadAnalyzer.OnLaneChangingBlocked += _inputType.IgnoreInput;
+            _roadSystem.RouteAnalyzer.OnLaneChangingBlocked += _inputType.IgnoreInput;
         }
 
 
@@ -48,6 +48,7 @@ namespace PlayerSystem
         {
             OnPlayerControllerSet?.Invoke();
 
+            _playerController.TriggerModule.OnTriggeredByRoadSpan += _roadSystem.RouteAnalyzer.CheckForTurn;
             _playerController.Mover.OnChangingLane += _roadSystem.UpdatePlayerLane;
 
             _cameraFollow.SetTarget(_playerController.transform);
@@ -79,7 +80,8 @@ namespace PlayerSystem
         public void Dispose()
         {
             _triggerHandler.OnGettingUpgrade -= _upgrader.ActivateUpgrade;
-            _roadSystem.RoadAnalyzer.OnLaneChangingBlocked -= _inputType.IgnoreInput;
+            _roadSystem.RouteAnalyzer.OnLaneChangingBlocked -= _inputType.IgnoreInput;
+            _playerController.TriggerModule.OnTriggeredByRoadSpan -= _roadSystem.RouteAnalyzer.CheckForTurn;
             _playerController.Mover.OnChangingLane -= _roadSystem.UpdatePlayerLane;
             if (_playerController != null)
                 _triggerHandler.OnHittingAnObstacle -= _playerController.PlayerAnimator.FallDown;

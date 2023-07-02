@@ -1,15 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Collectables;
 using DG.Tweening;
 using System;
 using System.Collections;
 
 namespace Factories
 {
-    internal class RoadSpan : MonoBehaviour, IRespawnable
+    internal class RoadSpan : MonoBehaviour, IRespawnable, IRoadSpan
     {
-        [SerializeField] private List<CollectableObject> _collectables;
         [SerializeField] private GameObject _obstacleSet_1;
         [SerializeField] private GameObject _obstacleSet_2;
         [SerializeField] private List<Transform> _coinSpots_1;
@@ -20,19 +18,21 @@ namespace Factories
 
         public Action OnTurnedOff;
         public Action<bool> OnTurning;
-        public Action<RoadSpan, int> OnSettingNextRoadSpan;
 
         private bool _isActive;
         private int _setNumber;
 
         private int _playerLane;
-        private Transform _factoryParentTransfom;
+        private Transform _rootObject;
         private Sequence _turnSequence;
         private List<Transform> _childRoadSpans;
 
-        public List<CollectableObject> Collectables => _collectables;
+        public List<IRespawnable> Collectables { get; private set; }
         public GameObject BodyObject => gameObject;
         public bool IsActive => _isActive;
+        public RoadSpanType RoadType { get => _roadType; }
+        public int PlayerLane { get => _playerLane; set => _playerLane = value; }
+        public Transform RootObject { get => _rootObject; set => _rootObject = value; }
         public List<Transform> CoinSpots
         {
             get
@@ -54,13 +54,10 @@ namespace Factories
             }
         }
 
-        public RoadSpanType RoadType { get => _roadType; }
-        public int PlayerLane { get => _playerLane; set => _playerLane = value; }
-        public Transform FactoryParentTransfom { get => _factoryParentTransfom; set => _factoryParentTransfom = value; }
-
         public void Activate()
         {
             _childRoadSpans = new List<Transform>();
+            Collectables = new List<IRespawnable>();
             _isActive = true;
             gameObject.SetActive(true);
             SetUpScene();
@@ -81,27 +78,9 @@ namespace Factories
             }
         }
 
-        public void CheckForTurn()
-        {
-            if (_roadType == RoadSpanType.Straight || PlayerLane == 0)
-                return;
-            OnTurning?.Invoke(true);
-            if (PlayerLane == 1 && (_roadType == RoadSpanType.TwoWays || _roadType == RoadSpanType.RightTurn))
-            {
-                Debug.Log("turning coz my lane is 1");
-                MakeTurn(4.9f, -90);
-                return;
-            }
+        public RoadSpan ReturnLeftChild() => _childRoadSpans[0].GetComponent<RoadSpan>();
 
-            if (PlayerLane == -1 && (_roadType == RoadSpanType.TwoWays || _roadType == RoadSpanType.LeftTurn))
-            {
-                MakeTurn(-4.9f, 90);
-                RoadSpan nextRoadSpan = _childRoadSpans[0].GetComponent<RoadSpan>();
-                OnSettingNextRoadSpan?.Invoke(nextRoadSpan, PlayerLane);
-            }
-        }
-
-        private void MakeTurn(float shift, int yRotation)
+        public void MakeTurn(float shift, int yRotation)
         {
             _turnSequence = DOTween.Sequence();
             _turnSequence.Append(transform.DOMoveX(transform.position.x + shift, 1.0f))
@@ -111,19 +90,29 @@ namespace Factories
 
         private void KillSequence() => _turnSequence.Kill();
 
-        public void AcceptAChildObject(Transform span)
+        public void AcceptChildRespawnable(IRespawnable childObject, RespawnableType type)
         {
-            span.SetParent(transform, true);
-            _childRoadSpans.Add(span);
+            childObject.BodyObject.transform.SetParent(transform, true);
+            if (type == RespawnableType.Road)
+                _childRoadSpans.Add(childObject.BodyObject.transform);
+
+            if (type == RespawnableType.Coin || type == RespawnableType.Upgrade)
+            {
+                Collectables.Add(childObject);
+            }
         }
 
         public void UnparentChildObjects()
         {
-            Debug.Log($"{gameObject.name} went UNparent");
+            Debug.Log($"{gameObject.name} went FULL UNparent");
             for (int i = 0; i < _childRoadSpans.Count; i++)
-                _childRoadSpans[i].transform.SetParent(_factoryParentTransfom);
+                _childRoadSpans[i].SetParent(_rootObject);
 
-            _childRoadSpans.Clear(); ;
+            for(int i = 0; i < Collectables.Count; i++)
+                Collectables[i].Deactivate();
+
+            _childRoadSpans.Clear(); 
+            Collectables.Clear();
         }
 
         private void OnBecameInvisible()
@@ -155,7 +144,7 @@ namespace Factories
             _isActive = false;
             transform.forward = Vector3.forward;
             transform.rotation = Quaternion.identity;
-            transform.SetParent(_factoryParentTransfom);
+            transform.SetParent(_rootObject);
             gameObject.SetActive(false);
         }
     }

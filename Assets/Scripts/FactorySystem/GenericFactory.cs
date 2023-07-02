@@ -47,6 +47,5 @@ namespace Factories
         }
 
         public abstract T Spawn();
-        public virtual void Despawn(T spawnObject) { }
     }
 }

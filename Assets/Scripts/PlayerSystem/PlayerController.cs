@@ -19,6 +19,7 @@ namespace PlayerSystem
         private PlayerAnimator _playerAnimator;
         public PlayerAnimator PlayerAnimator { get => _playerAnimator;}
         public BaseMover Mover { get => _mover; }
+        public PlayerTriggerModule TriggerModule { get => _trigger; }
 
         public void Initialize(IInput input, float jumpForce, TriggerHandler handler)
         {
@@ -28,8 +29,8 @@ namespace PlayerSystem
             _playerMagnetController.Init(_magnetCollider);
             PlayerUpgradeController upgrader = handler.Upgrader;
             upgrader.AddComponents(_playerMagnetController, _shield, _magnet);
-            _trigger.Init(_collider, handler);
-            _trigger.ChangeLaneOnTurning += _mover.SetLane;
+            TriggerModule.Init(_collider, handler);
+            TriggerModule.ChangeLaneOnTurning += _mover.SetDefaultLane;
             _playerAnimator = new PlayerAnimator(_animator);
             _mover.OnChangingSpeed += _playerAnimator.Move;
             _mover.OnJumping += _playerAnimator.Jump;
@@ -53,7 +54,7 @@ namespace PlayerSystem
         {
             _mover.OnChangingSpeed -= _playerAnimator.Move;
             _mover.OnJumping -= _playerAnimator.Jump;
-            _trigger.ChangeLaneOnTurning -= _mover.SetLane;
+            TriggerModule.ChangeLaneOnTurning -= _mover.SetDefaultLane;
             _mover.Dispose();
         }
     }

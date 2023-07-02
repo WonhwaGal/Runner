@@ -33,7 +33,7 @@ internal class PlayerDOMover : BaseMover
         _transform = transform;
         _input = input;
         _isSideMoving = true;
-        SetLane(0);
+        SetDefaultLane(0);
         SetJumpConditions(jumpForce);
 
         _input.OnChangingXValue += ShiftToSides;
@@ -53,7 +53,7 @@ internal class PlayerDOMover : BaseMover
 
     public void TurnAround() => _transform.DOLocalRotate(new Vector3(0, 360, 0), 1.0f);
 
-    public override void SetLane(int number)
+    public override void SetDefaultLane(int number)
     {
         _moveSides = number;
         OnChangingLane?.Invoke(_moveSides);
@@ -87,7 +87,7 @@ internal class PlayerDOMover : BaseMover
 
     private void ShiftToSides(float xValue)
     {
-        if ((_isJumping || _isSideMoving))
+        if (_isJumping || _isSideMoving)
             return;
 
         _moveDirection = xValue;
@@ -103,12 +103,7 @@ internal class PlayerDOMover : BaseMover
         _moveSides += number;
         OnChangingLane?.Invoke(_moveSides);
         _sideTween = _transform.DOMoveX(_transform.position.x + _sideShift * number, _sideSpeed)
-            .OnComplete(() =>
-            { 
-                //_moveSides += number;
-                _isSideMoving = false;
-                //OnChangingLane?.Invoke(_moveSides);
-            });
+            .OnComplete(() => _isSideMoving = false);
 
         if (_moveSequence != null)
             _sideTween.timeScale = _moveSequence.timeScale;

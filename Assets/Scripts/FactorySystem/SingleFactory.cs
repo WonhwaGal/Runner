@@ -22,17 +22,12 @@ namespace Factories
             {
                 int randomNumber = Random.Range(0, _inactiveList.Count);
                 _inactiveList[randomNumber].Activate();
+                _inactiveList[randomNumber].RootObject = RootObject;
                 return _inactiveList[randomNumber];
             }
             DublicateObject();
 
             return Spawn();
-        }
-
-        public override void Despawn(T spawnObject)
-        {
-            base.Despawn(spawnObject);
-            spawnObject.Deactivate();
         }
     }
 }

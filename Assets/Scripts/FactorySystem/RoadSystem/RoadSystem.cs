@@ -7,20 +7,22 @@ namespace Factories
     {
         private GenericFactory<RoadSpan> _roadFactory;
 
-        private IRoadAnalyzer _roadAnalyzer;
+        private IRouteAnalyzer _roadAnalyzer;
 
-        public IRoadAnalyzer RoadAnalyzer { get => _roadAnalyzer; }
+        public IRouteAnalyzer RouteAnalyzer { get => _roadAnalyzer; }
 
         public RoadSystem(Transform firstRoadSpan)
         {
             CreateRoadFactory();
 
-            _roadAnalyzer = new RoadAnalyzer(firstRoadSpan, _roadFactory);
-
-            RoadAnalyzer.PlanRoadAhead();
-            RoadAnalyzer.PlanRoadAhead();
+            _roadAnalyzer = new RouteAnalyzer(firstRoadSpan, _roadFactory);
         }
 
+        public void StartRoadSpawn()
+        {
+            RouteAnalyzer.PlanRoadAhead();
+            RouteAnalyzer.PlanRoadAhead();
+        }
 
         private void CreateRoadFactory()
         {
@@ -36,14 +38,12 @@ namespace Factories
             _roadFactory.AddPrefabNameToList("RoadBlockPark");
             _roadFactory.AddPrefabNameToList("RoadBlockBridge");
             _roadFactory.AddPrefabNameToList("RoadTurnRight");
+            _roadFactory.AddPrefabNameToList("RoadTurnLeft");
             _roadFactory.AddPrefabNameToList("RoadTurnDouble");
         }
 
-        public void UpdatePlayerLane(int number)
-        {
-            RoadAnalyzer.UpdatePlayerLane(number);
-        }
+        public void UpdatePlayerLane(int number) => RouteAnalyzer.UpdatePlayerLane(number);
 
-        public void Dispose() => RoadAnalyzer.Dispose();
+        public void Dispose() => RouteAnalyzer.Dispose();
     }
 }

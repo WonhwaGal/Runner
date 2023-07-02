@@ -3,7 +3,8 @@ namespace Factories
 {
     internal interface IRoadSystem
     {
-        IRoadAnalyzer RoadAnalyzer { get; }
+        IRouteAnalyzer RouteAnalyzer { get; }
+        void StartRoadSpawn();
         void UpdatePlayerLane(int number);
         void Dispose();
     }

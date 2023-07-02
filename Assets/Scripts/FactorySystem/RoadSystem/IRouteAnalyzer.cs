@@ -4,15 +4,16 @@ using UnityEngine;
 
 namespace Factories
 {
-    internal interface IRoadAnalyzer
+    internal interface IRouteAnalyzer
     {
-        event Action<List<Transform>> RequestForCoins;
-        event Action<List<Transform>> RequestForUpdates;
+        event Action<IRoadSpan> RequestForCoins;
+        event Action<IRoadSpan> RequestForUpgrades;
         event Action<bool> OnLaneChangingBlocked;
 
         void RegisterRoadSpan(RoadSpan roadSpan);
         void UpdatePlayerLane(int number);
         void PlanRoadAhead();
+        void CheckForTurn(RoadSpan roadSpan);
         void Dispose();
     }
 }

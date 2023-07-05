@@ -25,11 +25,10 @@ namespace Collectables
 
         public override void AnimateCollectable()
         {
-            if (_animationTween != null)
-                _animationTween = transform.DORotate(_rotationTargetVector, 3.0f, RotateMode.LocalAxisAdd)
-                    .SetLoops(Int32.MaxValue, LoopType.Incremental)
-                    .SetRelative()
-                    .SetEase(Ease.Linear);
+            _animationTween = transform.DORotate(_rotationTargetVector, 3.0f, RotateMode.LocalAxisAdd)
+                .SetLoops(Int32.MaxValue, LoopType.Incremental)
+                .SetRelative()
+                .SetEase(Ease.Linear);
         }
 
         public override void PauseAnimation(bool isPaused)
@@ -37,7 +36,7 @@ namespace Collectables
             if (isPaused)
                 _animationTween.Pause();
             else
-                AnimateCollectable();
+                _animationTween.Play();
         }
 
         public override void MoveToTarget(Vector3 position)

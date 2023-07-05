@@ -17,6 +17,6 @@ namespace GameUI
         void ChangeCurrentPlayerTo(PlayerConfig config);
         void BuyPlayer(PlayerConfig config);
         void CancelProgress();
-        void SelectCurrentPlayer();
+        //void SelectCurrentPlayer();
     }
 }

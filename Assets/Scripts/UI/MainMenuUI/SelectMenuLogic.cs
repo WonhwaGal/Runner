@@ -23,6 +23,7 @@ namespace GameUI
             else
                 DrawDataFromSavedData(savedData);
         }
+
         private void AddDefaultPlayer()
         {
             UnityEngine.Debug.Log("Adding default player");
@@ -36,6 +37,7 @@ namespace GameUI
             UpdateGameUIFromConfig();
             OnChangingGameCfg?.Invoke(_gameConfig);
         }
+
         private void DrawDataFromSavedData(SavedData savedData)
         {
             UnityEngine.Debug.Log("drawing from savedData");
@@ -50,7 +52,10 @@ namespace GameUI
 
                 if (savedData.CurrentPlayerName != string.Empty
                     && savedData.CurrentPlayerName == _gameConfig.Players[i].Name)
+                {
+                    _gameConfig.CurrentPlayer = _gameConfig.Players[i];
                     _gameConfig.Players[i].IsCurrent = true;
+                }
                 else if (savedData.CurrentPlayerName != _gameConfig.Players[i].Name)
                     _gameConfig.Players[i].IsCurrent = false;
             }
@@ -58,23 +63,29 @@ namespace GameUI
             _gameConfig.TotalCrystalCount = savedData.TotalCollectedCrystals;
             UpdateGameUIFromConfig();
         }
+
         private void UpdateGameUIFromConfig()
         {
             OnSettingCoinNumber?.Invoke(_gameConfig.TotalCoinCount);
             OnSettingCrystalNumber?.Invoke(_gameConfig.TotalCrystalCount);
         }
+
         public void ChangeCurrentPlayerTo(PlayerConfig config)
         {
             for (int i = 0; i < _gameConfig.Players.Count; i++)
             {
                 if (_gameConfig.Players[i].Name == config.Name)
+                {
+                    _gameConfig.CurrentPlayer = _gameConfig.Players[i];
                     _gameConfig.Players[i].IsCurrent = true;
+                }
                 else
                     _gameConfig.Players[i].IsCurrent = false;
             }
             OnChangingGameCfg?.Invoke(_gameConfig);
             OnPlayerSelected?.Invoke();
         }
+
         public void BuyPlayer(PlayerConfig config)
         {
             config.IsOpen = true;
@@ -87,13 +98,18 @@ namespace GameUI
             OnSettingCrystalNumber?.Invoke(_gameConfig.TotalCrystalCount);
             OnChangingGameCfg?.Invoke(_gameConfig);
         }
+
         public void CancelProgress()
         {
             for (int i = 0; i < _gameConfig.Players.Count; i++)
             {
                 _gameConfig.Players[i].IsCurrent = false;
                 if (_gameConfig.Players[i].IsDefault)
+                {
                     _gameConfig.Players[i].IsOpen = true;
+                    _gameConfig.Players[i].IsCurrent = true;
+                    _gameConfig.CurrentPlayer = _gameConfig.Players[i];
+                }
                 else
                     _gameConfig.Players[i].IsOpen = false;
 
@@ -105,40 +121,40 @@ namespace GameUI
         }
 
         // When Start pressed without choosing
-        public void SelectCurrentPlayer()
-        {
-            var currentPlayer = FindCurrentPlayer();
-            if (currentPlayer == null || !currentPlayer.IsOpen)
-                SelectDefaultPlayer();
-            else if (currentPlayer != null)
-            {
-                UnityEngine.Debug.Log("chose new current player");
-                OnChangingGameCfg?.Invoke(_gameConfig);
-                OnPlayerSelected?.Invoke();
-            }
-        }
-        private PlayerConfig FindCurrentPlayer()
-        {
-            for (int i = 0; i < _gameConfig.Players.Count; i++)
-            {
-                if (_gameConfig.Players[i].IsCurrent)
-                    return _gameConfig.Players[i];
-            }
-            return null;
-        }
-        private void SelectDefaultPlayer()
-        {
-            for (int i = 0; i < _gameConfig.Players.Count; i++)
-            {
-                if (_gameConfig.Players[i].IsDefault)
-                {
-                    _gameConfig.Players[i].IsCurrent = true;
-                    _gameConfig.Players[i].IsOpen = true;
-                    OnPlayerSelected?.Invoke();
-                    return;
-                }
-            }
-        }
+        //public void SelectCurrentPlayer()
+        //{
+        //    var currentPlayer = FindCurrentPlayer();
+        //    if (currentPlayer == null || !currentPlayer.IsOpen)
+        //        SelectDefaultPlayer();
+        //    else if (currentPlayer != null)
+        //    {
+        //        UnityEngine.Debug.Log("chose new current player");
+        //        OnChangingGameCfg?.Invoke(_gameConfig);
+        //        OnPlayerSelected?.Invoke();
+        //    }
+        //}
+        //private PlayerConfig FindCurrentPlayer()
+        //{
+        //    for (int i = 0; i < _gameConfig.Players.Count; i++)
+        //    {
+        //        if (_gameConfig.Players[i].IsCurrent)
+        //            return _gameConfig.Players[i];
+        //    }
+        //    return null;
+        //}
+        //private void SelectDefaultPlayer()
+        //{
+        //    for (int i = 0; i < _gameConfig.Players.Count; i++)
+        //    {
+        //        if (_gameConfig.Players[i].IsDefault)
+        //        {
+        //            _gameConfig.Players[i].IsCurrent = true;
+        //            _gameConfig.Players[i].IsOpen = true;
+        //            OnPlayerSelected?.Invoke();
+        //            return;
+        //        }
+        //    }
+        //}
         private void ConfigCollectablesToZero()
         {
             _gameConfig.TotalCoinCount = 0;

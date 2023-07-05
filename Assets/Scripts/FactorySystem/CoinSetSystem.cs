@@ -35,6 +35,7 @@ namespace Factories
             {
                 CoinSetView coinSetView = _coinFactory.Spawn();
                 coinSetView.transform.position = roadSpan.CoinSpots[i].position + _yShift;
+                coinSetView.transform.rotation = roadSpan.CoinSpots[i].rotation;
                 roadSpan.AcceptChildRespawnable(coinSetView, RespawnableType.Coin);
             }
         }

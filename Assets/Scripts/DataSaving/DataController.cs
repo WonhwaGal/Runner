@@ -33,7 +33,7 @@ namespace DataSaving
             savedData.TotalCollectedCrystals = gameConfig.TotalCrystalCount;
             for (int i = 0; i < gameConfig.Players.Count; i++)
             {
-                if (gameConfig.Players[i].IsCurrent && gameConfig.Players[i].IsOpen)
+                if (gameConfig.CurrentPlayer != null && gameConfig.Players[i].IsOpen)
                     savedData.CurrentPlayerName = gameConfig.Players[i].Name;
                 if (gameConfig.Players[i].IsOpen)
                     savedData.OpenPlayerConfigs.Add(gameConfig.Players[i]);

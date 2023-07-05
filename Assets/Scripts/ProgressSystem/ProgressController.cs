@@ -28,15 +28,20 @@ namespace ProgressSystem
 
         public PlayerConfig RecieveCurrentPlayer()
         {
-            PlayerConfig defaultPlayer = null;
-            for(int i = 0; i < GameConfig.Players.Count; i++)
+            PlayerConfig nextPlayer = null;
+
+            if (_gameConfig.CurrentPlayer != null && _gameConfig.CurrentPlayer.IsOpen)
+                nextPlayer = _gameConfig.CurrentPlayer;
+            else
             {
-                if (GameConfig.Players[i].IsCurrent && GameConfig.Players[i].IsOpen)
-                    return GameConfig.Players[i];
-                if (GameConfig.Players[i].IsDefault)
-                    defaultPlayer = GameConfig.Players[i];
+                for (int i = 0; i < GameConfig.Players.Count; i++)
+                {
+                    if (GameConfig.Players[i].IsDefault)
+                        nextPlayer = GameConfig.Players[i];
+                }
             }
-            return defaultPlayer;
+
+            return nextPlayer;
         }
         public void RegisterCurrentProgress()
         {

@@ -9,7 +9,7 @@ namespace Factories
         [SerializeField] private List<CollectableObject> _collectables;
         private bool _isActive;
 
-        public List<CollectableObject> Collectables => _collectables;
+        public Transform RootObject { get; set; }
         public GameObject BodyObject => gameObject;
         public bool IsActive => _isActive;
 
@@ -24,12 +24,13 @@ namespace Factories
             }
         }
 
-        private void OnBecameInvisible() => Deactivate();
-
         public void Deactivate()
         {
+            Debug.Log("deactivated coin set");
             _isActive = false;
+            gameObject.transform.SetParent(RootObject);
             gameObject.SetActive(false);
+            transform.rotation = Quaternion.identity;
             if (_collectables.Count > 0)
             {
                 for (int i = 0; i < _collectables.Count; i++)

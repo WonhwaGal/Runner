@@ -7,7 +7,7 @@ using static ProgressSystem.GameProgressConfig;
 
 namespace PlayerSystem
 {
-    internal class PlayerControlSystem: IPlayerControlSystem
+    internal class PlayerControlSystem : IPlayerControlSystem
     {
         public event Action OnPlayerControllerSet;
 
@@ -31,6 +31,7 @@ namespace PlayerSystem
             _triggerHandler = new TriggerHandler(_upgrader);
             _triggerHandler.OnGettingUpgrade += _upgrader.ActivateUpgrade;
             _triggerHandler.OnHittingAnObstacle += _cameraFollow.ShakeCamera;
+            _roadSystem.RouteAnalyzer.OnLaneChangingBlocked += _inputType.IgnoreInput;
         }
 
 
@@ -45,11 +46,10 @@ namespace PlayerSystem
 
         private void SetConnections(PlayerConfig config)
         {
-            //_playerController.Mover.OnSpeedingUp += _roadSystem.IncreaseSpeed;
             OnPlayerControllerSet?.Invoke();
 
-            _playerController.Mover.OnChangingLane += _roadSystem.CheckPlayerLane;
-            //_roadSystem.StartRoadSpawn();
+            _playerController.TriggerModule.OnTriggeredByRoadSpan += _roadSystem.RouteAnalyzer.CheckForTurn;
+            _playerController.Mover.OnChangingLane += _roadSystem.UpdatePlayerLane;
 
             _cameraFollow.SetTarget(_playerController.transform);
 
@@ -70,28 +70,19 @@ namespace PlayerSystem
         public void PausePlayer(bool pauseOn)
         {
             if (pauseOn)
-            {
                 _playerController.PausePlayerMove();
-                //_roadSystem.PauseRoadSpawn();
-            }
             else
-            {
                 _playerController.ResumePlayerMove();
-                //_roadSystem.StartRoadSpawn();
-            }
         }
 
-        public void StopPlayer()
-        {
-            _playerController.StopPlayerMove();
-            //_roadSystem.StopRoadSpawn();
-        }
+        public void StopPlayer() => _playerController.StopPlayerMove();
 
         public void Dispose()
         {
             _triggerHandler.OnGettingUpgrade -= _upgrader.ActivateUpgrade;
-            //_playerController.Mover.OnSpeedingUp -= _roadSystem.IncreaseSpeed;
-            _playerController.Mover.OnChangingLane -= _roadSystem.CheckPlayerLane;
+            _roadSystem.RouteAnalyzer.OnLaneChangingBlocked -= _inputType.IgnoreInput;
+            _playerController.TriggerModule.OnTriggeredByRoadSpan -= _roadSystem.RouteAnalyzer.CheckForTurn;
+            _playerController.Mover.OnChangingLane -= _roadSystem.UpdatePlayerLane;
             if (_playerController != null)
                 _triggerHandler.OnHittingAnObstacle -= _playerController.PlayerAnimator.FallDown;
         }

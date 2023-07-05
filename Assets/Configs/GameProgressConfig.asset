@@ -13,16 +13,17 @@ MonoBehaviour:
   m_Name: GameProgressConfig
   m_EditorClassIdentifier: 
   DefaultPlayerName: Granny
-  TotalCoinCount: 0
+  TotalCoinCount: 18
   TotalCrystalCount: 0
   Players:
   - Name: Granny
     Description: No jumper, skilled coin collector
     Player: {fileID: 5588601217267412328, guid: 57370b89437e12447be027f57c602597, type: 3}
+    MenuCharacter: {fileID: 2919526852896907552, guid: 002bd75432400364fb12ec05dc2cb9b5, type: 3}
     JumpForce: 0
     PlayerImage: {fileID: 21300000, guid: 93d21406c3e32e84aa5d739fe56a81ad, type: 3}
     IsDefault: 1
-    IsCurrent: 0
+    IsCurrent: 1
     IsOpen: 1
     LimitedUse: 0
     TimesToPlay: 0
@@ -35,6 +36,7 @@ MonoBehaviour:
   - Name: Lily
     Description: Great jumper, bad ubgrade user
     Player: {fileID: 5443824114454748626, guid: ba56e27dd71db314bbfa43a8b116b473, type: 3}
+    MenuCharacter: {fileID: -6477523104341862034, guid: 73e0ef15b4eabf449bef82f3feb50a9e, type: 3}
     JumpForce: 3.7
     PlayerImage: {fileID: 21300000, guid: 75f14f89aa115ba47adcce65e5a060cc, type: 3}
     IsDefault: 0
@@ -51,6 +53,7 @@ MonoBehaviour:
   - Name: Bianka
     Description: Jem collector, big coin spender
     Player: {fileID: 6199670903983241977, guid: 56f573d4a5cb5f342b1df0398a49e801, type: 3}
+    MenuCharacter: {fileID: -1963472335654588794, guid: aaf9a20144234134eabb48c2e7624ebb, type: 3}
     JumpForce: 2.3
     PlayerImage: {fileID: 21300000, guid: 51dfd109771417a4c81d3b352c59f2e3, type: 3}
     IsDefault: 0
@@ -67,6 +70,7 @@ MonoBehaviour:
   - Name: Marcus
     Description: Natural athlete, great "pickuper"
     Player: {fileID: 2128157532348767121, guid: 996942ed0b3a90240820d46d4cf7db94, type: 3}
+    MenuCharacter: {fileID: -6521045333435619720, guid: 89c7aafb01efc6a44ad6c2a0b11b409f, type: 3}
     JumpForce: 3
     PlayerImage: {fileID: 21300000, guid: 3df0bb024ef984740a5df39d1309208d, type: 3}
     IsDefault: 0

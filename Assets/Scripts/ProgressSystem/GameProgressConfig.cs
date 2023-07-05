@@ -14,6 +14,7 @@ namespace ProgressSystem
             public string Name;
             public string Description;
             public PlayerController Player;
+            public MenuCharacterController MenuCharacter;
             public float JumpForce;
             public Sprite PlayerImage;
             public bool IsDefault;
@@ -29,6 +30,7 @@ namespace ProgressSystem
             public int CrystalMultiplier = 1;
         }
 
+        public PlayerConfig CurrentPlayer { get; set; }
         public string DefaultPlayerName;
         public int TotalCoinCount;
         public int TotalCrystalCount;

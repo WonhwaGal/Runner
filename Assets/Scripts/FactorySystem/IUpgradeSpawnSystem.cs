@@ -5,7 +5,7 @@ namespace Factories
 {
     internal interface IUpgradeSpawnSystem
     {
-        void PutUpgradesOnRoad(List<Transform> upgradeSpots);
+        void PutUpgradesOnRoad(IRoadSpan roadSpan);
         void UpdateAnimationState(bool isPaused);
     }
 }

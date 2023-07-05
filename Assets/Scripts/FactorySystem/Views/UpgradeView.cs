@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Tools;
 
+
 namespace Factories
 {
     internal class UpgradeView : CollectableObject, IRespawnable
@@ -14,12 +15,11 @@ namespace Factories
         [SerializeField] private int _timeActive;
 
         private bool _isActive;
-        private Tween _rotationTween;
         private Vector3 _rotationTargetVector = new Vector3(0, 360, 0);
 
+        public Transform RootObject { get; set; }
         public GameObject BodyObject => gameObject;
         public bool IsActive => _isActive;
-        public List<CollectableObject> Collectables => _collectables;
 
 
         private void Start()
@@ -37,7 +37,7 @@ namespace Factories
 
         public override void AnimateCollectable()
         {
-            _rotationTween = transform.DORotate(_rotationTargetVector, 3.0f, RotateMode.LocalAxisAdd)
+            _animationTween = transform.DORotate(_rotationTargetVector, 3.0f, RotateMode.LocalAxisAdd)
                 .SetLoops(Int32.MaxValue, LoopType.Incremental)
                 .SetRelative()
                 .SetEase(Ease.Linear);
@@ -49,13 +49,12 @@ namespace Factories
             gameObject.SetActive(true);
         }
 
-        private void OnBecameInvisible() => Deactivate();
-
         public void Deactivate()
         {
             _isActive = false;
+            gameObject.transform.SetParent(RootObject);
             gameObject.SetActive(false);
-            _rotationTween.Pause();
+            _animationTween.Pause();
             if (_collectables.Count > 0)
             {
                 for (int i = 0; i < transform.childCount; i++)
@@ -67,7 +66,7 @@ namespace Factories
         {
             gameObject.SetActive(false);
             _isMagnetized = false;
-            _rotationTween.Pause();
+            _animationTween.Pause();
         }
 
         public override void MoveToTarget(Vector3 position)
@@ -81,9 +80,9 @@ namespace Factories
         public override void PauseAnimation(bool isPaused)
         {
             if (isPaused)
-                _rotationTween.Pause();
+                _animationTween.Pause();
             else
-                _rotationTween.Play();
+                _animationTween.Play();
         }
 
         public void PauseChild(bool isPaused)
@@ -92,6 +91,6 @@ namespace Factories
                 _collectables[i].PauseAnimation(isPaused);
         }
 
-        private void OnDestroy() => _rotationTween.Kill();
+        private void OnDestroy() => _animationTween.Kill();
     }
 }

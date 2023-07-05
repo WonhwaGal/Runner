@@ -13,11 +13,11 @@ namespace GameUI
         {
             _selectView = selectView;
             _selectLogic = selectLogic;
-            _selectLogic.AssignPlayerConfig(selectView.PlayerTypes);
+            _selectLogic.AssignPlayerConfig(selectView.PlayersConfig);
             
             _selectLogic.OnSettingCoinNumber += UpdateCoinNumber;
             _selectLogic.OnSettingCrystalNumber += UpdateCrystalNumber;
-            _selectLogic.OnPlayerSelected += LoadSceneWithSelectedPlayer;
+            _selectLogic.OnPlayerSelected += LoadGameScene;
         }
 
 
@@ -29,13 +29,13 @@ namespace GameUI
 
         private void UpdateCrystalNumber(int number) => _selectView.SetCrystalNumber(number);
 
-        private void LoadSceneWithSelectedPlayer() => SceneManager.LoadScene("GameScene");
+        public void LoadGameScene() => SceneManager.LoadScene("GameScene");
 
         public void Dispose()
         {
             _selectLogic.OnSettingCoinNumber -= UpdateCoinNumber;
             _selectLogic.OnSettingCrystalNumber -= UpdateCrystalNumber;
-            _selectLogic.OnPlayerSelected -= LoadSceneWithSelectedPlayer;
+            _selectLogic.OnPlayerSelected -= LoadGameScene;
         }
     }
 }

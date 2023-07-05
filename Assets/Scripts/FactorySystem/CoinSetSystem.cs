@@ -29,11 +29,14 @@ namespace Factories
                 _coinFactory.Objects[i].PauseChild(isPaused);
         }
 
-        public void PutCoinsOnRoad(List<Transform> coinSetSpots)
+        public void PutCoinsOnRoad(IRoadSpan roadSpan)
         {
-            for (int i = 0; i < coinSetSpots.Count; i++)
+            for (int i = 0; i < roadSpan.CoinSpots.Count; i++)
             {
-                _coinFactory.Spawn().transform.position = coinSetSpots[i].position + _yShift;
+                CoinSetView coinSetView = _coinFactory.Spawn();
+                coinSetView.transform.position = roadSpan.CoinSpots[i].position + _yShift;
+                coinSetView.transform.rotation = roadSpan.CoinSpots[i].rotation;
+                roadSpan.AcceptChildRespawnable(coinSetView, RespawnableType.Coin);
             }
         }
     }

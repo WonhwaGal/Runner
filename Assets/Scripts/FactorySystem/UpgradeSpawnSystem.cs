@@ -31,12 +31,14 @@ namespace Factories
                 _upgradeFactory.Objects[i].PauseChild(isPaused);
         }
 
-        public void PutUpgradesOnRoad(List<Transform> upgradeSpots)
+        public void PutUpgradesOnRoad(IRoadSpan roadSpan)
         {
-            for (int i = 0; i < GetRandomProbability(upgradeSpots); i++)
+            for (int i = 0; i < GetRandomProbability(roadSpan.UpgradeSpots); i++)
             {
                 var YShiftVector = new Vector3(0, Random.Range(1.0f, 3.0f), 0);
-                _upgradeFactory.Spawn().transform.position = upgradeSpots[i].position + YShiftVector;
+                UpgradeView upgradeView = _upgradeFactory.Spawn();
+                upgradeView.transform.position = roadSpan.UpgradeSpots[i].position + YShiftVector;
+                roadSpan.AcceptChildRespawnable(upgradeView, RespawnableType.Upgrade);
             }
         }
 

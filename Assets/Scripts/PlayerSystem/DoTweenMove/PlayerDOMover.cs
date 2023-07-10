@@ -27,6 +27,7 @@ internal class PlayerDOMover : BaseMover
     private int _moveSides;
     private float _moveDirection;
     private float _fallBack = 2.5f;
+    private bool _isManeuvering;
 
     public override void Init(IInput input, float jumpForce)
     {
@@ -65,6 +66,7 @@ internal class PlayerDOMover : BaseMover
         {
             _moveSequence.Play();
             _isJumping = false;
+            _isSideMoving = false;
             return;
         }
 
@@ -87,7 +89,7 @@ internal class PlayerDOMover : BaseMover
 
     private void ShiftToSides(float xValue)
     {
-        if (_isJumping || _isSideMoving)
+        if (_isJumping || _isSideMoving || _sideTween.IsActive())
             return;
 
         _moveDirection = xValue;
@@ -103,7 +105,7 @@ internal class PlayerDOMover : BaseMover
         _moveSides += number;
         OnChangingLane?.Invoke(_moveSides);
         _sideTween = _transform.DOMoveX(_transform.position.x + _sideShift * number, _sideSpeed)
-            .OnComplete(() => _isSideMoving = false);
+                               .OnComplete(() => _isSideMoving = false);
 
         if (_moveSequence != null)
             _sideTween.timeScale = _moveSequence.timeScale;
@@ -111,10 +113,11 @@ internal class PlayerDOMover : BaseMover
 
     private void Jump()
     {
-        if (!_isJumping)
+        if (!_isJumping && !_jumpTween.IsActive())
         {
             _isJumping = true;
             OnJumping?.Invoke();
+            
             _jumpTween = _transform
                 .DOJump(_transform.position + new Vector3(0, 0, _forwardMove), _jumpForce, 1, _forwardSpeed)
                 .SetEase(Ease.Linear)
@@ -126,14 +129,13 @@ internal class PlayerDOMover : BaseMover
     public override void PauseMoving()
     {
         _moveSequence.Pause();
-        _isJumping = true;
+        _isSideMoving = true;
     }
 
     public override void StopMoving()
     {
         _moveSequence.Kill();
         _isJumping = true;
-
         if (!_isSideMoving)
             transform.DOMoveZ(_transform.position.z - _fallBack, _forwardSpeed);
         else

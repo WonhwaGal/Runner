@@ -19,6 +19,12 @@ namespace GameUI
 
         public GameProgressConfig PlayersConfig { get => _playerTypes; }
 
+        private void OnEnable()
+        {
+            _coinNumber.gameObject.SetActive(true);
+            _crystalNumber.gameObject.SetActive(true);
+        }
+
         public void Init(SelectMenuPresenter presenter)
         {
             _presenter = presenter;
@@ -100,5 +106,11 @@ namespace GameUI
 
         private void PlayThisPlayer(int number) 
             => _presenter.MakePlayerCurrent(PlayersConfig.Players[number]);
+
+        private void OnDisable()
+        {
+            _coinNumber.gameObject.SetActive(false);
+            _crystalNumber.gameObject.SetActive(false);
+        }
     }
 }

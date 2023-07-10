@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: GameProgressConfig
   m_EditorClassIdentifier: 
   DefaultPlayerName: Granny
-  TotalCoinCount: 18
-  TotalCrystalCount: 0
+  TotalCoinCount: 142
+  TotalCrystalCount: 7
   Players:
   - Name: Granny
     Description: No jumper, skilled coin collector
@@ -41,7 +41,7 @@ MonoBehaviour:
     PlayerImage: {fileID: 21300000, guid: 75f14f89aa115ba47adcce65e5a060cc, type: 3}
     IsDefault: 0
     IsCurrent: 0
-    IsOpen: 0
+    IsOpen: 1
     LimitedUse: 0
     TimesToPlay: 0
     TimesLeftToPlay: 0
@@ -61,7 +61,7 @@ MonoBehaviour:
     IsOpen: 0
     LimitedUse: 1
     TimesToPlay: 3
-    TimesLeftToPlay: 3
+    TimesLeftToPlay: -7
     CurrencyType: 1
     CurrencyPrice: 500
     UpgradeMultiplier: 1

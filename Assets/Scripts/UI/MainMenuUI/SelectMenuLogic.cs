@@ -26,7 +26,6 @@ namespace GameUI
 
         private void AddDefaultPlayer()
         {
-            UnityEngine.Debug.Log("Adding default player");
             for (int i = 0; i < _gameConfig.Players.Count; i++)
             {
                 if (_gameConfig.Players[i].IsDefault)
@@ -120,41 +119,6 @@ namespace GameUI
             OnChangingGameCfg?.Invoke(_gameConfig);
         }
 
-        // When Start pressed without choosing
-        //public void SelectCurrentPlayer()
-        //{
-        //    var currentPlayer = FindCurrentPlayer();
-        //    if (currentPlayer == null || !currentPlayer.IsOpen)
-        //        SelectDefaultPlayer();
-        //    else if (currentPlayer != null)
-        //    {
-        //        UnityEngine.Debug.Log("chose new current player");
-        //        OnChangingGameCfg?.Invoke(_gameConfig);
-        //        OnPlayerSelected?.Invoke();
-        //    }
-        //}
-        //private PlayerConfig FindCurrentPlayer()
-        //{
-        //    for (int i = 0; i < _gameConfig.Players.Count; i++)
-        //    {
-        //        if (_gameConfig.Players[i].IsCurrent)
-        //            return _gameConfig.Players[i];
-        //    }
-        //    return null;
-        //}
-        //private void SelectDefaultPlayer()
-        //{
-        //    for (int i = 0; i < _gameConfig.Players.Count; i++)
-        //    {
-        //        if (_gameConfig.Players[i].IsDefault)
-        //        {
-        //            _gameConfig.Players[i].IsCurrent = true;
-        //            _gameConfig.Players[i].IsOpen = true;
-        //            OnPlayerSelected?.Invoke();
-        //            return;
-        //        }
-        //    }
-        //}
         private void ConfigCollectablesToZero()
         {
             _gameConfig.TotalCoinCount = 0;

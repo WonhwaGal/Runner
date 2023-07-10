@@ -17,7 +17,14 @@ namespace GameUI
 
         public void PauseGame(bool isPaused)
         {
-            _gameCanvas.PauseView.gameObject.SetActive(isPaused);
+            if (isPaused)
+            {
+                _gameCanvas.PauseView.gameObject.SetActive(true);
+                _gameCanvas.PauseView.ShowPauseMenu();
+            }
+            else
+                _gameCanvas.PauseView.HidePauseMenu();
+
             _gameCanvas.GameUIView.PauseGame(isPaused);
         }
     }

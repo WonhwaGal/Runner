@@ -10,6 +10,8 @@ namespace Infrastructure
         public event Action OnJump;
         public event Action<float> OnChangingXValue;
 
+        private const string VerticalAxis = "Vertical";
+        private const string HorizontalAxis = "Horizontal";
         private bool _isPaused = false;
         private bool _isIgnored = false;
 
@@ -35,19 +37,14 @@ namespace Infrastructure
 
         public void GetYValue()
         {
-            if (Input.GetAxis("Vertical") > 0)
+            if (Input.GetAxis(VerticalAxis) > 0)
                 OnJump?.Invoke();
         }
 
-        public void IgnoreInput(bool shouldBeIgnored)
-        {
-            _isIgnored = shouldBeIgnored;
-            if (_isIgnored)
-                UnityEngine.Debug.Log("input is ignored");
-        }
+        public void IgnoreInput(bool shouldBeIgnored) => _isIgnored = shouldBeIgnored;
 
 
         [Obsolete]
-        public Vector3 GetXAxisValue() => new Vector3(Input.GetAxis("Horizontal"), 0, 0);
+        public Vector3 GetXAxisValue() => new Vector3(Input.GetAxis(HorizontalAxis), 0, 0);
     }
 }

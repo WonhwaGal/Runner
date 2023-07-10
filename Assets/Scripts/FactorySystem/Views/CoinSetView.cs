@@ -26,7 +26,6 @@ namespace Factories
 
         public void Deactivate()
         {
-            Debug.Log("deactivated coin set");
             _isActive = false;
             gameObject.transform.SetParent(RootObject);
             gameObject.SetActive(false);

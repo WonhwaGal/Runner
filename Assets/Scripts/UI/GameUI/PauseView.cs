@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using DG.Tweening;
 
 namespace GameUI
 {
@@ -13,8 +14,18 @@ namespace GameUI
         [SerializeField] private Button _continue;
         [SerializeField] private Button _backToMenu;
         [SerializeField] private Button _exit;
+        [SerializeField] private Transform _root;
+
+        private bool _isPaused;
 
         public GameObject Gameobject => gameObject;
+
+        public void ShowPauseMenu()
+        {
+            _isPaused = true;
+            _root.rotation = Quaternion.Euler(90, 0, 0);
+            _root.DORotate(Vector3.zero, 1.2f);
+        }
 
         public void Init()
         {
@@ -34,6 +45,17 @@ namespace GameUI
             Application.Quit();
 #endif
         }
+
+        public void HidePauseMenu()
+        {
+            _isPaused = false;
+            _root.DORotate(new Vector3(90, 0, 0), 1.2f).OnComplete(() =>
+            {
+                if(!_isPaused)
+                    gameObject.SetActive(false);
+            });
+        }
+
 
         private void OnDestroy()
         {

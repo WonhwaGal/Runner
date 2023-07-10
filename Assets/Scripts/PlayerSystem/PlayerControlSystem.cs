@@ -62,8 +62,12 @@ namespace PlayerSystem
             if (config.LimitedUse)
             {
                 config.TimesLeftToPlay--;
-                if (config.TimesLeftToPlay == 0)
+                if (config.TimesLeftToPlay <= 0)
+                {
                     config.IsOpen = false;
+                    config.TimesLeftToPlay = 0;
+                }
+
             }
         }
 

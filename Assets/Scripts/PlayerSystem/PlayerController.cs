@@ -13,8 +13,8 @@ namespace PlayerSystem
         [SerializeField] private CapsuleCollider _magnetCollider;
         [SerializeField] private PlayerMagnetController _playerMagnetController;
         [SerializeField] private Animator _animator;
-        [SerializeField] private GameObject _shield;
-        [SerializeField] private GameObject _magnet;
+        [SerializeField] private ParticleSystem _shield;
+        [SerializeField] private ParticleSystem _magnet;
 
         private PlayerAnimator _playerAnimator;
         public PlayerAnimator PlayerAnimator { get => _playerAnimator;}
@@ -23,12 +23,12 @@ namespace PlayerSystem
 
         public void Initialize(IInput input, float jumpForce, TriggerHandler handler)
         {
-            _shield.SetActive(false);
-            _magnet.SetActive(false);
+            _shield.gameObject.SetActive(false);
+            _magnet.gameObject.SetActive(false);
             _mover.Init(input, jumpForce);
             _playerMagnetController.Init(_magnetCollider);
             PlayerUpgradeController upgrader = handler.Upgrader;
-            upgrader.AddComponents(_playerMagnetController, _shield, _magnet);
+            upgrader.AddComponents(_playerMagnetController, _shield.gameObject, _magnet.gameObject);
             TriggerModule.Init(_collider, handler);
             TriggerModule.ChangeLaneOnTurning += _mover.SetDefaultLane;
             _playerAnimator = new PlayerAnimator(_animator);
@@ -40,15 +40,30 @@ namespace PlayerSystem
         {
             _mover.StartMove();
             PlayerAnimator.ResumeAnimation();
+            PauseUpgrades(_shield, false);
+            PauseUpgrades(_magnet, false);
         }
 
         public void PausePlayerMove()
         {
             _mover.PauseMoving();
             PlayerAnimator.FreezeAnimation();
+            PauseUpgrades(_shield, true);
+            PauseUpgrades(_magnet, true);
         }
 
         public void StopPlayerMove() => _mover.StopMoving();
+
+        private void PauseUpgrades(ParticleSystem particles, bool toPause)
+        {
+            if (toPause)
+                if (particles.gameObject.activeInHierarchy)
+                    particles.Pause();
+            else
+                if (particles.gameObject.activeInHierarchy)
+                    particles.Play();
+        }
+
 
         private void OnDestroy()
         {

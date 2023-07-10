@@ -45,6 +45,7 @@ namespace Infrastructure
             if (_commandsManager.ProgressCommander is ProgressCommander commander)
             {
                 commander.RegisterCurrentProgress();
+                UnityEngine.Debug.Log($"registered current player is {commander.GameConfig.CurrentPlayer.Name}");
                 _dataController.SaveProgressFromConfig(commander.GameConfig);
             }
             else

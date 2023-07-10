@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
 using Collectables;
 using System.Collections.Generic;
@@ -12,7 +11,9 @@ namespace GameUI
         [SerializeField] private TextMeshProUGUI _coinNumberText;
         [SerializeField] private TextMeshProUGUI _crystalNumberText;
         [SerializeField] private TextMeshProUGUI _distanceKm;
-        [SerializeField] private List<Image> _upgradeImages;
+
+        [Header("Upgrades")]
+        [SerializeField] private List<UpgradeImage> _upgradeImages;
         [SerializeField] private List<Sprite> _upgradeSprites;
 
         private Dictionary<UpgradeType, Sequence> _runningSequences;
@@ -50,12 +51,12 @@ namespace GameUI
             }
             _runningSequences.Add(upgrade, mySequence);
 
-            mySequence.AppendCallback(() => ChooseUpgradeImage(upgrade))
+            mySequence.AppendCallback(() => ChooseUpgradeImage(upgrade, timeSpan))
                 .AppendInterval(timeSpan)
                 .OnComplete(() => TurnOffUpgrade(upgrade));
         }
 
-        private void ChooseUpgradeImage(UpgradeType upgrade)
+        private void ChooseUpgradeImage(UpgradeType upgrade, float timeSpan)
         {
             var result = upgrade switch
             {
@@ -69,10 +70,12 @@ namespace GameUI
             {
                 if (_upgradeImages[i].gameObject == null)
                     return;
+
                 if (!_upgradeImages[i].gameObject.activeInHierarchy)
                 {
-                    _upgradeImages[i].sprite = result;
+                    _upgradeImages[i].Sprite = result;
                     _upgradeImages[i].gameObject.SetActive(true);
+                    _upgradeImages[i].StatCountDown(timeSpan);
                     return;
                 }
             }
@@ -88,9 +91,12 @@ namespace GameUI
         {
             for (int i = 0; i < _upgradeImages.Count; i++)
             {
-                if (_upgradeImages[i].sprite == _upgradeSprites[(int)upgrade] 
+                if (_upgradeImages[i].Sprite == _upgradeSprites[(int)upgrade]
                     && _upgradeImages[i].gameObject.activeInHierarchy)
+                {
+                    _upgradeImages[i].CancelCountDown();
                     return _upgradeImages[i].gameObject;
+                }
             }
             return null;
         }

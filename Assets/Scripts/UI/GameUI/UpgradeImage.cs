@@ -9,6 +9,7 @@ public class UpgradeImage : MonoBehaviour
 
     public Image TimerCircle { get => _timerCircle; }
     public Sprite Sprite { get => _mainImage.sprite; set => _mainImage.sprite = value; }
+    public bool IsPaused { get; set; }
 
     public void StatCountDown(float timeSpan) => StartCoroutine(CountDown(timeSpan));
 
@@ -17,8 +18,11 @@ public class UpgradeImage : MonoBehaviour
         float passedTime = 0;
         while(passedTime < duration)
         {
-            passedTime += Time.deltaTime;
-            _timerCircle.fillAmount = Mathf.InverseLerp(0f, 1f, passedTime/duration);
+            if (!IsPaused)
+            {
+                passedTime += Time.deltaTime;
+                _timerCircle.fillAmount = Mathf.InverseLerp(0f, 1f, passedTime / duration);
+            }
             yield return null;
         }
     }

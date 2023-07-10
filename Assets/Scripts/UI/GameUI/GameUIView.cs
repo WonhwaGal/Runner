@@ -38,6 +38,8 @@ namespace GameUI
                 else
                     pair.Value.Play();
             }
+            for(int i = 0; i < _upgradeImages.Count; i++)
+                _upgradeImages[i].IsPaused = isPaused;
         }
 
         public void ActivateUpgradeImage(float timeSpan, UpgradeType upgrade)

@@ -17,7 +17,9 @@ namespace PlayerSystem
         [SerializeField] private ParticleSystem _magnet;
 
         private PlayerAnimator _playerAnimator;
-        public PlayerAnimator PlayerAnimator { get => _playerAnimator;}
+        private PlayerUpgradeController _playerUpgrader;
+
+        public PlayerAnimator PlayerAnimator { get => _playerAnimator; }
         public BaseMover Mover { get => _mover; }
         public PlayerTriggerModule TriggerModule { get => _trigger; }
 
@@ -27,8 +29,8 @@ namespace PlayerSystem
             _magnet.gameObject.SetActive(false);
             _mover.Init(input, jumpForce);
             _playerMagnetController.Init(_magnetCollider);
-            PlayerUpgradeController upgrader = handler.Upgrader;
-            upgrader.AddComponents(_playerMagnetController, _shield.gameObject, _magnet.gameObject);
+            _playerUpgrader = handler.Upgrader;
+            _playerUpgrader.AddComponents(_playerMagnetController, _shield.gameObject, _magnet.gameObject);
             TriggerModule.Init(_collider, handler);
             TriggerModule.ChangeLaneOnTurning += _mover.SetDefaultLane;
             _playerAnimator = new PlayerAnimator(_animator);
@@ -40,28 +42,31 @@ namespace PlayerSystem
         {
             _mover.StartMove();
             PlayerAnimator.ResumeAnimation();
-            PauseUpgrades(_shield, false);
-            PauseUpgrades(_magnet, false);
+            PauseUpgradeEffects(_shield, false);
+            PauseUpgradeEffects(_magnet, false);
+            _playerUpgrader.PauseUpgradeViews(false);
         }
 
         public void PausePlayerMove()
         {
             _mover.PauseMoving();
             PlayerAnimator.FreezeAnimation();
-            PauseUpgrades(_shield, true);
-            PauseUpgrades(_magnet, true);
+            PauseUpgradeEffects(_shield, true);
+            PauseUpgradeEffects(_magnet, true);
+            _playerUpgrader.PauseUpgradeViews(true);
         }
 
         public void StopPlayerMove() => _mover.StopMoving();
 
-        private void PauseUpgrades(ParticleSystem particles, bool toPause)
+        private void PauseUpgradeEffects(ParticleSystem particles, bool toPause)
         {
-            if (toPause)
-                if (particles.gameObject.activeInHierarchy)
-                    particles.Pause();
-            else
-                if (particles.gameObject.activeInHierarchy)
+            if (particles.gameObject.activeInHierarchy)
+            {
+                if (toPause)
+                    particles.Pause(true);
+                else
                     particles.Play();
+            }
         }
 
 

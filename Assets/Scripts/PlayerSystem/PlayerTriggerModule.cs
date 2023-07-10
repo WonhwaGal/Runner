@@ -10,7 +10,6 @@ namespace PlayerSystem
     {
         public Action<int> ChangeLaneOnTurning;
         public Action<RoadSpan> OnTriggeredByRoadSpan;
-        //public Action<bool> OnFinishTurning;
 
         private BoxCollider _collider;
         private TriggerHandler _triggerHandler;
@@ -26,24 +25,23 @@ namespace PlayerSystem
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.GetComponent<PlayerMagnetController>())   // make another layer
-                return;
+            //if (other.GetComponent<PlayerMagnetController>())   // made another layer
+            //    return;
 
             if (other.TryGetComponent(out CollectableObject collectable))
             {
                 _triggerHandler.SortOutCollectable(collectable);
                 collectable.ExecuteAction();
+                return;
             }
-            else if (other.TryGetComponent(out RoadSpan road))
+
+            if (other.TryGetComponent(out RoadSpan road))
             {
                 OnTriggeredByRoadSpan?.Invoke(road);
-                //road.CheckForTurn();
+                return;
             }
-            else
-            {
-                Debug.Log("hit " + other.name);
-                _triggerHandler.RegisterObstacleHit();
-            }
+
+            _triggerHandler.RegisterObstacleHit(other);
         }
 
         private void OnTriggerExit(Collider other)

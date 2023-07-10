@@ -1,5 +1,6 @@
 ﻿using Collectables;
 using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace PlayerSystem
         private Dictionary<UpgradeType, Sequence> _runningSequences = new();
 
         public int CoinMultiplier { get => _coinMultiplier; }
-        public int CrystalMultiplier { get => _crystalMultiplier;}
+        public int CrystalMultiplier { get => _crystalMultiplier; }
 
         public PlayerUpgradeController()
         {
@@ -27,13 +28,24 @@ namespace PlayerSystem
             _crystalMultiplier = _defaultMultiplier;
         }
 
-        public void AddComponents(PlayerMagnetController playerMagnetController, 
+        public void AddComponents(PlayerMagnetController playerMagnetController,
             GameObject shield,
             GameObject magnet)
         {
             _playerMagnetController = playerMagnetController;
             _shield = shield;
             _magnet = magnet;
+        }
+
+        public void PauseUpgradeViews(bool pauseOn)
+        {
+            foreach (var sequence in _runningSequences.Values)
+            {
+                if (pauseOn)
+                    sequence.Pause();
+                else
+                    sequence.Play();
+            }
         }
 
         public void ActivateUpgrade(float timeSpan, UpgradeType upgrade)
@@ -55,6 +67,7 @@ namespace PlayerSystem
             }
 
             Sequence magnetSequence = DOTween.Sequence();
+            _runningSequences.Add(UpgradeType.Magnet, magnetSequence);
             magnetSequence.AppendCallback(() =>
             {
                 _playerMagnetController.gameObject.SetActive(true);
@@ -70,23 +83,26 @@ namespace PlayerSystem
             {
                 _playerMagnetController.gameObject.SetActive(false);
                 _magnet.SetActive(false);
+                _runningSequences.Remove(UpgradeType.Magnet);
             }
         }
 
         private void SetDoublePoints(float timeSpan)
         {
-            if(_coinMultiplier > _defaultMultiplier)
+            if (_coinMultiplier > _defaultMultiplier)
             {
                 KillPreviousSequence(UpgradeType.DoublePoints);
                 ResetPoints();
             }
 
             Sequence doublePointsSequence = DOTween.Sequence();
+            _runningSequences.Add(UpgradeType.DoublePoints, doublePointsSequence);
             doublePointsSequence.AppendCallback(() =>
             {
                 _coinMultiplier *= 2;
                 _crystalMultiplier *= 2;
-            }).AppendInterval(timeSpan)
+            })
+                .AppendInterval(timeSpan)
                 .OnComplete(ResetPoints);
         }
 

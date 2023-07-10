@@ -737,8 +737,8 @@ GameObject:
   - component: {fileID: 4713384483304183945}
   - component: {fileID: 1047743321502860749}
   m_Layer: 0
-  m_Name: EmptyObstacle
-  m_TagString: Untagged
+  m_Name: NoPass
+  m_TagString: NoPass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -813,8 +813,8 @@ GameObject:
   - component: {fileID: 1130149191126178675}
   - component: {fileID: 6903451492206504271}
   m_Layer: 0
-  m_Name: EmptyObstacle (1)
-  m_TagString: Untagged
+  m_Name: NoPass
+  m_TagString: NoPass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -890,7 +890,7 @@ GameObject:
   - component: {fileID: 5029528727339503737}
   m_Layer: 0
   m_Name: NoPass
-  m_TagString: Untagged
+  m_TagString: NoPass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -39,9 +39,9 @@ namespace PlayerSystem
                 OnTriggeredByCrystal?.Invoke(_playerCrystalMultiplier * Upgrader.CrystalMultiplier);
         }
 
-        public void RegisterObstacleHit()
+        public void RegisterObstacleHit(Collider other)
         {
-            if (!Upgrader.CheckShield())
+            if(other.CompareTag("NoPass") || !Upgrader.CheckShield())
                 OnHittingAnObstacle?.Invoke();
         }
     }

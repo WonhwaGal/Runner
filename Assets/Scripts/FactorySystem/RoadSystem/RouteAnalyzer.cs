@@ -10,7 +10,7 @@ namespace Factories
         public event Action<IRoadSpan> RequestForUpgrades;
         public event Action<bool> OnLaneChangingBlocked;
 
-        GenericFactory<RoadSpan> _roadFactory;
+        private IPool<RoadSpan> _roadFactory;
         private List<RoadSpan> _roadSpans;
 
         private Vector3 _currentShift;
@@ -24,7 +24,7 @@ namespace Factories
         private int _roadSpansCreated = 3;
         private int _maxRoadSpans = 10;
 
-        public RouteAnalyzer(Transform firstRoadSpan, GenericFactory<RoadSpan> roadFactory)
+        public RouteAnalyzer(Transform firstRoadSpan, IPool<RoadSpan> roadFactory)
         {
             _roadFactory = roadFactory;
             _currentShift = _forwardShift;

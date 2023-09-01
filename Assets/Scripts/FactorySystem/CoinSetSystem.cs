@@ -5,7 +5,7 @@ namespace Factories
 {
     internal class CoinSetSystem: ICoinSetSystem
     {
-        private GenericFactory<CoinSetView> _coinFactory;
+        private IPool<CoinSetView> _coinPool;
         private Vector3 _yShift = new Vector3(0, 1.5f, 0);
 
         public CoinSetSystem() => CreateCoinSetFactory();
@@ -13,27 +13,25 @@ namespace Factories
 
         private void CreateCoinSetFactory()
         {
-            _coinFactory = new SingleFactory<CoinSetView>("CoinSetPrefabs");
-            AddObjectsToTheFactory();
-            _coinFactory.CreateListOfObjects();
-        }
+            //создаем и настраиваем фабрику объектов
+            var coinFactory = new GenericFactory<CoinSetView>("CoinSetPrefabs");
+            coinFactory.LoadPrefab("CoinSet1");
 
-        private void AddObjectsToTheFactory()
-        {
-            _coinFactory.AddPrefabNameToList("CoinSet1");
+            //создаем пулл объектов
+            _coinPool = new SingleFactory<CoinSetView>(coinFactory);
         }
 
         public void UpdateAnimationState(bool isPaused)
         {
-            for (int i = 0; i < _coinFactory.Objects.Count; i++)
-                _coinFactory.Objects[i].PauseChild(isPaused);
+            for (int i = 0; i < _coinPool.Objects.Count; i++)
+                _coinPool.Objects[i].PauseChild(isPaused);
         }
 
         public void PutCoinsOnRoad(IRoadSpan roadSpan)
         {
             for (int i = 0; i < roadSpan.CoinSpots.Count; i++)
             {
-                CoinSetView coinSetView = _coinFactory.Spawn();
+                CoinSetView coinSetView = _coinPool.Spawn();
                 coinSetView.transform.position = roadSpan.CoinSpots[i].position + _yShift;
                 coinSetView.transform.rotation = roadSpan.CoinSpots[i].rotation;
                 roadSpan.AcceptChildRespawnable(coinSetView, RespawnableType.Coin);

@@ -3,6 +3,38 @@ using UnityEngine;
 
 namespace Factories
 {
+    // Новая фабрика, без лишних объектов с учетом архитектуры проекта
+    // Суть фабрик объектов - создавать и отдавать объект, хранить инфу о объектах это не ее функционал
+    internal sealed class GenericFactory<T>
+        where T: Object
+    {
+        private const string LoadPath = "{0}/{1}";
+
+        private List<T> _loadedPrefabs;
+
+        public GenericFactory(string folderName)
+        {
+            ResourcesFolderName = folderName;
+            _loadedPrefabs = new List<T>();
+        }
+
+        public string ResourcesFolderName { get; }
+        public IReadOnlyList<T> LoadedPrefabs => _loadedPrefabs;
+
+        public void LoadPrefab(string prefabName)
+        {
+            var prefab = Resources.Load<T>(string.Format(LoadPath, ResourcesFolderName, prefabName));
+            _loadedPrefabs.Add(prefab);
+        }
+
+        public T Create()
+        {
+            return Object.Instantiate(_loadedPrefabs[Random.Range(0, _loadedPrefabs.Count)]);
+        }
+    }
+    //*/
+
+    /*
     internal abstract class GenericFactory<T> where T : IRespawnable
     {
         private List<T> _objects;
@@ -48,4 +80,5 @@ namespace Factories
 
         public abstract T Spawn();
     }
+    //*/
 }

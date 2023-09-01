@@ -5,7 +5,7 @@ namespace Factories
 {
     internal class RoadSystem : IRoadSystem
     {
-        private GenericFactory<RoadSpan> _roadFactory;
+        private IPool<RoadSpan> _roadFactory;
 
         private IRouteAnalyzer _roadAnalyzer;
 
@@ -26,20 +26,18 @@ namespace Factories
 
         private void CreateRoadFactory()
         {
-            _roadFactory = new SingleFactory<RoadSpan>("RoadPrefabs");
-            AddObjectNamesToTheFactory();
-            _roadFactory.CreateListOfObjects();
-        }
+            //создаем и настраиваем фабрику объектов
+            var roadFactory = new GenericFactory<RoadSpan>("RoadPrefabs");
+            roadFactory.LoadPrefab("RoadBlock1");
+            roadFactory.LoadPrefab("RoadBlockBusStop");
+            roadFactory.LoadPrefab("RoadBlockPark");
+            roadFactory.LoadPrefab("RoadBlockBridge");
+            roadFactory.LoadPrefab("RoadTurnRight");
+            roadFactory.LoadPrefab("RoadTurnLeft");
+            roadFactory.LoadPrefab("RoadTurnDouble");
 
-        private void AddObjectNamesToTheFactory()
-        {
-            _roadFactory.AddPrefabNameToList("RoadBlock1");
-            _roadFactory.AddPrefabNameToList("RoadBlockBusStop");
-            _roadFactory.AddPrefabNameToList("RoadBlockPark");
-            _roadFactory.AddPrefabNameToList("RoadBlockBridge");
-            _roadFactory.AddPrefabNameToList("RoadTurnRight");
-            _roadFactory.AddPrefabNameToList("RoadTurnLeft");
-            _roadFactory.AddPrefabNameToList("RoadTurnDouble");
+            //создаем пулл объектов
+            _roadFactory = new SingleFactory<RoadSpan>(roadFactory);
         }
 
         public void UpdatePlayerLane(int number) => RouteAnalyzer.UpdatePlayerLane(number);

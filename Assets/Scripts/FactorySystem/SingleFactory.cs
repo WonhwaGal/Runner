@@ -29,5 +29,7 @@ namespace Factories
 
             return Spawn();
         }
+
+        public override void Despawn(T respawnable) => respawnable.Deactivate();
     }
 }

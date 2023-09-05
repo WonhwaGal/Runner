@@ -7,20 +7,20 @@ namespace DataSaving
     {
         private readonly string _savePath = Application.persistentDataPath + "/DataSaver.json";
 
-        public void Save(SavedData data)
+        public void Save(ProgressSavedData data)
         {
             string json = JsonUtility.ToJson(data);
             File.WriteAllText(_savePath, json);
         }
 
-        public SavedData Load()
+        public ProgressSavedData Load()
         {
-            SavedData result = new SavedData();
+            ProgressSavedData result = new ProgressSavedData();
             if (!File.Exists(_savePath))
                 return result;
 
             string json = File.ReadAllText(_savePath);
-            result = JsonUtility.FromJson<SavedData>(json);
+            result = JsonUtility.FromJson<ProgressSavedData>(json);
 
             return result;
         }

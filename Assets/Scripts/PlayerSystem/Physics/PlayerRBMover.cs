@@ -12,7 +12,7 @@ namespace PlayerSystem
         private Vector3 _xInputVector;
         private Vector3 _movementVector = Vector3.zero;
 
-        private float _speedMultiplier = Constants.gameMultiplier;
+        private float _speedMultiplier = Constants.kmAddTimeSpan;
         private const float _xSpeedCorrector = 2.0f;
         private Transform _transform;
 

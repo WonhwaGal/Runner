@@ -47,5 +47,6 @@ namespace Factories
         }
 
         public abstract T Spawn();
+        public abstract void Despawn(T respawnable);
     }
 }

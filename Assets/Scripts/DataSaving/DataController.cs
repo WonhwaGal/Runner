@@ -8,9 +8,9 @@ namespace DataSaving
     {
         private ISelectLogic _selectMenuLogic;
         private IDataSaver _dataSaver;
-        private SavedData _savedData;
+        private ProgressSavedData _savedData;
 
-        internal SavedData SavedData { get => _savedData; }
+        internal ProgressSavedData SavedData { get => _savedData; }
 
         public DataController()
         {
@@ -28,7 +28,7 @@ namespace DataSaving
 
         public void SaveProgressFromConfig(GameProgressConfig gameConfig)
         {
-            var savedData = new SavedData();
+            var savedData = new ProgressSavedData();
             savedData.TotalCollectedCoins = gameConfig.TotalCoinCount;
             savedData.TotalCollectedCrystals = gameConfig.TotalCrystalCount;
             for (int i = 0; i < gameConfig.Players.Count; i++)

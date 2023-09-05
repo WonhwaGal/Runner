@@ -10,11 +10,10 @@ namespace ProgressSystem
         public event Action<int> OnChangeKM;
         private int _distance = 0;
         private int _distanceSpan;
-        private float _increaseSpeed = Constants.increaseSpeedSpan;
 
         Sequence _disSequence;
 
-        public GameUIModel() => _distanceSpan = 10;
+        public GameUIModel() => _distanceSpan = Constants.kmSpan;
 
 
         public void StartDistanceCount() => CountDistance();
@@ -22,7 +21,7 @@ namespace ProgressSystem
         private void CountDistance()
         {
             _disSequence = DOTween.Sequence();
-            _disSequence.AppendInterval(Constants.gameMultiplier)
+            _disSequence.AppendInterval(Constants.kmAddTimeSpan)
                 .AppendCallback(IncreaseDistance).SetLoops(-1);
         }
 

@@ -21,8 +21,10 @@ namespace Factories
         private RoadSpan _startSpan;
         private List<RoadSpan> _endSpans;
         private int _currentLane;
-        private int _roadSpansCreated = 3;
-        private int _maxRoadSpans = 10;
+        private int _roadSpansCreated = 0;
+        private int _maxRoadSpans = 8;
+
+        private bool _hasDoubleRoad = false;
 
         public RouteAnalyzer(Transform firstRoadSpan, GenericFactory<RoadSpan> roadFactory)
         {
@@ -38,32 +40,41 @@ namespace Factories
 
         private void RegisterFirstRoadSpan(Transform firstRoadSpan)
         {
+            _roadSpansCreated++;
             _startSpan = firstRoadSpan.gameObject.GetComponent<RoadSpan>();
             _startSpan.Activate();
-            _startSpan.OnTurnedOff += PlanRoadAhead;
+            _startSpan.OnTurnedOff += OnTurnOffRoad;
             _startSpan.RootObject = _roadFactory.RootObject;
             _endSpans.Add(_startSpan);
         }
 
+        public void OnTurnOffRoad(RoadSpanType roadType)
+        {
+            if (roadType == RoadSpanType.TwoWays)
+                _hasDoubleRoad = false;
+
+            PlanRoadAhead();
+        }
+
         public void PlanRoadAhead()
         {
-            int currentEndListState = _endSpans.Count;
+            int currentEndsNumber = _endSpans.Count;
 #if UNITY_EDITOR
-            if (_endSpans.Count > 4)
+            if (_endSpans.Count > 2)
             {
                 UnityEditor.EditorApplication.isPlaying = false;
                 throw new ArgumentException("Not valid number of end spans");
             }
 #endif
-            if (_roadSpansCreated >= _maxRoadSpans && currentEndListState == 1)
+            if (_roadSpansCreated >= _maxRoadSpans)
             {
-                UnityEngine.Debug.Log($"critical number of spawns");
+                UnityEngine.Debug.Log($"critical number of spawns, new spawn will be skipped");
                 return;
             }
-            _roadSpansCreated--;
 
+            _roadSpansCreated--;
             UnityEngine.Debug.Log($"number of span ends is {_endSpans.Count}:");
-            for (int i = 0; i < currentEndListState; i++)
+            for (int i = 0; i < currentEndsNumber; i++)
             {
                 UnityEngine.Debug.Log($"creating from element {i} - {_endSpans[i].name}");
 
@@ -86,6 +97,8 @@ namespace Factories
 
             if (currentShift == Vector3.zero)
             {
+                _hasDoubleRoad = true;
+
                 var roadSpan2 = SpawnRoadSpan();
                 UpdateRoadSpanPosition(roadSpan2, previousSpan, _leftShift);
                 _currentShift = _rightShift;
@@ -101,6 +114,14 @@ namespace Factories
         private RoadSpan SpawnRoadSpan()
         {
             RoadSpan roadSpan = _roadFactory.Spawn();
+
+            if (_hasDoubleRoad && roadSpan.RoadType == RoadSpanType.TwoWays)
+            {
+                _roadFactory.Despawn(roadSpan);
+                UnityEngine.Debug.Log("TwoWayRoad was doubled and despawned");
+                return SpawnRoadSpan();
+            }
+
             if (!_roadSpans.Contains(roadSpan))
                 RegisterRoadSpan(roadSpan);
             _roadSpansCreated++;
@@ -134,7 +155,7 @@ namespace Factories
         public void RegisterRoadSpan(RoadSpan roadSpan)
         {
             roadSpan.OnTurning += BlockLaneChanging;
-            roadSpan.OnTurnedOff += PlanRoadAhead;
+            roadSpan.OnTurnedOff += OnTurnOffRoad;
             roadSpan.RootObject = _roadFactory.RootObject;
             _roadSpans.Add(roadSpan);
         }
@@ -184,10 +205,10 @@ namespace Factories
 
         public void Dispose()
         {
-            _startSpan.OnTurnedOff -= PlanRoadAhead;
+            _startSpan.OnTurnedOff -= OnTurnOffRoad;
             for (int i = 0; i < _roadSpans.Count; i++)
             {
-                _roadSpans[i].OnTurnedOff -= PlanRoadAhead;
+                _roadSpans[i].OnTurnedOff -= OnTurnOffRoad;
                 //_roadSpans[i].OnSettingNextRoadSpan -= UpdatePreviousSpan;
                 _roadSpans[i].OnTurning -= BlockLaneChanging;
             }

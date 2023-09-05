@@ -16,7 +16,7 @@ namespace Factories
         [SerializeField] private List<Transform> _upgradeSpots_2;
         [SerializeField] private RoadSpanType _roadType;
 
-        public Action OnTurnedOff;
+        public Action<RoadSpanType> OnTurnedOff;
         public Action<bool> OnTurning;
 
         private bool _isActive;
@@ -134,7 +134,7 @@ namespace Factories
             }
 
             Deactivate();
-            OnTurnedOff?.Invoke();
+            OnTurnedOff?.Invoke(RoadType);
         }
 
         public void Deactivate()

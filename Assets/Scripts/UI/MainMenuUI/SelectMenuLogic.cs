@@ -16,7 +16,7 @@ namespace GameUI
 
         public void AssignPlayerConfig(GameProgressConfig gameConfig) => _gameConfig = gameConfig;
 
-        public void UpdatePlayersConfig(SavedData savedData)
+        public void UpdatePlayersConfig(ProgressSavedData savedData)
         {
             if (savedData.OpenPlayerConfigs.Count == 0)
                 AddDefaultPlayer();
@@ -37,7 +37,7 @@ namespace GameUI
             OnChangingGameCfg?.Invoke(_gameConfig);
         }
 
-        private void DrawDataFromSavedData(SavedData savedData)
+        private void DrawDataFromSavedData(ProgressSavedData savedData)
         {
             UnityEngine.Debug.Log("drawing from savedData");
             for (int i = 0; i < _gameConfig.Players.Count; i++)

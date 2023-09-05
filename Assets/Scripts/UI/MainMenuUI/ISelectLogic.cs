@@ -13,7 +13,7 @@ namespace GameUI
         event Action<GameProgressConfig> OnChangingGameCfg;
 
         void AssignPlayerConfig(GameProgressConfig gameConfig);
-        void UpdatePlayersConfig(SavedData savedData);
+        void UpdatePlayersConfig(ProgressSavedData savedData);
         void ChangeCurrentPlayerTo(PlayerConfig config);
         void BuyPlayer(PlayerConfig config);
         void CancelProgress();

@@ -4,7 +4,7 @@ namespace DataSaving
 {
     internal interface IDataSaver
     {
-        void Save(SavedData data);
-        SavedData Load();
+        void Save(ProgressSavedData data);
+        ProgressSavedData Load();
     }
 }

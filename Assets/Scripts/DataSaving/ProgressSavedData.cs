@@ -5,7 +5,7 @@ using static ProgressSystem.GameProgressConfig;
 namespace DataSaving
 {
     [Serializable]
-    internal class SavedData
+    internal class ProgressSavedData
     {
         public int TotalCollectedCoins;
         public int TotalCollectedCrystals;
@@ -13,7 +13,7 @@ namespace DataSaving
         public string CurrentPlayerName;
 
 
-        public SavedData()
+        public ProgressSavedData()
         {
             OpenPlayerConfigs = new List<PlayerConfig>();
             TotalCollectedCoins = 0;

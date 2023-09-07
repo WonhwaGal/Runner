@@ -5,30 +5,28 @@ namespace Factories
 {
     internal class UpgradeSpawnSystem: IUpgradeSpawnSystem
     {
-        private GenericFactory<UpgradeView> _upgradeFactory;
+        private IPool<UpgradeView> _upgradePool;
 
         public UpgradeSpawnSystem() => CreateUpgradesFactory();
 
 
         private void CreateUpgradesFactory()
         {
-            _upgradeFactory = new SingleFactory<UpgradeView>("UpgradePrefabs");
-            AddObjectsToTheFactory();
-            _upgradeFactory.CreateListOfObjects();
-        }
+            //создаем и настраиваем фабрику объектов
+            var upgradeFactory = new GenericFactory<UpgradeView>("UpgradePrefabs");
+            upgradeFactory.LoadPrefab("DoubleUpgrade");
+            upgradeFactory.LoadPrefab("ShieldUpgrade");
+            upgradeFactory.LoadPrefab("JemCollectable");
+            upgradeFactory.LoadPrefab("MagnetUpgrade");
 
-        private void AddObjectsToTheFactory()
-        {
-            _upgradeFactory.AddPrefabNameToList("DoubleUpgrade");
-            _upgradeFactory.AddPrefabNameToList("ShieldUpgrade");
-            _upgradeFactory.AddPrefabNameToList("JemCollectable");
-            _upgradeFactory.AddPrefabNameToList("MagnetUpgrade");
+            //создаем пулл объектов
+            _upgradePool = new SingleFactory<UpgradeView>(upgradeFactory);
         }
 
         public void UpdateAnimationState(bool isPaused)
         {
-            for (int i = 0; i < _upgradeFactory.Objects.Count; i++)
-                _upgradeFactory.Objects[i].PauseChild(isPaused);
+            for (int i = 0; i < _upgradePool.Objects.Count; i++)
+                _upgradePool.Objects[i].PauseChild(isPaused);
         }
 
         public void PutUpgradesOnRoad(IRoadSpan roadSpan)
@@ -36,7 +34,7 @@ namespace Factories
             for (int i = 0; i < GetRandomProbability(roadSpan.UpgradeSpots); i++)
             {
                 var YShiftVector = new Vector3(0, Random.Range(1.0f, 3.0f), 0);
-                UpgradeView upgradeView = _upgradeFactory.Spawn();
+                UpgradeView upgradeView = _upgradePool.Spawn();
                 upgradeView.transform.position = roadSpan.UpgradeSpots[i].position + YShiftVector;
                 roadSpan.AcceptChildRespawnable(upgradeView, RespawnableType.Upgrade);
             }

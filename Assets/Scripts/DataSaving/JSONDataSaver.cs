@@ -5,21 +5,21 @@ namespace DataSaving
 {
     internal sealed class JSONDataSaver : IDataSaver
     {
-        private readonly string _savePath = Application.persistentDataPath + "/DataSaver.json";
+        private readonly string SavePath = Application.persistentDataPath + "/DataSaver.json";
 
         public void Save(SavedData data)
         {
             string json = JsonUtility.ToJson(data);
-            File.WriteAllText(_savePath, json);
+            File.WriteAllText(SavePath, json);
         }
 
         public SavedData Load()
         {
             SavedData result = new SavedData();
-            if (!File.Exists(_savePath))
+            if (!File.Exists(SavePath))
                 return result;
 
-            string json = File.ReadAllText(_savePath);
+            string json = File.ReadAllText(SavePath);
             result = JsonUtility.FromJson<SavedData>(json);
 
             return result;

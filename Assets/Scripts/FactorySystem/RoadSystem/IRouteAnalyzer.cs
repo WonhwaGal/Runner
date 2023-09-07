@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+
 
 namespace Factories
 {
-    internal interface IRouteAnalyzer 
+    internal interface IRouteAnalyzer : IDisposable
     {
         event Action<IRoadSpan> RequestForCoins;
         event Action<IRoadSpan> RequestForUpgrades;
@@ -14,6 +13,5 @@ namespace Factories
         void UpdatePlayerLane(int number);
         void PlanRoadAhead();
         void CheckForTurn(RoadSpan roadSpan);
-        void Dispose();// Это имя уже используется в IDisposable
     }
 }

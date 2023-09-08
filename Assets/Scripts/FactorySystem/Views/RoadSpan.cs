@@ -80,9 +80,11 @@ namespace Factories
 
         public RoadSpan ReturnLeftChild() => _childRoadSpans[0].GetComponent<RoadSpan>();
 
-        public void MakeTurn(float shift, int yRotation)
+        public void MakeTurn(float shift, int yRotation, float turnTimescale)
         {
+            Debug.Log("timescale is " + turnTimescale);
             _turnSequence = DOTween.Sequence();
+            _turnSequence.timeScale = turnTimescale;
             _turnSequence.Append(transform.DOMoveX(transform.position.x + shift, 1.0f))
                         .Join(transform.DORotate(new Vector3(0, yRotation, 0), 1.0f))
                         .OnComplete(KillSequence);
@@ -139,6 +141,7 @@ namespace Factories
 
         public void Deactivate()
         {
+            Debug.Log(gameObject.name + "deactivated");
             StopCoroutine(CheckForDeactivate());
             UnparentChildObjects();
             _isActive = false;

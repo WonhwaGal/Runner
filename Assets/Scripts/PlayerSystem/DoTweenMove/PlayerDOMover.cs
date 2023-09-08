@@ -85,7 +85,10 @@ internal class PlayerDOMover : BaseMover
 
     private void IncreaseSpeed()
     {
-        _moveSequence.timeScale += 0.01f;
+        if (_moveSequence.timeScale > 3.0)
+            return;
+
+        _moveSequence.timeScale += 0.007f;
         OnChangingSpeed?.Invoke(_forwardSpeed * _moveSequence.timeScale);
         OnSpeedingUp?.Invoke(_moveSequence.timeScale);
     }

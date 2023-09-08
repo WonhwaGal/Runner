@@ -13,5 +13,6 @@ namespace Factories
         void UpdatePlayerLane(int number);
         void PlanRoadAhead();
         void CheckForTurn(RoadSpan roadSpan);
+        void SetTurnTimescale(float newTimescale);
     }
 }

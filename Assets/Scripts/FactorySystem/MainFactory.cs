@@ -1,9 +1,11 @@
 using UnityEngine;
 
 
+using System;
+
 namespace Factories
 {
-    internal class MainFactory: IMainFactory
+    internal class MainFactory : IDisposable
     {
         private IRoadSystem _roadSystem;
         private ICoinSetSystem _coinSetSystem;
@@ -34,7 +36,7 @@ namespace Factories
         {
             RoadSystem.RouteAnalyzer.RequestForCoins -= CoinSetSystem.PutCoinsOnRoad;
             RoadSystem.RouteAnalyzer.RequestForUpgrades -= _upgradeSpawnSystem.PutUpgradesOnRoad;
-            _roadSystem.Dispose();
+            //_roadSystem.Dispose();
         }
     }
 }

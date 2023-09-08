@@ -1,4 +1,5 @@
-﻿using DataSaving;
+﻿using System;
+using DataSaving;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 using Commands;
@@ -6,7 +7,7 @@ using Commands;
 
 namespace Infrastructure
 {
-    internal class GameStateColtroller: IStateController
+    internal class GameStateColtroller: IDisposable
     {
         private CommandsManager _commandsManager;
         private DataController _dataController;
@@ -51,6 +52,7 @@ namespace Infrastructure
             else
                 UnityEngine.Debug.Log("Failed to save data");
         }
+
         public void Dispose() 
         {
             _commandsManager.PauseView.OnContinueGame -= PauseGame;

@@ -41,6 +41,7 @@ namespace Factories
         }
 
         public void UpdatePlayerLane(int number) => RouteAnalyzer.UpdatePlayerLane(number);
+        public void SpeedUp(float currentSpeed) => RouteAnalyzer.SetTurnTimescale(currentSpeed);
 
         public void Dispose() => RouteAnalyzer.Dispose();
     }

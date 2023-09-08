@@ -50,6 +50,7 @@ namespace PlayerSystem
 
             _playerController.TriggerModule.OnTriggeredByRoadSpan += _roadSystem.RouteAnalyzer.CheckForTurn;
             _playerController.Mover.OnChangingLane += _roadSystem.UpdatePlayerLane;
+            _playerController.Mover.OnSpeedingUp += _roadSystem.SpeedUp;
 
             _cameraFollow.SetTarget(_playerController.transform);
 

@@ -16,10 +16,10 @@ namespace DataSaving
         public ProgressSavedData Load()
         {
             ProgressSavedData result = new ProgressSavedData();
-            if (!File.Exists(_savePath))
+            if (!File.Exists(SavePath))
                 return result;
 
-            string json = File.ReadAllText(_savePath);
+            string json = File.ReadAllText(SavePath);
             result = JsonUtility.FromJson<ProgressSavedData>(json);
 
             return result;

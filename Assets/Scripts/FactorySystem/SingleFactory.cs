@@ -8,7 +8,7 @@ namespace Factories
     {
         IReadOnlyList<T> Objects { get; }
         Transform RootObject { get; }
-        T Spawn();
+        T Spawn(bool shouldBeSave = false);
         void Despawn(T despawnedObject);
     }
 
@@ -32,9 +32,14 @@ namespace Factories
         public IReadOnlyList<T> Objects => _objects;
         public Transform RootObject { get; }
 
-        public T Spawn()
+        public T Spawn(bool shouldBeSave = false)
         {
-            var resultObject = (Objects.Count > 0) ? Objects[default] : Factory.Create();
+            T resultObject;
+
+            if (shouldBeSave)
+                resultObject = Factory.Create(true);
+            else
+                resultObject = (Objects.Count > 0) ? Objects[Random.Range(0, Objects.Count)] : Factory.Create();
             _objects.Remove(resultObject);
             OnSpawn(resultObject);
 

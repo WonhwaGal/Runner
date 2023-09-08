@@ -20,7 +20,7 @@ namespace Commands
         public ICommander ProgressCommander { get => _progressCommander; }
         public IPauseView PauseView { get => _pauseView; private set => _pauseView = value; }
 
-        public CommandsManager(IPlayerControlSystem playerControlSystem, IGameUiController uiController, IProgressController progressController)
+        public CommandsManager(IPlayerControlSystem playerControlSystem, GameUIController uiController, IProgressController progressController)
         {
             _commanders = new List<ICommander>();
             _progressCommander = new ProgressCommander(progressController, playerControlSystem);

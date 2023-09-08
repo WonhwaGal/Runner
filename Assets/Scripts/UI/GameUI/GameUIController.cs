@@ -1,6 +1,6 @@
 namespace GameUI
 {
-    internal class GameUIController: IGameUiController
+    internal class GameUIController
     {
         private GameCanvas _gameCanvas;
         private IPauseView _pauseView;

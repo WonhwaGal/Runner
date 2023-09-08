@@ -18,9 +18,9 @@ namespace Infrastructure
 
         private IPlayerControlSystem _playerControlSystem;
         private IProgressController _progressController;
-        private IMainFactory _mainFactory;
-        private IStateController _gameStateController;
-        private IGameUiController _uiController;
+        private MainFactory _mainFactory;
+        private GameStateColtroller _gameStateController;
+        private GameUIController _uiController;
         private CommandsManager _commandsManager;
 
         private void Start()

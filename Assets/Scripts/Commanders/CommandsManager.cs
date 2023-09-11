@@ -9,8 +9,7 @@ namespace Commands
 {
     internal class CommandsManager
     {
-        public Action<bool> OnPause;
-
+        public event Action<bool> OnPause;
         private List<ICommander> _commanders;
         private ICommander _playerCommander;
         private ICommander _uiCommander;
@@ -45,6 +44,7 @@ namespace Commands
             for (int i = 0; i < _commanders.Count; i++)
                 _commanders[i].Pause(isPaused);
             OnPause?.Invoke(isPaused);
+            //EventBus.RaiseEvent<PauseGameEvent>(new PauseGameEvent(isPaused));
         }
         public void Stop()
         {

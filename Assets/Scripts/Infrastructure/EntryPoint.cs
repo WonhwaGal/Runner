@@ -44,7 +44,7 @@ namespace Infrastructure
 
         private void AssignConnections()
         {
-            _inputType.OnPauseGame += _gameStateController.PauseGame;
+            //_inputType.OnPauseGame += _gameStateController.PauseGame;
             _commandsManager.OnPause += _mainFactory.UpdateAnimations;
             _playerControlSystem.TriggerHandler.OnTriggeredByCoin += _progressController.CollectableCounter.AddCoins;
             _playerControlSystem.TriggerHandler.OnTriggeredByCrystal += _progressController.CollectableCounter.AddCrystals;
@@ -54,7 +54,7 @@ namespace Infrastructure
 
         private void SignOffConnections()
         {
-            _inputType.OnPauseGame -= _gameStateController.PauseGame;
+            //_inputType.OnPauseGame -= _gameStateController.PauseGame;
             _commandsManager.OnPause -= _mainFactory.UpdateAnimations;
             _playerControlSystem.TriggerHandler.OnTriggeredByCoin -= _progressController.CollectableCounter.AddCoins;
             _playerControlSystem.TriggerHandler.OnTriggeredByCrystal -= _progressController.CollectableCounter.AddCrystals;

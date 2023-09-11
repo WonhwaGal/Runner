@@ -6,7 +6,6 @@ namespace Infrastructure
 {
     internal class KeyboardInput : IInput
     {
-        public event Action<bool> OnPauseGame;
         public event Action OnJump;
         public event Action<float> OnChangingXValue;
 
@@ -24,7 +23,7 @@ namespace Infrastructure
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 _isPaused = !_isPaused;
-                OnPauseGame?.Invoke(_isPaused);
+                EventBus.RaiseEvent<PauseGameEvent>(new PauseGameEvent(_isPaused));
             }
         }
         public void GetXValue()

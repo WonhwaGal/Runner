@@ -7,7 +7,7 @@ using Commands;
 
 namespace Infrastructure
 {
-    internal class GameStateColtroller: IDisposable
+    internal class GameStateColtroller: IDisposable, IEventSubscriber<PauseGameEvent>
     {
         private CommandsManager _commandsManager;
         private DataController _dataController;
@@ -19,6 +19,8 @@ namespace Infrastructure
             _commandsManager.PauseView.OnContinueGame += PauseGame;
             _commandsManager.PauseView.OnExit += LoseGame;
             _commandsManager.PauseView.OnBackToMenu += LoadMenuScene;
+
+            EventBus.RegisterTo<PauseGameEvent>(this as IEventSubscriber<PauseGameEvent>);
 
             _dataController = new DataController();
             StartGame();
@@ -53,11 +55,15 @@ namespace Infrastructure
                 UnityEngine.Debug.Log("Failed to save data");
         }
 
+        public void OnEvent(PauseGameEvent eventName) => PauseGame(eventName.GameIsPaused);
+
         public void Dispose() 
         {
             _commandsManager.PauseView.OnContinueGame -= PauseGame;
             _commandsManager.PauseView.OnExit -= LoseGame;
             _commandsManager.PauseView.OnBackToMenu -= LoadMenuScene;
+
+            EventBus.UnregisterTo<PauseGameEvent>(this as IEventSubscriber<PauseGameEvent>);
         }
     }
 }

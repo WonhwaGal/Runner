@@ -1,11 +1,12 @@
-﻿
+﻿using System;
+
 namespace Factories
 {
-    internal interface IRoadSystem
+    internal interface IRoadSystem : IDisposable
     {
         IRouteAnalyzer RouteAnalyzer { get; }
         void StartRoadSpawn();
         void UpdatePlayerLane(int number);
-        void Dispose();
+        void SpeedUp(float currentSpeed);
     }
 }

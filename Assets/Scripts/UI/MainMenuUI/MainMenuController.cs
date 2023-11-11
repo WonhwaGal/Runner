@@ -1,17 +1,16 @@
+using UnityEngine;
 using DataSaving;
 using GameUI;
-using UnityEngine;
 
 namespace MainMenu
 {
     internal class MainMenuController: IMenuController
     {
-        private MainMenuCanvas _menuCanvas;
-        private SelectMenuPresenter _selectPresenter;
-        private ISelectLogic _selectLogic;
-        private DataController _dataController;
-        private MenuCharacterLoader _menuCharacterLoader;
-        public ISelectLogic SelectLogic { get => _selectLogic; }
+        private readonly MainMenuCanvas _menuCanvas;
+        private readonly SelectMenuPresenter _selectPresenter;
+        private readonly ISelectLogic _selectLogic;
+        private readonly DataController _dataController;
+        private readonly MenuCharacterLoader _menuCharacterLoader;
 
         public MainMenuController(MainMenuCanvas menuCanvas, DataController dataController, Transform menuCharacterSpot)
         {
@@ -20,7 +19,6 @@ namespace MainMenu
 
             _menuCharacterLoader 
                 = new MenuCharacterLoader(_menuCanvas.SelectPlayerView.PlayersConfig, menuCharacterSpot);
-
             _selectLogic = new SelectMenuLogic();
             _selectPresenter = new SelectMenuPresenter(_menuCanvas.SelectPlayerView, SelectLogic);
             _selectLogic.OnChangingGameCfg += _dataController.SaveProgressFromConfig;
@@ -30,10 +28,13 @@ namespace MainMenu
             _menuCharacterLoader.MenuCharacter.SubscribeToButtons(_menuCanvas.TextPanelList);
         }
 
+        public ISelectLogic SelectLogic => _selectLogic;
+
         public void Dispose()
         {
             _selectPresenter.Dispose();
             _selectLogic.OnChangingGameCfg -= _dataController.SaveProgressFromConfig;
-        } 
+            _menuCanvas.OnGoSelectPlayer -= _menuCharacterLoader.ShowMenuPlayer;
+        }
     }
 }

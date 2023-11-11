@@ -7,7 +7,7 @@ namespace GameUI
 {
     internal class PauseView : MonoBehaviour, IPauseView
     {
-        public event Action<bool> OnContinueGame;
+        public event Action<PauseGameEvent> OnContinueGame;
         public event Action OnBackToMenu;
         public event Action OnExit;
 
@@ -29,7 +29,7 @@ namespace GameUI
 
         public void Init()
         {
-            _continue.onClick.AddListener(() => OnContinueGame?.Invoke(!gameObject.activeInHierarchy));
+            _continue.onClick.AddListener(() => OnContinueGame?.Invoke(new PauseGameEvent(!gameObject.activeInHierarchy)));
             _backToMenu.onClick.AddListener(() => OnBackToMenu?.Invoke());
             _exit.onClick.AddListener(() => OnExit?.Invoke());
             _exit.onClick.AddListener(ExitGame);
@@ -55,7 +55,6 @@ namespace GameUI
                     gameObject.SetActive(false);
             });
         }
-
 
         private void OnDestroy()
         {

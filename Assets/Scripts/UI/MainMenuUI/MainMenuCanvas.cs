@@ -31,20 +31,20 @@ namespace GameUI
         private UnityAction _resetMethod;
 
         private const float _menuMoveSpeed = 1.5f;
-        private Vector3 _hideStartVector = new Vector3(0, 0, 113);
-        private Vector3 _selectStartPos = new Vector3(0, 1, 25);
-        private Vector3 _selectShiftPos = new Vector3(0, 33, 25);
+        private Vector3 _hideStartVector = new (0, 0, 113);
+        private Vector3 _selectStartPos = new (0, 1, 25);
+        private Vector3 _selectShiftPos = new (0, 33, 25);
 
 
         public SelectPlayerView SelectPlayerView { get => _selectPlayerView; private set => _selectPlayerView = value; }
-        public List<TextButtonPanel> TextPanelList { get => _textPanelList; }
+        public List<TextButtonPanel> TextPanelList => _textPanelList;
 
         public Action<bool> OnGoSelectPlayer;
 
         private void Start()
         {
             _textPanelList = new List<TextButtonPanel>();
-            _selectMenuPanel.gameObject.SetActive(false);
+            _selectMenuPanel.SetActive(false);
             _backButton.gameObject.SetActive(false);
 
             AssignTextButtons();

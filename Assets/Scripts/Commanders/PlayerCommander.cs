@@ -5,8 +5,8 @@ namespace Commands
 {
     internal class PlayerCommander: ICommander
     {
-        private IPlayerControlSystem _playerController;
-        private PlayerConfig _currentPlayer;
+        private readonly IPlayerControlSystem _playerController;
+        private readonly PlayerConfig _currentPlayer;
 
         public PlayerCommander(IPlayerControlSystem playerController, PlayerConfig currentPlayer)
         {

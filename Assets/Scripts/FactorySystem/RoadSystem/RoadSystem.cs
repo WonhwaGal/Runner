@@ -37,10 +37,11 @@ namespace Factories
             roadFactory.LoadPrefab("RoadTurnDouble");
 
             //создаем пулл объектов
-            _roadFactory = new SingleFactory<RoadSpan>(roadFactory);
+            _roadFactory = new SinglePool<RoadSpan>(roadFactory);
         }
 
         public void UpdatePlayerLane(int number) => RouteAnalyzer.UpdatePlayerLane(number);
+        public void SpeedUp(float currentSpeed) => RouteAnalyzer.SetTurnTimescale(currentSpeed);
 
         public void Dispose() => RouteAnalyzer.Dispose();
     }

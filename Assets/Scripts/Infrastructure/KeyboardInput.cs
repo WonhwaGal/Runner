@@ -6,7 +6,6 @@ namespace Infrastructure
 {
     internal class KeyboardInput : IInput
     {
-        public event Action<bool> OnPauseGame;
         public event Action OnJump;
         public event Action<float> OnChangingXValue;
 
@@ -24,9 +23,10 @@ namespace Infrastructure
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 _isPaused = !_isPaused;
-                OnPauseGame?.Invoke(_isPaused);
+                GameEventSystem.Send(new PauseGameEvent(_isPaused));
             }
         }
+
         public void GetXValue()
         {
             if (Input.GetKey(KeyCode.LeftArrow))
@@ -42,9 +42,5 @@ namespace Infrastructure
         }
 
         public void IgnoreInput(bool shouldBeIgnored) => _isIgnored = shouldBeIgnored;
-
-
-        [Obsolete]
-        public Vector3 GetXAxisValue() => new Vector3(Input.GetAxis(HorizontalAxis), 0, 0);
     }
 }

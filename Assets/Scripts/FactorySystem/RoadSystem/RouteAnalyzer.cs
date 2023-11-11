@@ -25,6 +25,7 @@ namespace Factories
         private int _maxRoadSpans = 8;
 
         private bool _hasDoubleRoad = false;
+        private float _turnTimescale = 1;
 
         public RouteAnalyzer(Transform firstRoadSpan, IPool<RoadSpan> roadFactory)
         {
@@ -34,8 +35,8 @@ namespace Factories
             _endSpans = new List<RoadSpan>();
 
             RegisterFirstRoadSpan(firstRoadSpan);
-            for (int i = 0; i < _roadFactory.Objects.Count; i++)
-                RegisterRoadSpan(_roadFactory.Objects[i]);
+            for (int i = 0; i < _roadFactory.InactiveObjects.Count; i++)
+                RegisterRoadSpan(_roadFactory.InactiveObjects[i]);
         }
 
         private void RegisterFirstRoadSpan(Transform firstRoadSpan)
@@ -59,16 +60,16 @@ namespace Factories
         public void PlanRoadAhead()
         {
             int currentEndsNumber = _endSpans.Count;
-#if UNITY_EDITOR
-            if (_endSpans.Count > 2)
-            {
-                UnityEditor.EditorApplication.isPlaying = false;
-                throw new ArgumentException("Not valid number of end spans");
-            }
-#endif
+//#if UNITY_EDITOR
+//            if (_endSpans.Count > 2)
+//            {
+//                UnityEditor.EditorApplication.isPlaying = false;
+//                throw new ArgumentException("Not valid number of end spans");
+//            }
+//#endif
             if (_roadSpansCreated >= _maxRoadSpans)
             {
-                UnityEngine.Debug.Log($"critical number of spawns, new spawn will be skipped");
+                UnityEngine.Debug.Log($"Reached a critical number of spawns, new spawn will be skipped");
                 return;
             }
 
@@ -111,15 +112,20 @@ namespace Factories
             UnityEngine.Debug.Log($"new (right) end  at index {_endSpans.IndexOf(roadSpan)} is {roadSpan.name}");
         }
 
-        private RoadSpan SpawnRoadSpan()
+        private RoadSpan SpawnRoadSpan(bool shouldSaveSpawn = false)
         {
-            RoadSpan roadSpan = _roadFactory.Spawn();
+            RoadSpan roadSpan;
+
+            if (shouldSaveSpawn)
+                roadSpan = _roadFactory.Spawn(true);
+            else
+                roadSpan = _roadFactory.Spawn();
 
             if (_hasDoubleRoad && roadSpan.RoadType == RoadSpanType.TwoWays)
             {
                 _roadFactory.Despawn(roadSpan);
                 UnityEngine.Debug.Log("TwoWayRoad was doubled and despawned");
-                return SpawnRoadSpan();
+                return SpawnRoadSpan(true);
             }
 
             if (!_roadSpans.Contains(roadSpan))
@@ -169,6 +175,8 @@ namespace Factories
 
         private void BlockLaneChanging(bool shouldBlock) => OnLaneChangingBlocked?.Invoke(shouldBlock);
 
+        public void SetTurnTimescale(float timeScale) => _turnTimescale = timeScale;
+
         public void CheckForTurn(RoadSpan road)
         {
             if (road.RoadType == RoadSpanType.Straight || _currentLane == 0)
@@ -177,25 +185,29 @@ namespace Factories
             BlockLaneChanging(true);
             if (_currentLane == 1 && (road.RoadType == RoadSpanType.TwoWays || road.RoadType == RoadSpanType.RightTurn))
             {
-                road.MakeTurn(4.9f, -90);
+                road.MakeTurn(4.9f, -90, _turnTimescale);
+                UpdatePreviousSpan(road.RoadType, _currentLane);
                 return;
             }
 
             if (_currentLane == -1 && (road.RoadType == RoadSpanType.TwoWays || road.RoadType == RoadSpanType.LeftTurn))
             {
-                road.MakeTurn(-4.9f, 90);
-
-                if (road.RoadType == RoadSpanType.TwoWays)
-                {
-                    UnityEngine.Debug.Log("went int chosing path");
-                    RoadSpan nextRoadSpan = road.ReturnLeftChild();
-                    UpdatePreviousSpan(nextRoadSpan, _currentLane);
-                }
+                road.MakeTurn(-4.9f, 90, _turnTimescale);
+                UpdatePreviousSpan(road.RoadType, _currentLane);
+                //if (road.RoadType == RoadSpanType.TwoWays)
+                //{
+                //    UnityEngine.Debug.Log("went int chosing path");
+                //    //RoadSpan nextRoadSpan = road.ReturnLeftChild();  // do we need it???
+                //    UpdatePreviousSpan(road.RoadType, _currentLane);
+                //}
             }
         }
 
-        private void UpdatePreviousSpan(RoadSpan roadSpan, int chosenLane)
+        private void UpdatePreviousSpan(RoadSpanType roadType, int chosenLane) //RoadSpan nextRoadSpan, 
         {
+            if (roadType != RoadSpanType.TwoWays)
+                return; 
+
             if (chosenLane == -1)
                 _endSpans.Remove(_endSpans[0]);
             else if (chosenLane == 1)

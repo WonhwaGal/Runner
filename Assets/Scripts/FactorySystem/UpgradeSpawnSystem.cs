@@ -9,24 +9,21 @@ namespace Factories
 
         public UpgradeSpawnSystem() => CreateUpgradesFactory();
 
-
         private void CreateUpgradesFactory()
         {
-            //создаем и настраиваем фабрику объектов
             var upgradeFactory = new GenericFactory<UpgradeView>("UpgradePrefabs");
             upgradeFactory.LoadPrefab("DoubleUpgrade");
             upgradeFactory.LoadPrefab("ShieldUpgrade");
             upgradeFactory.LoadPrefab("JemCollectable");
             upgradeFactory.LoadPrefab("MagnetUpgrade");
 
-            //создаем пулл объектов
-            _upgradePool = new SingleFactory<UpgradeView>(upgradeFactory);
+            _upgradePool = new SinglePool<UpgradeView>(upgradeFactory);
         }
 
         public void UpdateAnimationState(bool isPaused)
         {
-            for (int i = 0; i < _upgradePool.Objects.Count; i++)
-                _upgradePool.Objects[i].PauseChild(isPaused);
+            for (int i = 0; i < _upgradePool.ActiveObjects.Count; i++)
+                _upgradePool.ActiveObjects[i].PauseChild(isPaused);
         }
 
         public void PutUpgradesOnRoad(IRoadSpan roadSpan)

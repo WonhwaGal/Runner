@@ -1,22 +1,21 @@
 using GameUI;
 using ProgressSystem;
-using UnityEngine;
 
 namespace DataSaving
 {
     internal class DataController
     {
         private ISelectLogic _selectMenuLogic;
-        private IDataSaver _dataSaver;
+        private readonly IDataSaver _dataSaver;
         private ProgressSavedData _savedData;
-
-        internal ProgressSavedData SavedData { get => _savedData; }
 
         public DataController()
         {
             _dataSaver = new JSONDataSaver();
             LoadProgress();
         }
+
+        public ProgressSavedData SavedData => _savedData;
 
         public void Init(ISelectLogic selectMenuLogic)
         {
@@ -28,9 +27,12 @@ namespace DataSaving
 
         public void SaveProgressFromConfig(GameProgressConfig gameConfig)
         {
-            var savedData = new ProgressSavedData();
-            savedData.TotalCollectedCoins = gameConfig.TotalCoinCount;
-            savedData.TotalCollectedCrystals = gameConfig.TotalCrystalCount;
+            var savedData = new ProgressSavedData()
+            {
+                TotalCollectedCoins = gameConfig.TotalCoinCount,
+                TotalCollectedCrystals = gameConfig.TotalCrystalCount
+            };
+
             for (int i = 0; i < gameConfig.Players.Count; i++)
             {
                 if (gameConfig.CurrentPlayer != null 

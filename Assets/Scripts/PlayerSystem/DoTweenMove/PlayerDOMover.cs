@@ -1,9 +1,9 @@
+using System;
 using UnityEngine;
 using DG.Tweening;
 using Infrastructure;
 using PlayerSystem;
 using Tools;
-using System;
 
 internal class PlayerDOMover : BaseMover
 {
@@ -11,22 +11,20 @@ internal class PlayerDOMover : BaseMover
     private Transform _transform;
 
     private Sequence _moveSequence;
-    private float _forwardMove = 12.0f;
+    private const float ForwardMove = 12.0f;
     private float _forwardSpeed = Constants.increaseSpeedSpan;
 
     private Tween _sideTween;
-    private float _sideShift = 5.0f;
-    private float _sideSpeed = 0.3f;
-    //private bool _isSideMoving;
+    private const float SideShift = 5.0f;
+    private const float SideSpeed = 0.3f;
 
     private Tween _jumpTween;
     private float _jumpForce;
-    //private bool _isJumping;
     private bool _canJump;
 
     private int _moveSides;
     private float _moveDirection;
-    private float _fallBack = 2.5f;
+    private const float FallBack = 2.5f;
     private bool _isManeuvering;
 
     public override void Init(IInput input, float jumpForce)
@@ -34,7 +32,6 @@ internal class PlayerDOMover : BaseMover
         _transform = transform;
         _input = input;
         _isManeuvering = true;
-        //_isSideMoving = true;
         SetDefaultLane(0);
         SetJumpConditions(jumpForce);
 
@@ -68,16 +65,13 @@ internal class PlayerDOMover : BaseMover
         if (_moveSequence != null)
         {
             _moveSequence.Play();
-            //_isJumping = false;
-            //_isSideMoving = false;
             return;
         }
 
         OnStartRunning?.Invoke();
-        //_isSideMoving = false;
 
         _moveSequence = DOTween.Sequence();
-        _moveSequence.Append(_transform.DOMoveZ(_transform.position.z + _forwardMove, _forwardSpeed)
+        _moveSequence.Append(_transform.DOMoveZ(_transform.position.z + ForwardMove, _forwardSpeed)
             .SetEase(Ease.Linear))
             .AppendCallback(IncreaseSpeed)
             .SetLoops(Int32.MaxValue, LoopType.Incremental);
@@ -85,14 +79,16 @@ internal class PlayerDOMover : BaseMover
 
     private void IncreaseSpeed()
     {
-        _moveSequence.timeScale += 0.01f;
+        if (_moveSequence.timeScale > 3.0)
+            return;
+
+        _moveSequence.timeScale += 0.007f;
         OnChangingSpeed?.Invoke(_forwardSpeed * _moveSequence.timeScale);
         OnSpeedingUp?.Invoke(_moveSequence.timeScale);
     }
 
     private void ShiftToSides(float xValue)
     {
-        //if (_isJumping || _isSideMoving || _sideTween.IsActive())
         if (_isManeuvering || _sideTween.IsActive())
             return;
 
@@ -106,10 +102,9 @@ internal class PlayerDOMover : BaseMover
     private void MoveToSide(int number)
     {
         _isManeuvering = true;
-        //_isSideMoving = true;
         _moveSides += number;
         OnChangingLane?.Invoke(_moveSides);
-        _sideTween = _transform.DOMoveX(_transform.position.x + _sideShift * number, _sideSpeed)
+        _sideTween = _transform.DOMoveX(_transform.position.x + SideShift * number, SideSpeed)
                                .OnComplete(() => _isManeuvering = false);
 
         if (_moveSequence != null)
@@ -118,14 +113,13 @@ internal class PlayerDOMover : BaseMover
 
     private void Jump()
     {
-        Debug.Log(_isManeuvering);
         if (!_isManeuvering && !_jumpTween.IsActive())
         {
             _isManeuvering = true;
             OnJumping?.Invoke();
             
             _jumpTween = _transform
-                .DOJump(_transform.position + new Vector3(0, 0, _forwardMove), _jumpForce, 1, _forwardSpeed)
+                .DOJump(_transform.position + new Vector3(0, 0, ForwardMove), _jumpForce, 1, _forwardSpeed)
                 .SetEase(Ease.Linear)
                 .OnComplete(() => _isManeuvering = false);
             _jumpTween.timeScale = _moveSequence.timeScale;
@@ -135,26 +129,33 @@ internal class PlayerDOMover : BaseMover
     public override void PauseMoving()
     {
         _moveSequence.Pause();
-        //_isSideMoving = true;
         _isManeuvering = true;
     }
 
     public override void StopMoving()
     {
-        _moveSequence.Kill();
-        //_isJumping = true;
+        _moveSequence.timeScale = 0;
         _isManeuvering = true;
 
         if (!_sideTween.IsActive())
-            transform.DOMoveZ(_transform.position.z - _fallBack, _forwardSpeed);
+        {
+            Debug.Log("stop moving back");
+            transform.DOMoveZ(_transform.position.z - FallBack, _forwardSpeed);
+        }
         else
-            transform.DOMoveX(_transform.position.x + (_fallBack * _moveDirection * -1), _forwardSpeed);
+        {
+            Debug.Log("stop moving with leap");
+            transform.DOMoveX(_transform.position.x + (FallBack * _moveDirection * -1), _forwardSpeed);
+        }
     }
 
     public override void Dispose()
     {
-        _input.OnChangingXValue -= ShiftToSides;
+        transform.DOKill();
+        _jumpTween.Kill();
+        _moveSequence.Kill();
         if (_canJump)
             _input.OnJump -= Jump;
+        _input.OnChangingXValue -= ShiftToSides;
     }
 }

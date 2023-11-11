@@ -27,9 +27,14 @@ namespace Factories
             _loadedPrefabs.Add(prefab);
         }
 
-        public T Create()
+        public T Create(bool shouldBeSave = false)
         {
-            return Object.Instantiate(_loadedPrefabs[Random.Range(0, _loadedPrefabs.Count)]);
+            int randomNumber = Random.Range(0, _loadedPrefabs.Count);
+
+            if (shouldBeSave)
+                randomNumber = 0;
+
+            return Object.Instantiate(_loadedPrefabs[randomNumber]);
         }
     }
     //*/

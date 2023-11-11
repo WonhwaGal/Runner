@@ -1,9 +1,11 @@
 using UnityEngine;
 
 
+using System;
+
 namespace Factories
 {
-    internal class MainFactory: IMainFactory
+    internal class MainFactory : IDisposable
     {
         private IRoadSystem _roadSystem;
         private ICoinSetSystem _coinSetSystem;
@@ -19,22 +21,22 @@ namespace Factories
             _upgradeSpawnSystem = new UpgradeSpawnSystem();
             RoadSystem.RouteAnalyzer.RequestForCoins += CoinSetSystem.PutCoinsOnRoad;
             RoadSystem.RouteAnalyzer.RequestForUpgrades += _upgradeSpawnSystem.PutUpgradesOnRoad;
+            GameEventSystem.Subscribe<PauseGameEvent>(UpdateAnimations);
 
             _roadSystem.StartRoadSpawn();
         }
 
-
-        public void UpdateAnimations(bool isPaused)
+        public void UpdateAnimations(PauseGameEvent pauseEvent)
         {
-            _coinSetSystem.UpdateAnimationState(isPaused);
-            _upgradeSpawnSystem.UpdateAnimationState(isPaused);
+            _coinSetSystem.UpdateAnimationState(pauseEvent.IsPaused);
+            _upgradeSpawnSystem.UpdateAnimationState(pauseEvent.IsPaused);
         }
 
         public void Dispose()
         {
             RoadSystem.RouteAnalyzer.RequestForCoins -= CoinSetSystem.PutCoinsOnRoad;
             RoadSystem.RouteAnalyzer.RequestForUpgrades -= _upgradeSpawnSystem.PutUpgradesOnRoad;
-            _roadSystem.Dispose();
+            //_roadSystem.Dispose();
         }
     }
 }

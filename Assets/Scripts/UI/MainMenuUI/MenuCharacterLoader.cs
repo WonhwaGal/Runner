@@ -9,8 +9,6 @@ namespace MainMenu
         private readonly GameProgressConfig _gameConfig;
         private MenuCharacterController _menuCharacterPrefab;
 
-        public MenuCharacterController MenuCharacter { get; private set; }
-
         public MenuCharacterLoader(GameProgressConfig gameConfig, Transform characterSpot)
         {
             _gameConfig = gameConfig;
@@ -20,6 +18,8 @@ namespace MainMenu
             else
                 UnityEngine.Debug.Log("No prefab found");
         }
+
+        public MenuCharacterController MenuCharacter { get; private set; }
 
         private void LoadMenuCharacter(Transform characterSpot)
         {

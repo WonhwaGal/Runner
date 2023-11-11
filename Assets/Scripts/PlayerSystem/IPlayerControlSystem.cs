@@ -6,7 +6,7 @@ namespace PlayerSystem
 {
     internal interface IPlayerControlSystem : IDisposable
     {
-        event Action OnPlayerControllerSet;
+        Action OnPlayerControllerSet { get; set; }
         TriggerHandler TriggerHandler { get; }
         IPlayerController PlayerController { get; }
         void CreatePlayer(PlayerConfig config);

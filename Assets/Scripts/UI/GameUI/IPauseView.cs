@@ -5,7 +5,7 @@ namespace GameUI
 {
     internal interface IPauseView
     {
-        event Action<bool> OnContinueGame;
+        event Action<PauseGameEvent> OnContinueGame;
         event Action OnBackToMenu;
         event Action OnExit;
 

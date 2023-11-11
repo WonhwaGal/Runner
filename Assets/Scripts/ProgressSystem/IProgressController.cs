@@ -7,7 +7,7 @@ namespace ProgressSystem
     internal interface IProgressController: IDisposable
     {
         IGameUIModel GameUIModel { get; }
-        ICollectableCounter CollectableCounter { get; }
+        CollectableCounter CollectableCounter { get; }
         GameProgressConfig GameConfig { get; }
         PlayerConfig RecieveCurrentPlayer();
         void RegisterCurrentProgress();

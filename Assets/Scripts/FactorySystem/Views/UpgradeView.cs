@@ -10,30 +10,27 @@ namespace Factories
 {
     internal class UpgradeView : CollectableObject, IRespawnable
     {
-        [SerializeField] private List<CollectableObject> _collectables;
         [SerializeField] private UpgradeType _upgradeType;
         [SerializeField] private int _timeActive;
 
         private bool _isActive;
-        private Vector3 _rotationTargetVector = new Vector3(0, 360, 0);
+        private Vector3 _rotationTargetVector = new(0, 360, 0);
 
         public Transform RootObject { get; set; }
         public GameObject BodyObject => gameObject;
         public bool IsActive => _isActive;
 
+        private void OnBecameVisible() => PauseAnimation(false);
+        private void OnBecameInvisible() => PauseAnimation(true);
 
         private void Start()
         {
-            if (_upgradeType == UpgradeType.Crystal)
-                Type = CollectableType.Crystal;
-            else
-                Type = CollectableType.Upgrade;
+            Type = _upgradeType == UpgradeType.Crystal ?
+                CollectableType.Crystal : CollectableType.Upgrade;
             Upgrade = _upgradeType;
             Value = _timeActive;
             AnimateCollectable();
         }
-
-        private void OnBecameVisible() => AnimateCollectable();
 
         public override void AnimateCollectable()
         {
@@ -41,6 +38,16 @@ namespace Factories
                 .SetLoops(Int32.MaxValue, LoopType.Incremental)
                 .SetRelative()
                 .SetEase(Ease.Linear);
+        }
+
+        public void PauseChild(bool isPaused) => PauseAnimation(isPaused);
+
+        public override void PauseAnimation(bool isPaused)
+        {
+            if (isPaused)
+                _animationTween.Pause();
+            else
+                _animationTween.Play();
         }
 
         public void Activate()
@@ -55,18 +62,16 @@ namespace Factories
             gameObject.transform.SetParent(RootObject);
             gameObject.SetActive(false);
             _animationTween.Pause();
-            if (_collectables.Count > 0)
-            {
-                for (int i = 0; i < transform.childCount; i++)
-                    transform.GetChild(i).gameObject.SetActive(true);
-            }
+
+            for (int i = 0; i < transform.childCount; i++)
+                transform.GetChild(i).gameObject.SetActive(true);
         }
 
         public override void ExecuteAction()
         {
             gameObject.SetActive(false);
             _isMagnetized = false;
-            _animationTween.Pause();
+            PauseAnimation(true);
         }
 
         public override void MoveToTarget(Vector3 position)
@@ -75,20 +80,6 @@ namespace Factories
                 _isMagnetized = true;
             if (_upgradeType == UpgradeType.Crystal)
                 _animationTween = transform.DOMove(position, Constants.coinMagnetSpeed);
-        }
-
-        public override void PauseAnimation(bool isPaused)
-        {
-            if (isPaused)
-                _animationTween.Pause();
-            else
-                _animationTween.Play();
-        }
-
-        public void PauseChild(bool isPaused)
-        {
-            for (int i = 0; i < _collectables.Count; i++)
-                _collectables[i].PauseAnimation(isPaused);
         }
 
         private void OnDestroy() => _animationTween.Kill();

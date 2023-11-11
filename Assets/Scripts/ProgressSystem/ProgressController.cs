@@ -7,11 +7,11 @@ namespace ProgressSystem
     {
         private IGameUIView _uiView;
         private IGameUIModel _gameUIModel;
-        private ICollectableCounter _collectableCounter;
+        private CollectableCounter _collectableCounter;
         private GameProgressConfig _gameConfig;
 
         public IGameUIModel GameUIModel { get => _gameUIModel; }
-        public ICollectableCounter CollectableCounter { get => _collectableCounter; }
+        public CollectableCounter CollectableCounter { get => _collectableCounter; }
         public GameProgressConfig GameConfig { get => _gameConfig; }
 
         public ProgressController(IGameUIView uiView, GameProgressConfig gameConfig)

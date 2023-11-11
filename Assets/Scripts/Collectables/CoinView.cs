@@ -7,21 +7,20 @@ namespace Collectables
 {
     internal class CoinView : CollectableObject
     {
-        private Vector3 _rotationTargetVector = new Vector3(0, 360, 0);
+        private Vector3 _rotationTargetVector = new (0, 360, 0);
         private Vector3 _localPos;
-
 
         private void Start()
         {
             Value = 1;
             Type = CollectableType.Coin;
-            Upgrade = UpgradeType.None;
             _localPos = transform.localPosition;
             _animationTween = transform.DOMove(transform.position, 0);
             AnimateCollectable();
         }
 
-        private void OnBecameVisible() => AnimateCollectable();
+        private void OnBecameVisible() => PauseAnimation(false);
+        private void OnBecameInvisible() => PauseAnimation(true);
 
         public override void AnimateCollectable()
         {

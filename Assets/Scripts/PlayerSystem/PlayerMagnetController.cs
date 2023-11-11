@@ -9,7 +9,7 @@ namespace PlayerSystem
     {
         private CapsuleCollider _capsuleCollider;
         private List<CollectableObject> _inCircleTransforms;
-        private Vector3 _shift = new Vector3(0, 3, 1);
+        private Vector3 _shift = new (0, 3, 1);
 
         public List<CollectableObject> InCircleTransforms { get => _inCircleTransforms; set => _inCircleTransforms = value; }
 
@@ -45,6 +45,7 @@ namespace PlayerSystem
                     coin.MoveToTarget(targetVector);
             }
         }
+
         private List<CollectableObject> SortOutTheList()
         {
             for (int i = 0; i < InCircleTransforms.Count; i++)

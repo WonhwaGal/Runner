@@ -7,7 +7,7 @@ using Commands;
 
 namespace Infrastructure
 {
-    internal class GameStateColtroller: IDisposable, IEventSubscriber<PauseGameEvent>
+    internal class GameStateColtroller: IDisposable
     {
         private CommandsManager _commandsManager;
         private DataController _dataController;
@@ -20,14 +20,14 @@ namespace Infrastructure
             _commandsManager.PauseView.OnExit += LoseGame;
             _commandsManager.PauseView.OnBackToMenu += LoadMenuScene;
 
-            EventBus.RegisterTo<PauseGameEvent>(this as IEventSubscriber<PauseGameEvent>);
-
+            GameEventSystem.Subscribe<PauseGameEvent>(PauseGame);
+            GameEventSystem.Subscribe<UpgradeEvent>(HitObstacle);
             _dataController = new DataController();
             StartGame();
         }
 
         public void StartGame() => _commandsManager.Start();
-        public void PauseGame(bool isPaused) => _commandsManager.Pause(isPaused);
+        public void PauseGame(PauseGameEvent pauseEvent) => _commandsManager.Pause(pauseEvent.IsPaused);
         private void StopGame() => _commandsManager.Stop();
 
         public void LoseGame()
@@ -35,6 +35,12 @@ namespace Infrastructure
             StopGame();
             Sequence gameLostS = DOTween.Sequence();
             gameLostS.AppendInterval(2.0f).AppendCallback(LoadMenuScene);
+        }
+
+        private void HitObstacle(UpgradeEvent @event)
+        {
+            if (@event.UpgradeType == Collectables.UpgradeType.None)
+                LoseGame();
         }
 
         private void LoadMenuScene()
@@ -55,15 +61,13 @@ namespace Infrastructure
                 UnityEngine.Debug.Log("Failed to save data");
         }
 
-        public void OnEvent(PauseGameEvent eventName) => PauseGame(eventName.GameIsPaused);
-
         public void Dispose() 
         {
             _commandsManager.PauseView.OnContinueGame -= PauseGame;
             _commandsManager.PauseView.OnExit -= LoseGame;
             _commandsManager.PauseView.OnBackToMenu -= LoadMenuScene;
 
-            EventBus.UnregisterTo<PauseGameEvent>(this as IEventSubscriber<PauseGameEvent>);
+            GameEventSystem.UnSubscribe<PauseGameEvent>(PauseGame);
         }
     }
 }

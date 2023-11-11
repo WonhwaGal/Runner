@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public struct PauseGameEvent : IEvent
+public struct PauseGameEvent : IGameEvent
 {
-    public readonly bool GameIsPaused;
+    public readonly bool IsPaused;
 
-    public PauseGameEvent(bool gamePaused) => GameIsPaused = gamePaused;
+    public PauseGameEvent(bool value) => IsPaused = value;
 }

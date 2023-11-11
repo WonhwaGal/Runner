@@ -1,6 +1,6 @@
+using GameUI;
 using Commands;
 using Factories;
-using GameUI;
 using PlayerSystem;
 using ProgressSystem;
 using UnityEngine;
@@ -23,11 +23,7 @@ namespace Infrastructure
         private GameUIController _uiController;
         private CommandsManager _commandsManager;
 
-        private void Start()
-        {
-            CreateMainSystems();
-            AssignConnections();
-        }
+        private void Start() => CreateMainSystems();
 
         private void Update() => _inputType.RegisterInput();
 
@@ -42,33 +38,13 @@ namespace Infrastructure
             _gameStateController = new GameStateColtroller(_commandsManager);
         }
 
-        private void AssignConnections()
-        {
-            //_inputType.OnPauseGame += _gameStateController.PauseGame;
-            _commandsManager.OnPause += _mainFactory.UpdateAnimations;
-            _playerControlSystem.TriggerHandler.OnTriggeredByCoin += _progressController.CollectableCounter.AddCoins;
-            _playerControlSystem.TriggerHandler.OnTriggeredByCrystal += _progressController.CollectableCounter.AddCrystals;
-            _playerControlSystem.TriggerHandler.OnGettingUpgrade += _gameCanvas.GameUIView.ActivateUpgradeImage;
-            _playerControlSystem.TriggerHandler.OnHittingAnObstacle += _gameStateController.LoseGame;
-        }
-
-        private void SignOffConnections()
-        {
-            //_inputType.OnPauseGame -= _gameStateController.PauseGame;
-            _commandsManager.OnPause -= _mainFactory.UpdateAnimations;
-            _playerControlSystem.TriggerHandler.OnTriggeredByCoin -= _progressController.CollectableCounter.AddCoins;
-            _playerControlSystem.TriggerHandler.OnTriggeredByCrystal -= _progressController.CollectableCounter.AddCrystals;
-            _playerControlSystem.TriggerHandler.OnGettingUpgrade -= _gameCanvas.GameUIView.ActivateUpgradeImage;
-            _playerControlSystem.TriggerHandler.OnHittingAnObstacle -= _gameStateController.LoseGame;
-        }
-
         private void OnDestroy()
         {
-            SignOffConnections();
             _mainFactory.Dispose();
             _playerControlSystem.Dispose();
             _progressController.Dispose();
             _gameStateController.Dispose();
+            GameEventSystem.Dispose();
         }
     }
 }

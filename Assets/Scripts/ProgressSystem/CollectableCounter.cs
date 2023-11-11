@@ -1,14 +1,25 @@
-﻿using System;
+﻿using Collectables;
+using System;
 
 namespace ProgressSystem
 {
-    internal class CollectableCounter : ICollectableCounter
+    internal class CollectableCounter
     {
+        private int _coinsCollected;
+        private int _crystalsCollected;
+
+        public CollectableCounter() => GameEventSystem.Subscribe<CollectEvent>(AddCollectable);
+
         public Action<int> OnCollectCoins { get; set; }
         public Action<int> OnCollectCrystals { get; set; }
 
-        private int _coinsCollected;
-        private int _crystalsCollected;
+        public void AddCollectable(CollectEvent @event)
+        {
+            if (@event.Type == CollectableType.Coin)
+                AddCoins(@event.Value);
+            else
+                AddCrystals(@event.Value);
+        }
 
         public void AddCoins(int value)
         {
@@ -33,7 +44,6 @@ namespace ProgressSystem
         }
 
         public int SetCurrentCoinNumber() => _coinsCollected;
-
         public int SetCurrentCrystalNumber() => _crystalsCollected;
     }
 }

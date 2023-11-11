@@ -23,6 +23,7 @@ namespace GameUI
             _coinNumberText.text = "0";
             _distanceKm.text = "0";
             _runningSequences = new Dictionary<UpgradeType, Sequence>();
+            GameEventSystem.Subscribe<UpgradeEvent>(ActivateUpgradeImage);
         }
 
         public void SetCoinNumber(int number) => _coinNumberText.text = number.ToString();
@@ -38,24 +39,24 @@ namespace GameUI
                 else
                     pair.Value.Play();
             }
-            for(int i = 0; i < _upgradeImages.Count; i++)
+            for (int i = 0; i < _upgradeImages.Count; i++)
                 _upgradeImages[i].IsPaused = isPaused;
         }
 
-        public void ActivateUpgradeImage(float timeSpan, UpgradeType upgrade)
+        public void ActivateUpgradeImage(UpgradeEvent @event)
         {
             Sequence mySequence = DOTween.Sequence();
 
-            if (_runningSequences.ContainsKey(upgrade))
+            if (_runningSequences.ContainsKey(@event.UpgradeType))
             {
-                _runningSequences[upgrade].Kill();
-                TurnOffUpgrade(upgrade);
+                _runningSequences[@event.UpgradeType].Kill();
+                TurnOffUpgrade(@event.UpgradeType);
             }
-            _runningSequences.Add(upgrade, mySequence);
+            _runningSequences.Add(@event.UpgradeType, mySequence);
 
-            mySequence.AppendCallback(() => ChooseUpgradeImage(upgrade, timeSpan))
-                .AppendInterval(timeSpan)
-                .OnComplete(() => TurnOffUpgrade(upgrade));
+            mySequence.AppendCallback(() => ChooseUpgradeImage(@event.UpgradeType, @event.Value))
+                .AppendInterval(@event.Value)
+                .OnComplete(() => TurnOffUpgrade(@event.UpgradeType));
         }
 
         private void ChooseUpgradeImage(UpgradeType upgrade, float timeSpan)
@@ -68,7 +69,7 @@ namespace GameUI
                 _ => _upgradeSprites[(int)UpgradeType.None],
             };
 
-            for(int i = 0; i < _upgradeImages.Count; i++)
+            for (int i = 0; i < _upgradeImages.Count; i++)
             {
                 if (_upgradeImages[i].gameObject == null)
                     return;
@@ -102,5 +103,7 @@ namespace GameUI
             }
             return null;
         }
+
+        private void OnDestroy() => _runningSequences.Clear();
     }
 }

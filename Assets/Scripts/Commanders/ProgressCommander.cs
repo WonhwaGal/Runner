@@ -5,10 +5,8 @@ namespace Commands
 {
     internal class ProgressCommander: ICommander
     {
-        private IProgressController _progressController;
-        private IPlayerControlSystem _playerControlSystem;
-
-        public GameProgressConfig GameConfig { get => _progressController.GameConfig; }
+        private readonly IProgressController _progressController;
+        private readonly IPlayerControlSystem _playerControlSystem;
 
         public ProgressCommander(IProgressController progressController, IPlayerControlSystem playerControlSystem)
         {
@@ -16,6 +14,7 @@ namespace Commands
             _playerControlSystem = playerControlSystem;
         }
 
+        public GameProgressConfig GameConfig => _progressController.GameConfig;
 
         public void Start() => _playerControlSystem.OnPlayerControllerSet += PlayerCreated;
 
@@ -23,7 +22,7 @@ namespace Commands
         public void Stop()
         {
             _progressController.GameUIModel.StopDistanceCount();
-            _playerControlSystem.OnPlayerControllerSet -= RegisterCurrentProgress;
+            _playerControlSystem.OnPlayerControllerSet -= PlayerCreated;
             _playerControlSystem.PlayerController.Mover.OnStartRunning -= _progressController.GameUIModel.StartDistanceCount;
             _playerControlSystem.PlayerController.Mover.OnSpeedingUp -= _progressController.GameUIModel.IncreaseSpeed;
         }

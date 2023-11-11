@@ -7,7 +7,6 @@ public class UpgradeImage : MonoBehaviour
     [SerializeField] private Image _mainImage;
     [SerializeField] private Image _timerCircle;
 
-    public Image TimerCircle { get => _timerCircle; }
     public Sprite Sprite { get => _mainImage.sprite; set => _mainImage.sprite = value; }
     public bool IsPaused { get; set; }
 
@@ -28,4 +27,6 @@ public class UpgradeImage : MonoBehaviour
     }
 
     public void CancelCountDown() => StopAllCoroutines();
+
+    private void OnDestroy() => CancelCountDown();
 }

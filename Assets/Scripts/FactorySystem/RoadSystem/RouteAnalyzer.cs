@@ -35,8 +35,8 @@ namespace Factories
             _endSpans = new List<RoadSpan>();
 
             RegisterFirstRoadSpan(firstRoadSpan);
-            for (int i = 0; i < _roadFactory.Objects.Count; i++)
-                RegisterRoadSpan(_roadFactory.Objects[i]);
+            for (int i = 0; i < _roadFactory.InactiveObjects.Count; i++)
+                RegisterRoadSpan(_roadFactory.InactiveObjects[i]);
         }
 
         private void RegisterFirstRoadSpan(Transform firstRoadSpan)

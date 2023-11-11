@@ -19,10 +19,6 @@ namespace PlayerSystem
         private PlayerAnimator _playerAnimator;
         private PlayerUpgradeController _playerUpgrader;
 
-        public PlayerAnimator PlayerAnimator { get => _playerAnimator; }
-        public BaseMover Mover { get => _mover; }
-        public PlayerTriggerModule TriggerModule { get => _trigger; }
-
         public void Initialize(IInput input, float jumpForce, TriggerHandler handler)
         {
             _shield.gameObject.SetActive(false);
@@ -37,6 +33,10 @@ namespace PlayerSystem
             _mover.OnChangingSpeed += _playerAnimator.Move;
             _mover.OnJumping += _playerAnimator.Jump;
         }
+
+        public PlayerAnimator PlayerAnimator => _playerAnimator;
+        public BaseMover Mover => _mover;
+        public PlayerTriggerModule TriggerModule => _trigger;
 
         public void ResumePlayerMove()
         {
@@ -60,15 +60,13 @@ namespace PlayerSystem
 
         private void PauseUpgradeEffects(ParticleSystem particles, bool toPause)
         {
-            if (particles.gameObject.activeInHierarchy)
-            {
-                if (toPause)
-                    particles.Pause(true);
-                else
-                    particles.Play();
-            }
+            if (!particles.gameObject.activeInHierarchy)
+                return;
+            if (toPause)
+                particles.Pause(true);
+            else
+                particles.Play();
         }
-
 
         private void OnDestroy()
         {

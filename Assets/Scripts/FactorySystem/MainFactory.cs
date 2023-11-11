@@ -5,7 +5,7 @@ using System;
 
 namespace Factories
 {
-    internal class MainFactory : IDisposable, IEventSubscriber<PauseGameEvent>
+    internal class MainFactory : IDisposable
     {
         private IRoadSystem _roadSystem;
         private ICoinSetSystem _coinSetSystem;
@@ -21,25 +21,21 @@ namespace Factories
             _upgradeSpawnSystem = new UpgradeSpawnSystem();
             RoadSystem.RouteAnalyzer.RequestForCoins += CoinSetSystem.PutCoinsOnRoad;
             RoadSystem.RouteAnalyzer.RequestForUpgrades += _upgradeSpawnSystem.PutUpgradesOnRoad;
+            GameEventSystem.Subscribe<PauseGameEvent>(UpdateAnimations);
 
-            EventBus.RegisterTo<PauseGameEvent>(this as IEventSubscriber<PauseGameEvent>);
             _roadSystem.StartRoadSpawn();
         }
 
-
-        public void UpdateAnimations(bool isPaused)
+        public void UpdateAnimations(PauseGameEvent pauseEvent)
         {
-            _coinSetSystem.UpdateAnimationState(isPaused);
-            _upgradeSpawnSystem.UpdateAnimationState(isPaused);
+            _coinSetSystem.UpdateAnimationState(pauseEvent.IsPaused);
+            _upgradeSpawnSystem.UpdateAnimationState(pauseEvent.IsPaused);
         }
-
-        public void OnEvent(PauseGameEvent eventName) => UpdateAnimations(eventName.GameIsPaused);
 
         public void Dispose()
         {
             RoadSystem.RouteAnalyzer.RequestForCoins -= CoinSetSystem.PutCoinsOnRoad;
             RoadSystem.RouteAnalyzer.RequestForUpgrades -= _upgradeSpawnSystem.PutUpgradesOnRoad;
-            EventBus.UnregisterTo<PauseGameEvent>(this as IEventSubscriber<PauseGameEvent>);
             //_roadSystem.Dispose();
         }
     }

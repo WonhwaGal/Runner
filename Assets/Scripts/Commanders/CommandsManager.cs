@@ -1,25 +1,21 @@
 using GameUI;
 using PlayerSystem;
 using ProgressSystem;
-using System;
 using System.Collections.Generic;
 
 
 namespace Commands
 {
-    internal class CommandsManager
+    internal sealed class CommandsManager
     {
-        public event Action<bool> OnPause;
-        private List<ICommander> _commanders;
-        private ICommander _playerCommander;
-        private ICommander _uiCommander;
-        private ICommander _progressCommander;
+        private readonly List<ICommander> _commanders;
+        private readonly ICommander _playerCommander;
+        private readonly ICommander _uiCommander;
+        private readonly ICommander _progressCommander;
         private IPauseView _pauseView;
 
-        public ICommander ProgressCommander { get => _progressCommander; }
-        public IPauseView PauseView { get => _pauseView; private set => _pauseView = value; }
-
-        public CommandsManager(IPlayerControlSystem playerControlSystem, GameUIController uiController, IProgressController progressController)
+        public CommandsManager(IPlayerControlSystem playerControlSystem,
+                        GameUIController uiController, IProgressController progressController)
         {
             _commanders = new List<ICommander>();
             _progressCommander = new ProgressCommander(progressController, playerControlSystem);
@@ -33,19 +29,21 @@ namespace Commands
             _commanders.Add(_uiCommander);
         }
 
+        public ICommander ProgressCommander { get => _progressCommander; }
+        public IPauseView PauseView { get => _pauseView; private set => _pauseView = value; }
 
         public void Start()
         {
             for (int i = 0; i < _commanders.Count; i++)
                 _commanders[i].Start();
         }
+
         public void Pause(bool isPaused)
         {
             for (int i = 0; i < _commanders.Count; i++)
                 _commanders[i].Pause(isPaused);
-            OnPause?.Invoke(isPaused);
-            //EventBus.RaiseEvent<PauseGameEvent>(new PauseGameEvent(isPaused));
         }
+
         public void Stop()
         {
             for (int i = 0; i < _commanders.Count; i++)

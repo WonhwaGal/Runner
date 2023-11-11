@@ -3,33 +3,26 @@ using System.Collections.Generic;
 
 namespace Factories
 {
-    internal interface IPool<T>
-        where T : Object
-    {
-        IReadOnlyList<T> Objects { get; }
-        Transform RootObject { get; }
-        T Spawn(bool shouldBeSave = false);
-        void Despawn(T despawnedObject);
-    }
-
     //True name SinglePool or ObjectPool
     // Этот объект хранит инфу о созданных объектах на фабрике, вызвается из систем для строики уровня - это чистый пул объектов
-    internal class SingleFactory<T> : IPool<T>
+    internal class SinglePool<T> : IPool<T>
         where T : MonoBehaviour, IRespawnable
     {
         private readonly GenericFactory<T> Factory;
+        private readonly List<T> _activeObjects;
+        private readonly List<T> _inactiveObjects;
 
-        private List<T> _objects;
-
-        public SingleFactory(GenericFactory<T> factory)
+        public SinglePool(GenericFactory<T> factory)
         {
             Factory = factory;
             RootObject = new GameObject(factory.ResourcesFolderName).transform;
-
-            _objects = new List<T>();
+            _activeObjects = new List<T>();
+            _inactiveObjects = new List<T>();
         }
 
-        public IReadOnlyList<T> Objects => _objects;
+        public IReadOnlyList<T> ActiveObjects => _activeObjects;
+        public IReadOnlyList<T> InactiveObjects => _inactiveObjects;
+
         public Transform RootObject { get; }
 
         public T Spawn(bool shouldBeSave = false)
@@ -39,17 +32,20 @@ namespace Factories
             if (shouldBeSave)
                 resultObject = Factory.Create(true);
             else
-                resultObject = (Objects.Count > 0) ? Objects[Random.Range(0, Objects.Count)] : Factory.Create();
-            _objects.Remove(resultObject);
-            OnSpawn(resultObject);
+                resultObject = (InactiveObjects.Count > 0) ? 
+                    InactiveObjects[Random.Range(0, InactiveObjects.Count)] : Factory.Create();
+            _activeObjects.Add(resultObject);
+            _inactiveObjects.Remove(resultObject);
 
+            OnSpawn(resultObject);
             return resultObject;
         }
 
         public void Despawn(T despawnObject)
         {
+            _inactiveObjects.Add(despawnObject);
+            _activeObjects.Remove(despawnObject);
             OnDespawn(despawnObject);
-            _objects.Add(despawnObject);
         }
 
         protected virtual void OnSpawn(in T spawnedObject)

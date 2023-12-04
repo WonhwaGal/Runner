@@ -1,6 +1,6 @@
+using System;
 using DataSaving;
 using ProgressSystem;
-using System;
 using static ProgressSystem.GameProgressConfig;
 
 namespace GameUI
@@ -39,7 +39,6 @@ namespace GameUI
 
         private void DrawDataFromSavedData(ProgressSavedData savedData)
         {
-            UnityEngine.Debug.Log("drawing from savedData");
             for (int i = 0; i < _gameConfig.Players.Count; i++)
             {
                 _gameConfig.Players[i].IsOpen = false;

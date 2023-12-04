@@ -12,7 +12,9 @@ namespace Commands
 
 
         public void Start() => UiController.PauseView.Gameobject.SetActive(false);
+
         public void Pause(bool isPaused) => UiController.PauseGame(isPaused);
+
         public void Stop() { }
     }
 }

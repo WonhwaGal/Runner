@@ -1,9 +1,9 @@
+using UnityEngine;
 using GameUI;
 using Commands;
 using Factories;
 using PlayerSystem;
 using ProgressSystem;
-using UnityEngine;
 
 namespace Infrastructure
 {

@@ -1,8 +1,7 @@
-﻿using Collectables;
+﻿using UnityEngine;
+using Collectables;
 using DG.Tweening;
-using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace PlayerSystem
 {
@@ -11,12 +10,12 @@ namespace PlayerSystem
         private GameObject _shield;
         private GameObject _magnet;
         private bool _shieldOn;
-        private int _defaultMultiplier;
+        private readonly int _defaultMultiplier;
         private int _coinMultiplier;
         private int _crystalMultiplier;
         private PlayerMagnetController _playerMagnetController;
 
-        private Dictionary<UpgradeType, Sequence> _runningSequences = new();
+        private readonly Dictionary<UpgradeType, Sequence> _runningSequences = new ();
 
         public int CoinMultiplier { get => _coinMultiplier; }
         public int CrystalMultiplier { get => _crystalMultiplier; }
@@ -28,9 +27,8 @@ namespace PlayerSystem
             _crystalMultiplier = _defaultMultiplier;
         }
 
-        public void AddComponents(PlayerMagnetController playerMagnetController,
-            GameObject shield,
-            GameObject magnet)
+        public void AddComponents(
+            PlayerMagnetController playerMagnetController, GameObject shield, GameObject magnet)
         {
             _playerMagnetController = playerMagnetController;
             _shield = shield;

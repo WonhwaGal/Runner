@@ -1,20 +1,18 @@
-using System.Collections;
-using TMPro;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
 using DG.Tweening;
-using System;
 
-internal class TextButtonPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+internal class TextButtonPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IDisposable
 {
-    public event Action<string> OnEnterButton;
-    public event Action OnClickButton;
-
     [SerializeField] private bool _isReactiveButton;
     [SerializeField] private string _triggerName;
-
     private TextMeshProUGUI _textComponent;
     private Color _initialColor;
+
+    public event Action<string> OnEnterButton;
+    public event Action OnClickButton;
 
     private void Start()
     {
@@ -32,4 +30,10 @@ internal class TextButtonPanel : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void OnPointerExit(PointerEventData eventData) => _textComponent.DOColor(_initialColor, 0.5f);
 
     public void OnPointerClick(PointerEventData eventData) => OnClickButton?.Invoke();
+
+    public void Dispose()
+    {
+        OnEnterButton = null;
+        OnClickButton = null;
+    }
 }

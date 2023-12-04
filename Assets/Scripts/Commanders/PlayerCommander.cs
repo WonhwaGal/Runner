@@ -16,7 +16,9 @@ namespace Commands
 
 
         public void Start() => _playerController.CreatePlayer(_currentPlayer);
+
         public void Pause(bool isPaused) => _playerController.PausePlayer(isPaused);
+
         public void Stop() => _playerController.StopPlayer();
     }
 }

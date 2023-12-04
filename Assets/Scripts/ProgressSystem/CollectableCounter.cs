@@ -10,8 +10,8 @@ namespace ProgressSystem
 
         public CollectableCounter() => GameEventSystem.Subscribe<CollectEvent>(AddCollectable);
 
-        public Action<int> OnCollectCoins { get; set; }
-        public Action<int> OnCollectCrystals { get; set; }
+        public event Action<int> OnCollectCoins;
+        public event Action<int> OnCollectCrystals;
 
         public void AddCollectable(CollectEvent @event)
         {

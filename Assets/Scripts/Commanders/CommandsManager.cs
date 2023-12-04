@@ -1,8 +1,7 @@
+using System.Collections.Generic;
 using GameUI;
 using PlayerSystem;
 using ProgressSystem;
-using System.Collections.Generic;
-
 
 namespace Commands
 {
@@ -29,7 +28,7 @@ namespace Commands
             _commanders.Add(_uiCommander);
         }
 
-        public ICommander ProgressCommander { get => _progressCommander; }
+        public ICommander ProgressCommander => _progressCommander;
         public IPauseView PauseView { get => _pauseView; private set => _pauseView = value; }
 
         public void Start()

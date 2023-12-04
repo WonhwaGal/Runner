@@ -1,8 +1,7 @@
-using Collectables;
-using Factories;
 using System;
 using UnityEngine;
-
+using Collectables;
+using Factories;
 
 namespace PlayerSystem
 {
@@ -25,9 +24,6 @@ namespace PlayerSystem
 
         private void OnTriggerEnter(Collider other)
         {
-            //if (other.GetComponent<PlayerMagnetController>())   // made another layer
-            //    return;
-
             if (other.TryGetComponent(out CollectableObject collectable))
             {
                 _triggerHandler.SortOutCollectable(collectable);

@@ -9,6 +9,5 @@ namespace Factories
         List<Transform> UpgradeSpots { get; }
         void AcceptChildRespawnable(IRespawnable childObject, RespawnableType type);
         void UnparentChildObjects();
-
     }
 }

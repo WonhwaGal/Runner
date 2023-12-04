@@ -7,6 +7,7 @@ namespace Infrastructure
     {
         event Action OnJump;
         event Action<float> OnChangingXValue;
+
         void RegisterInput();
 
         void IgnoreInput(bool shouldBeIgnored);

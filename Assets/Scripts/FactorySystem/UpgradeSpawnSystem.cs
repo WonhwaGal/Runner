@@ -1,11 +1,12 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Factories
 {
-    internal class UpgradeSpawnSystem: IUpgradeSpawnSystem
+    internal sealed class UpgradeSpawnSystem: IUpgradeSpawnSystem
     {
         private IPool<UpgradeView> _upgradePool;
+        private const float MinYShift = 1.0f;
+        private const float MaxYShift = 3.0f;
 
         public UpgradeSpawnSystem() => CreateUpgradesFactory();
 
@@ -28,39 +29,17 @@ namespace Factories
 
         public void PutUpgradesOnRoad(IRoadSpan roadSpan)
         {
-            for (int i = 0; i < GetRandomProbability(roadSpan.UpgradeSpots); i++)
+            var upgradesNumber = ProbabilityHandler.GetProbability(roadSpan.UpgradeSpots.Count);
+            if (upgradesNumber <= 0)
+                return;
+
+            for (int i = 0; i < upgradesNumber; i++)
             {
-                var YShiftVector = new Vector3(0, Random.Range(1.0f, 3.0f), 0);
+                var YShiftVector = new Vector3(0, Random.Range(MinYShift, MaxYShift), 0);
                 UpgradeView upgradeView = _upgradePool.Spawn();
                 upgradeView.transform.position = roadSpan.UpgradeSpots[i].position + YShiftVector;
                 roadSpan.AcceptChildRespawnable(upgradeView, RespawnableType.Upgrade);
             }
         }
-
-        private int GetRandomProbability(List<Transform> upgradeSpots)
-        {
-            int returnOfThreeUpgrades = 10;
-            int returnOfTwoUpgrades = 35;
-            int returnOfOneUpgrade = 80;
-            int  result = 0;
-
-            int randomnumber = Random.Range(0, 100);
-            if (randomnumber <= returnOfThreeUpgrades)
-                result = returnOfTwoUpgrades;
-            else if (randomnumber <= returnOfTwoUpgrades)
-                result = returnOfTwoUpgrades;
-            else if (randomnumber <= returnOfOneUpgrade)
-                result = returnOfOneUpgrade;
-
-            return result switch
-            {
-                10 => upgradeSpots.Count,
-                35 => upgradeSpots.Count - 1,
-                80 => upgradeSpots.Count - 2,
-                _ => 0,
-            };
-        }
-
-
     }
 }

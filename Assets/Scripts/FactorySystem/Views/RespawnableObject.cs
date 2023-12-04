@@ -1,6 +1,6 @@
-using Collectables;
 using System.Collections.Generic;
 using UnityEngine;
+using Collectables;
 
 namespace Factories
 {
@@ -21,8 +21,6 @@ namespace Factories
             gameObject.SetActive(true);
         }
 
-        private void OnBecameInvisible() => Deactivate();
-
         private void Deactivate()
         {
             _isActive = false;
@@ -31,9 +29,7 @@ namespace Factories
             if (_hasChildObjects)
             {
                 for (int i = 0; i < transform.childCount; i++)
-                {
                     transform.GetChild(i).gameObject.SetActive(true);
-                }
             }
         }
 
@@ -42,5 +38,7 @@ namespace Factories
             for(int i = 0; i < _collectables.Count; i++)
                 _collectables[i].PauseAnimation(isPaused);
         }
+
+        private void OnBecameInvisible() => Deactivate();
     }
 }

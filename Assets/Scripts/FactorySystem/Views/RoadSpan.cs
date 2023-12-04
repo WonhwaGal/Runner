@@ -1,8 +1,9 @@
-using UnityEngine;
-using System.Collections.Generic;
-using DG.Tweening;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using DG.Tweening;
+using Tools;
 
 namespace Factories
 {
@@ -15,9 +16,7 @@ namespace Factories
         [SerializeField] private List<Transform> _upgradeSpots_1;
         [SerializeField] private List<Transform> _upgradeSpots_2;
         [SerializeField] private RoadSpanType _roadType;
-
-        public Action<RoadSpanType> OnTurnedOff;
-        public Action<bool> OnTurning;
+        [SerializeField] private bool _hasTurns;
 
         private bool _isActive;
         private int _setNumber;
@@ -29,8 +28,9 @@ namespace Factories
 
         public List<IRespawnable> Collectables { get; private set; }
         public GameObject BodyObject => gameObject;
+        public RoadSpanType RoadType => _roadType;
+        public bool HasTurns => _hasTurns;
         public bool IsActive => _isActive;
-        public RoadSpanType RoadType { get => _roadType; }
         public int PlayerLane { get => _playerLane; set => _playerLane = value; }
         public Transform RootObject { get => _rootObject; set => _rootObject = value; }
         public List<Transform> CoinSpots
@@ -54,6 +54,9 @@ namespace Factories
             }
         }
 
+        public Action<RoadSpan> OnTurnedOff { get; set; }
+        public Action<bool> OnTurning;
+
         public void Activate()
         {
             _childRoadSpans = new List<Transform>();
@@ -66,23 +69,14 @@ namespace Factories
         private void SetUpScene()
         {
             _setNumber = UnityEngine.Random.Range(0, 2) % 2 == 0 ? 1 : 2;
-            if (_setNumber == 1)
-            {
-                _obstacleSet_1.SetActive(true);
-                _obstacleSet_2.SetActive(false);
-            }
-            else
-            {
-                _obstacleSet_2.SetActive(true);
-                _obstacleSet_1.SetActive(false);
-            }
+            _obstacleSet_1.SetActive(_setNumber == 1);
+            _obstacleSet_2.SetActive(_setNumber == 2);
         }
 
         public RoadSpan ReturnLeftChild() => _childRoadSpans[0].GetComponent<RoadSpan>();
 
         public void MakeTurn(float shift, int yRotation, float turnTimescale)
         {
-            Debug.Log("timescale is " + turnTimescale);
             _turnSequence = DOTween.Sequence();
             _turnSequence.timeScale = turnTimescale;
             _turnSequence.Append(transform.DOMoveX(transform.position.x + shift, 1.0f))
@@ -99,14 +93,11 @@ namespace Factories
                 _childRoadSpans.Add(childObject.BodyObject.transform);
 
             if (type == RespawnableType.Coin || type == RespawnableType.Upgrade)
-            {
                 Collectables.Add(childObject);
-            }
         }
 
         public void UnparentChildObjects()
         {
-            Debug.Log($"{gameObject.name} went FULL UNparent");
             for (int i = 0; i < _childRoadSpans.Count; i++)
                 _childRoadSpans[i].SetParent(_rootObject);
 
@@ -128,20 +119,21 @@ namespace Factories
             bool shouldDeactivate = false;
             while (!shouldDeactivate)
             {
-                float saveDistance = Camera.main.transform.position.z - 70;
-                if (transform.position.z > saveDistance)   // transform.rotation.y % 90 == 0
-                    yield return new WaitForSeconds(1);
-                else
+                var cam = Camera.main;
+                var distance = (cam.transform.position - transform.position).magnitude;
+                var isBehind = cam.transform.position.z > transform.position.z;
+                if (distance > Constants.SaveDistance && isBehind)
                     shouldDeactivate = true;
+                else
+                    yield return new WaitForSeconds(1);
             }
 
             Deactivate();
-            OnTurnedOff?.Invoke(RoadType);
+            OnTurnedOff?.Invoke(this);
         }
 
         public void Deactivate()
         {
-            Debug.Log(gameObject.name + "deactivated");
             StopCoroutine(CheckForDeactivate());
             UnparentChildObjects();
             _isActive = false;

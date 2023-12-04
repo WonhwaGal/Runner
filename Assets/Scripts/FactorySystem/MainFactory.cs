@@ -1,18 +1,13 @@
-using UnityEngine;
-
-
 using System;
+using UnityEngine;
 
 namespace Factories
 {
     internal class MainFactory : IDisposable
     {
-        private IRoadSystem _roadSystem;
-        private ICoinSetSystem _coinSetSystem;
-        private IUpgradeSpawnSystem _upgradeSpawnSystem;
-
-        public IRoadSystem RoadSystem { get => _roadSystem; }
-        public ICoinSetSystem CoinSetSystem { get => _coinSetSystem; }
+        private readonly IRoadSystem _roadSystem;
+        private readonly ICoinSetSystem _coinSetSystem;
+        private readonly IUpgradeSpawnSystem _upgradeSpawnSystem;
 
         public MainFactory(Transform firstRoadSpan)
         {
@@ -23,8 +18,11 @@ namespace Factories
             RoadSystem.RouteAnalyzer.RequestForUpgrades += _upgradeSpawnSystem.PutUpgradesOnRoad;
             GameEventSystem.Subscribe<PauseGameEvent>(UpdateAnimations);
 
-            _roadSystem.StartRoadSpawn();
+            _roadSystem.StartRoadSpawn(3);
         }
+
+        public IRoadSystem RoadSystem => _roadSystem;
+        public ICoinSetSystem CoinSetSystem => _coinSetSystem;
 
         public void UpdateAnimations(PauseGameEvent pauseEvent)
         {
@@ -36,7 +34,7 @@ namespace Factories
         {
             RoadSystem.RouteAnalyzer.RequestForCoins -= CoinSetSystem.PutCoinsOnRoad;
             RoadSystem.RouteAnalyzer.RequestForUpgrades -= _upgradeSpawnSystem.PutUpgradesOnRoad;
-            //_roadSystem.Dispose();
+            _roadSystem.Dispose();
         }
     }
 }

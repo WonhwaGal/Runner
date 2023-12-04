@@ -1,10 +1,8 @@
-using Collectables;
+using System;
 using UnityEngine;
 using DG.Tweening;
-using System;
-using System.Collections.Generic;
+using Collectables;
 using Tools;
-
 
 namespace Factories
 {

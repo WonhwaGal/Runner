@@ -19,20 +19,23 @@ namespace Commands
         public void Start() => _playerControlSystem.OnPlayerControllerSet += PlayerCreated;
 
         public void Pause(bool isPaused) => _progressController.GameUIModel.PauseDistanceCount(isPaused);
+
         public void Stop()
         {
             _progressController.GameUIModel.StopDistanceCount();
             _playerControlSystem.OnPlayerControllerSet -= PlayerCreated;
-            _playerControlSystem.PlayerController.Mover.OnStartRunning -= _progressController.GameUIModel.StartDistanceCount;
-            _playerControlSystem.PlayerController.Mover.OnSpeedingUp -= _progressController.GameUIModel.IncreaseSpeed;
+            var mover = _playerControlSystem.PlayerController.Mover;
+            mover.OnStartRunning -= _progressController.GameUIModel.StartDistanceCount;
+            mover.OnSpeedingUp -= _progressController.GameUIModel.IncreaseSpeed;
         }
 
         public void RegisterCurrentProgress() => _progressController.RegisterCurrentProgress();
 
         private void PlayerCreated()
         {
-            _playerControlSystem.PlayerController.Mover.OnStartRunning += _progressController.GameUIModel.StartDistanceCount;
-            _playerControlSystem.PlayerController.Mover.OnSpeedingUp += _progressController.GameUIModel.IncreaseSpeed;
+            var mover = _playerControlSystem.PlayerController.Mover;
+            mover.OnStartRunning += _progressController.GameUIModel.StartDistanceCount;
+            mover.OnSpeedingUp += _progressController.GameUIModel.IncreaseSpeed;
         }
     }
 }

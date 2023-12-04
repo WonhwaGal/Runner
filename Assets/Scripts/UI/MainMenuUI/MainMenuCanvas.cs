@@ -35,7 +35,6 @@ namespace GameUI
         private Vector3 _selectStartPos = new (0, 1, 25);
         private Vector3 _selectShiftPos = new (0, 33, 25);
 
-
         public SelectPlayerView SelectPlayerView { get => _selectPlayerView; private set => _selectPlayerView = value; }
         public List<TextButtonPanel> TextPanelList => _textPanelList;
 
@@ -119,11 +118,10 @@ namespace GameUI
 
         private void OnDestroy()
         {
-            _startButton.OnClickButton -= () => _startMethod();
-            _startButton.OnClickButton -= () => _startMenuPanel.SetActive(false);
-            _selectPlayerPanelButton.OnClickButton -= GoToSelectPlayer;
-            _resetProgressButton.OnClickButton -= () => _resetMethod();
-            _exitButton.OnClickButton -= Exit;
+            _startButton.Dispose();
+            _selectPlayerPanelButton.Dispose();
+            _resetProgressButton.Dispose();
+            _exitButton.Dispose();
             _backButton.onClick.RemoveAllListeners();
         }
     }

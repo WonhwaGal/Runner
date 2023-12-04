@@ -9,14 +9,14 @@ namespace Infrastructure
 {
     internal class GameStateColtroller: IDisposable
     {
-        private CommandsManager _commandsManager;
-        private DataController _dataController;
+        private readonly CommandsManager _commandsManager;
+        private readonly DataController _dataController;
+        private const string MenuScene = "MenuScene";
 
         public GameStateColtroller(CommandsManager commandsManager)
         {
             _commandsManager = commandsManager;
 
-            _commandsManager.PauseView.OnContinueGame += PauseGame;
             _commandsManager.PauseView.OnExit += LoseGame;
             _commandsManager.PauseView.OnBackToMenu += LoadMenuScene;
 
@@ -46,7 +46,7 @@ namespace Infrastructure
         private void LoadMenuScene()
         {
             SaveProgressAfterPlaying();
-            SceneManager.LoadScene("MenuScene");
+            SceneManager.LoadScene(MenuScene);
         }
 
         private void SaveProgressAfterPlaying()
@@ -54,16 +54,16 @@ namespace Infrastructure
             if (_commandsManager.ProgressCommander is ProgressCommander commander)
             {
                 commander.RegisterCurrentProgress();
-                UnityEngine.Debug.Log($"registered current player is {commander.GameConfig.CurrentPlayer.Name}");
                 _dataController.SaveProgressFromConfig(commander.GameConfig);
             }
             else
-                UnityEngine.Debug.Log("Failed to save data");
+            {
+                UnityEngine.Debug.LogWarning("Failed to save data");
+            }
         }
 
         public void Dispose() 
         {
-            _commandsManager.PauseView.OnContinueGame -= PauseGame;
             _commandsManager.PauseView.OnExit -= LoseGame;
             _commandsManager.PauseView.OnBackToMenu -= LoadMenuScene;
 

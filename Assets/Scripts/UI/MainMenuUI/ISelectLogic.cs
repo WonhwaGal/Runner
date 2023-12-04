@@ -1,6 +1,6 @@
-﻿using DataSaving;
+﻿using System;
+using DataSaving;
 using ProgressSystem;
-using System;
 using static ProgressSystem.GameProgressConfig;
 
 namespace GameUI
@@ -17,6 +17,5 @@ namespace GameUI
         void ChangeCurrentPlayerTo(PlayerConfig config);
         void BuyPlayer(PlayerConfig config);
         void CancelProgress();
-        //void SelectCurrentPlayer();
     }
 }

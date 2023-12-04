@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace Factories
 {
     internal interface IRouteAnalyzer : IDisposable

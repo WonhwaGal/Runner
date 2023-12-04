@@ -341,6 +341,7 @@ MonoBehaviour:
   - {fileID: 726698161173197206}
   - {fileID: 862949329483410431}
   _roadType: 3
+  _hasTurns: 1
 --- !u!137 &4681754027216839280
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0

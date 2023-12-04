@@ -1,4 +1,5 @@
-﻿namespace Commands
+﻿
+namespace Commands
 {
     internal interface ICommander
     {

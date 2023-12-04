@@ -138,15 +138,9 @@ internal class PlayerDOMover : BaseMover
         _isManeuvering = true;
 
         if (!_sideTween.IsActive())
-        {
-            Debug.Log("stop moving back");
             transform.DOMoveZ(_transform.position.z - FallBack, _forwardSpeed);
-        }
         else
-        {
-            Debug.Log("stop moving with leap");
             transform.DOMoveX(_transform.position.x + (FallBack * _moveDirection * -1), _forwardSpeed);
-        }
     }
 
     public override void Dispose()

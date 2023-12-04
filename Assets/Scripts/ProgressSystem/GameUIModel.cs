@@ -7,14 +7,13 @@ namespace ProgressSystem
 
     internal class GameUIModel : IGameUIModel
     {
-        public event Action<int> OnChangeKM;
         private int _distance = 0;
-        private int _distanceSpan;
-
-        Sequence _disSequence;
+        private readonly int _distanceSpan;
+        private Sequence _disSequence;
 
         public GameUIModel() => _distanceSpan = Constants.kmSpan;
 
+        public event Action<int> OnChangeKM;
 
         public void StartDistanceCount() => CountDistance();
 

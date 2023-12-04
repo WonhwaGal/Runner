@@ -13,10 +13,9 @@ namespace GameUI
         [SerializeField] private Button _chooseButton;
         [SerializeField] private TextMeshProUGUI _buttonText;
 
-        public TextMeshProUGUI Name { get => _name; set => _name = value; }
-        public Image Image { get => _image; set => _image = value; }
-        public Button ChooseButton { get => _chooseButton; set => _chooseButton = value; }
-        public TextMeshProUGUI Description { get => _description; set => _description = value; }
+        public TextMeshProUGUI Name => _name;
+        public Button ChooseButton => _chooseButton;
+        public TextMeshProUGUI Description => _description;
 
         public void FillInInfo(PlayerConfig config)
         {

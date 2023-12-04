@@ -7,18 +7,16 @@ namespace GameUI
 {
     internal class PauseView : MonoBehaviour, IPauseView
     {
-        public event Action<PauseGameEvent> OnContinueGame;
-        public event Action OnBackToMenu;
-        public event Action OnExit;
-
         [SerializeField] private Button _continue;
         [SerializeField] private Button _backToMenu;
         [SerializeField] private Button _exit;
         [SerializeField] private Transform _root;
-
         private bool _isPaused;
 
         public GameObject Gameobject => gameObject;
+
+        public event Action OnBackToMenu;
+        public event Action OnExit;
 
         public void ShowPauseMenu()
         {
@@ -29,7 +27,8 @@ namespace GameUI
 
         public void Init()
         {
-            _continue.onClick.AddListener(() => OnContinueGame?.Invoke(new PauseGameEvent(!gameObject.activeInHierarchy)));
+            GameEventSystem.Send(new PauseGameEvent(_isPaused));
+            _continue.onClick.AddListener(SendPauseEvent);
             _backToMenu.onClick.AddListener(() => OnBackToMenu?.Invoke());
             _exit.onClick.AddListener(() => OnExit?.Invoke());
             _exit.onClick.AddListener(ExitGame);
@@ -55,6 +54,8 @@ namespace GameUI
                     gameObject.SetActive(false);
             });
         }
+
+        private void SendPauseEvent() => GameEventSystem.Send(new PauseGameEvent(!gameObject.activeInHierarchy));
 
         private void OnDestroy()
         {

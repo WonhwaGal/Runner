@@ -1,18 +1,16 @@
 ﻿using UnityEngine;
 using System;
 
-
 namespace Infrastructure
 {
     internal class KeyboardInput : IInput
     {
-        public event Action OnJump;
-        public event Action<float> OnChangingXValue;
-
         private const string VerticalAxis = "Vertical";
-        private const string HorizontalAxis = "Horizontal";
         private bool _isPaused = false;
         private bool _isIgnored = false;
+
+        public event Action OnJump;
+        public event Action<float> OnChangingXValue;
 
         public void RegisterInput()
         {

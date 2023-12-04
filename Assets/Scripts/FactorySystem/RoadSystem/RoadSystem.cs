@@ -1,32 +1,28 @@
 using UnityEngine;
 
-
 namespace Factories
 {
-    internal class RoadSystem : IRoadSystem
+    internal sealed class RoadSystem : IRoadSystem
     {
-        private IPool<RoadSpan> _roadFactory;
-
-        private IRouteAnalyzer _roadAnalyzer;
-
-        public IRouteAnalyzer RouteAnalyzer { get => _roadAnalyzer; }
+        private IPool<RoadSpan> _roadPool;
+        private readonly IRouteAnalyzer _roadAnalyzer;
 
         public RoadSystem(Transform firstRoadSpan)
         {
             CreateRoadFactory();
-
-            _roadAnalyzer = new RouteAnalyzer(firstRoadSpan, _roadFactory);
+            _roadAnalyzer = new RouteAnalyzer(firstRoadSpan, _roadPool);
         }
 
-        public void StartRoadSpawn()
+        public IRouteAnalyzer RouteAnalyzer => _roadAnalyzer;
+
+        public void StartRoadSpawn(int spanNumber)
         {
-            RouteAnalyzer.PlanRoadAhead();
-            RouteAnalyzer.PlanRoadAhead();
+            for(int i = 0; i < spanNumber; i++)
+                RouteAnalyzer.PlanRoadAhead();
         }
 
         private void CreateRoadFactory()
         {
-            //создаем и настраиваем фабрику объектов
             var roadFactory = new GenericFactory<RoadSpan>("RoadPrefabs");
             roadFactory.LoadPrefab("RoadBlock1");
             roadFactory.LoadPrefab("RoadBlockBusStop");
@@ -36,11 +32,12 @@ namespace Factories
             roadFactory.LoadPrefab("RoadTurnLeft");
             roadFactory.LoadPrefab("RoadTurnDouble");
 
-            //создаем пулл объектов
-            _roadFactory = new SinglePool<RoadSpan>(roadFactory);
+            _roadPool = new SinglePool<RoadSpan>(roadFactory);
+            _roadPool.PrespawnAllPrefabs();
         }
 
         public void UpdatePlayerLane(int number) => RouteAnalyzer.UpdatePlayerLane(number);
+
         public void SpeedUp(float currentSpeed) => RouteAnalyzer.SetTurnTimescale(currentSpeed);
 
         public void Dispose() => RouteAnalyzer.Dispose();

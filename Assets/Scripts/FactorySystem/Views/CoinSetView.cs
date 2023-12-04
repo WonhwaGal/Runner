@@ -1,6 +1,6 @@
-using Collectables;
 using System.Collections.Generic;
 using UnityEngine;
+using Collectables;
 
 namespace Factories
 {

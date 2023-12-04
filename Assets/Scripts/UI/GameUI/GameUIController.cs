@@ -1,11 +1,9 @@
 namespace GameUI
 {
-    internal class GameUIController
+    internal sealed class GameUIController
     {
-        private GameCanvas _gameCanvas;
-        private IPauseView _pauseView;
-
-        public IPauseView PauseView { get => _pauseView; private set => _pauseView = value; }
+        private readonly GameCanvas _gameCanvas;
+        private readonly IPauseView _pauseView;
 
         public GameUIController(GameCanvas gameCanvas)
         {
@@ -14,6 +12,7 @@ namespace GameUI
             _gameCanvas.PauseView.Init();
         }
 
+        public IPauseView PauseView => _pauseView;
 
         public void PauseGame(bool isPaused)
         {

@@ -6,8 +6,8 @@ namespace GameUI
 {
     internal class SelectMenuPresenter
     {
-        SelectPlayerView _selectView;
-        ISelectLogic _selectLogic;
+        private readonly SelectPlayerView _selectView;
+        private readonly ISelectLogic _selectLogic;
 
         public SelectMenuPresenter(SelectPlayerView selectView, ISelectLogic selectLogic)
         {
@@ -19,7 +19,6 @@ namespace GameUI
             _selectLogic.OnSettingCrystalNumber += UpdateCrystalNumber;
             _selectLogic.OnPlayerSelected += LoadGameScene;
         }
-
 
         public void MakePlayerCurrent(PlayerConfig config) => _selectLogic.ChangeCurrentPlayerTo(config);
 
